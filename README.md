@@ -12,9 +12,9 @@ PublieDev est une plateforme PWA (Progressive Web App) de référence pour déco
 - **Articles** - Articles techniques et scientifiques
 
 ### Recherche et Indexation
-- Recherche full-text avec autocomplétion
+- Recherche full-text avec mots-clés
 - Filtrage par type, catégorie, technologies
-- Système d'indexation par mots-clés
+- Système d'indexation automatique
 - Tri par pertinence, date, popularité
 
 ### RAG (Retrieval Augmented Generation)
@@ -25,25 +25,51 @@ PublieDev est une plateforme PWA (Progressive Web App) de référence pour déco
 ### PWA
 - Installation sur mobile et desktop
 - Fonctionnement hors-ligne
-- Notifications push (optionnel)
 - Performance optimisée
 
 ## Technologies
 
-- **Frontend**: React 18 + TypeScript + Vite
-- **Styling**: Tailwind CSS (couleur principale: Bluesky)
+- **Frontend**: HTML5, CSS3, JavaScript ES6+
+- **Styling**: CSS personnalisé (couleur principale: Bluesky #0ea5e9)
 - **Backend**: Firebase (Auth, Firestore, Storage, Hosting)
-- **State Management**: React Query
-- **Routing**: React Router v6
-- **Icons**: Lucide React
-- **PWA**: Vite PWA Plugin + Workbox
+- **PWA**: Service Worker + Manifest
+
+## Structure du projet
+
+```
+publiedev/
+├── index.html              # Page d'accueil
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service Worker
+├── css/
+│   └── style.css          # Styles principaux
+├── js/
+│   ├── config.js          # Configuration Firebase
+│   ├── app.js             # Application principale
+│   ├── services/
+│   │   ├── firebase.js    # Initialisation Firebase
+│   │   ├── auth.js        # Authentification
+│   │   ├── publications.js # CRUD publications
+│   │   └── search.js      # Recherche et RAG
+│   └── utils/
+│       └── helpers.js     # Utilitaires
+├── pages/
+│   ├── login.html         # Page de connexion
+│   ├── explore.html       # Explorer les publications
+│   ├── search.html        # Résultats de recherche
+│   └── publish.html       # Créer une publication
+├── assets/
+│   └── icons/             # Icônes PWA
+├── firebase.json          # Configuration Firebase Hosting
+├── firestore.rules        # Règles Firestore
+└── storage.rules          # Règles Storage
+```
 
 ## Installation
 
 ### Prérequis
-- Node.js 18+
-- npm ou yarn
-- Compte Firebase
+- Un compte Firebase
+- Un serveur web local (optionnel)
 
 ### Configuration
 
@@ -53,12 +79,7 @@ git clone https://github.com/votre-repo/publiedev.git
 cd publiedev
 ```
 
-2. **Installer les dépendances**
-```bash
-npm install
-```
-
-3. **Configurer Firebase**
+2. **Configurer Firebase**
 
 Créez un projet Firebase sur [console.firebase.google.com](https://console.firebase.google.com) et activez:
 - Authentication (Email/Password, Google, GitHub)
@@ -66,78 +87,48 @@ Créez un projet Firebase sur [console.firebase.google.com](https://console.fire
 - Storage
 - Hosting
 
-4. **Variables d'environnement**
+3. **Configurer les clés Firebase**
 
-Copiez le fichier `.env.example` vers `.env` et remplissez vos clés Firebase:
-
-```bash
-cp .env.example .env
-```
-
-```env
-VITE_FIREBASE_API_KEY=votre_api_key
-VITE_FIREBASE_AUTH_DOMAIN=votre_projet.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=votre_projet_id
-VITE_FIREBASE_STORAGE_BUCKET=votre_projet.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=votre_sender_id
-VITE_FIREBASE_APP_ID=votre_app_id
-VITE_FIREBASE_MEASUREMENT_ID=votre_measurement_id
-```
-
-5. **Configurer Firestore Rules**
-
-Dans la console Firebase, configurez les règles de sécurité Firestore:
+Éditez le fichier `js/config.js` avec vos clés Firebase:
 
 ```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users collection
-    match /users/{userId} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.uid == userId;
-    }
-
-    // Publications collection
-    match /publications/{publicationId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null &&
-        request.auth.uid == resource.data.authorId;
-    }
-
-    // Comments collection
-    match /comments/{commentId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null &&
-        request.auth.uid == resource.data.authorId;
-    }
-  }
-}
+const firebaseConfig = {
+    apiKey: "VOTRE_API_KEY",
+    authDomain: "votre-projet.firebaseapp.com",
+    projectId: "votre-projet-id",
+    storageBucket: "votre-projet.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef"
+};
 ```
 
-6. **Créer les index Firestore**
+4. **Configurer les règles Firestore**
 
-Créez les index composites nécessaires dans la console Firebase ou via CLI:
+Déployez les règles via CLI:
 
 ```bash
-firebase deploy --only firestore:indexes
+firebase deploy --only firestore:rules
 ```
 
-### Développement
+### Développement local
 
+Option 1 - Avec npm:
 ```bash
-npm run dev
+npm install
+npm start
 ```
 
-L'application sera disponible sur `http://localhost:5173`
-
-### Build de production
-
+Option 2 - Avec Python:
 ```bash
-npm run build
+python -m http.server 8000
 ```
+
+Option 3 - Avec PHP:
+```bash
+php -S localhost:8000
+```
+
+Puis ouvrez `http://localhost:8000`
 
 ### Déploiement sur Firebase
 
@@ -148,104 +139,86 @@ npm install -g firebase-tools
 # Connexion
 firebase login
 
-# Initialisation
+# Initialisation (choisir Hosting, définir "." comme dossier public)
 firebase init hosting
 
 # Déploiement
-npm run build && firebase deploy --only hosting
-```
-
-## Structure du projet
-
-```
-publiedev/
-├── public/                 # Assets statiques
-├── src/
-│   ├── components/         # Composants React
-│   │   ├── Layout/         # Header, Footer, Layout
-│   │   ├── Publication/    # Cartes de publication
-│   │   └── UI/             # Composants UI réutilisables
-│   ├── contexts/           # Contextes React (Auth)
-│   ├── hooks/              # Hooks personnalisés
-│   ├── pages/              # Pages de l'application
-│   ├── services/           # Services Firebase
-│   │   ├── firebase.ts     # Configuration Firebase
-│   │   ├── auth.ts         # Authentification
-│   │   ├── publications.ts # CRUD publications
-│   │   ├── search.ts       # Recherche et indexation
-│   │   └── rag.ts          # Système RAG
-│   ├── types/              # Types TypeScript
-│   ├── utils/              # Utilitaires
-│   ├── App.tsx             # Composant principal
-│   └── main.tsx            # Point d'entrée
-├── .env.example            # Variables d'environnement
-├── firebase.json           # Configuration Firebase
-├── firestore.rules         # Règles Firestore
-├── firestore.indexes.json  # Index Firestore
-├── tailwind.config.js      # Configuration Tailwind
-├── vite.config.ts          # Configuration Vite
-└── package.json
+firebase deploy --only hosting
 ```
 
 ## Fonctionnalités détaillées
 
 ### Système de publication
 
-Les utilisateurs peuvent publier différents types de contenu:
-
-1. **Création** - Formulaire avec métadonnées, technologies, liens
-2. **Indexation** - Génération automatique de mots-clés
-3. **Modération** - Statut draft/pending/published
-4. **Métriques** - Vues, likes, bookmarks, citations
+Les utilisateurs peuvent publier différents types de contenu avec:
+- Titre et description
+- Contenu détaillé
+- Technologies utilisées
+- Tags et catégories
+- Liens (GitHub, démo)
+- Image de couverture
 
 ### Système de recherche
 
-- Recherche par mots-clés dans titre, description, contenu
-- Autocomplétion avec suggestions
-- Filtres avancés (type, catégories, technologies, date)
-- Tri par pertinence avec scoring
+- Recherche par mots-clés dans titre, description, tags
+- Filtres par type de publication
+- Tri par pertinence, date, vues, likes
+- Score de pertinence calculé automatiquement
 
 ### Système RAG
 
-Le système RAG permet de poser des questions et obtenir des réponses basées sur les publications:
-
+Le système RAG permet de poser des questions et obtenir des réponses:
 1. **Retrieval** - Récupération des documents pertinents
-2. **Extraction** - Extraction des chunks de contenu
-3. **Scoring** - Calcul de la pertinence
-4. **Response** - Génération de la réponse
+2. **Scoring** - Calcul de la pertinence
+3. **Response** - Génération de la réponse basée sur les sources
 
-Note: Pour un RAG complet avec LLM, intégrez une API comme OpenAI ou Anthropic.
+### Authentification
+
+- Email/Mot de passe
+- Google OAuth
+- GitHub OAuth
+
+## Personnalisation
+
+### Couleurs
+
+Les couleurs sont définies dans `css/style.css`:
+
+```css
+:root {
+    --bluesky-500: #0ea5e9;  /* Couleur principale */
+    --bluesky-600: #0284c7;  /* Hover */
+    /* ... */
+}
+```
 
 ## Contribution
 
-Les contributions sont les bienvenues! Veuillez:
+Les contributions sont les bienvenues!
 
 1. Fork le projet
-2. Créer une branche (`git checkout -b feature/ma-fonctionnalite`)
-3. Commiter vos changements (`git commit -m 'Ajout de ma fonctionnalité'`)
-4. Pousser la branche (`git push origin feature/ma-fonctionnalite`)
-5. Ouvrir une Pull Request
+2. Créez une branche (`git checkout -b feature/ma-fonctionnalite`)
+3. Committez vos changements (`git commit -m 'Ajout de ma fonctionnalité'`)
+4. Poussez la branche (`git push origin feature/ma-fonctionnalite`)
+5. Ouvrez une Pull Request
 
 ## Roadmap
 
+- [ ] Page de profil utilisateur
 - [ ] Système de commentaires
-- [ ] Notifications en temps réel
-- [ ] Profils utilisateurs complets
-- [ ] Intégration LLM pour RAG amélioré
-- [ ] Export PDF/BibTeX des citations
+- [ ] Notifications
+- [ ] Export des citations
 - [ ] API publique
-- [ ] Application mobile native
-- [ ] Système de badges et gamification
-- [ ] Intégration CI/CD
+- [ ] Système de badges
+- [ ] Mode sombre
 
 ## Licence
 
-MIT License - voir le fichier [LICENSE](LICENSE) pour plus de détails.
+MIT License
 
 ## Contact
 
 Pour toute question ou suggestion:
-- Email: contact@publiedev.ci
 - GitHub Issues: [Ouvrir une issue](https://github.com/votre-repo/publiedev/issues)
 
 ---

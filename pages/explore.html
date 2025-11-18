@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0ea5e9">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Explorer - PublieDev</title>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <form class="search-form desktop-only" id="searchForm">
+                <input type="text" placeholder="Rechercher..." id="searchInput">
+                <button type="submit">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                </button>
+            </form>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html" style="color: var(--bluesky-500);">Explorer</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="container">
+                <h1>Explorer</h1>
+                <p>Découvrez les innovations technologiques des développeurs ivoiriens</p>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="container" style="padding-top: 1.5rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="categoryTabs">
+                <button class="btn btn-primary" data-type="">Tout</button>
+                <button class="btn btn-secondary" data-type="app">Applications</button>
+                <button class="btn btn-secondary" data-type="api">APIs</button>
+                <button class="btn btn-secondary" data-type="tutorial">Tutoriels</button>
+                <button class="btn btn-secondary" data-type="article">Articles</button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <section class="section">
+            <div class="container">
+                <div class="publications-grid" id="publications">
+                    <div class="loading">Chargement...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 PublieDev. Tous droits réservés.</p>
+                <p>Fait avec ❤️ en Côte d'Ivoire</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/services/publications.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+
+    <script>
+        const container = document.getElementById('publications');
+        const tabs = document.querySelectorAll('#categoryTabs button');
+        let currentType = '';
+
+        // Charger les publications
+        async function loadPublications(type = '') {
+            container.innerHTML = '<div class="loading">Chargement...</div>';
+
+            try {
+                let publications;
+                if (type) {
+                    publications = await getPublicationsByType(type, 30);
+                } else {
+                    publications = await getRecentPublications(30);
+                }
+
+                if (publications.length === 0) {
+                    container.innerHTML = createEmptyState(
+                        'Aucune publication',
+                        'Soyez le premier à partager votre projet!',
+                        'Publier maintenant',
+                        '/pages/publish.html'
+                    );
+                    return;
+                }
+
+                container.innerHTML = publications.map(pub => createPublicationCard(pub)).join('');
+            } catch (error) {
+                console.error('Erreur:', error);
+                container.innerHTML = '<p class="loading">Erreur de chargement</p>';
+            }
+        }
+
+        // Gestion des onglets
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('btn-primary');
+                    t.classList.add('btn-secondary');
+                });
+                tab.classList.remove('btn-secondary');
+                tab.classList.add('btn-primary');
+
+                currentType = tab.dataset.type;
+                loadPublications(currentType);
+            });
+        });
+
+        // Recherche
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                window.location.href = `/pages/search.html?q=${encodeURIComponent(query)}`;
+            }
+        });
+
+        // Charger au démarrage
+        loadPublications();
+    </script>
+</body>
+</html>

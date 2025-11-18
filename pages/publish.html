@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0ea5e9">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Publier - PublieDev</title>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container" style="padding: 2rem 1rem;">
+            <div style="max-width: 48rem; margin: 0 auto;">
+                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Nouvelle publication</h1>
+                <p style="color: var(--gray-600); margin-bottom: 2rem;">Partagez votre projet avec la communauté des développeurs ivoiriens</p>
+
+                <!-- Vérification authentification -->
+                <div id="authRequired" style="display: none; text-align: center; padding: 4rem 2rem;">
+                    <h2 style="margin-bottom: 1rem;">Connexion requise</h2>
+                    <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Vous devez être connecté pour publier du contenu.</p>
+                    <a href="/pages/login.html" class="btn btn-primary">Se connecter</a>
+                </div>
+
+                <!-- Formulaire -->
+                <form id="publishForm" style="display: none;">
+                    <div id="errorAlert" class="alert alert-error" style="display: none;"></div>
+
+                    <!-- Type -->
+                    <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid var(--gray-100);">
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.75rem;">Type de publication</label>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+                            <button type="button" class="type-btn active" data-type="app">App</button>
+                            <button type="button" class="type-btn" data-type="api">API</button>
+                            <button type="button" class="type-btn" data-type="program">Programme</button>
+                            <button type="button" class="type-btn" data-type="tutorial">Tutoriel</button>
+                            <button type="button" class="type-btn" data-type="article">Article</button>
+                        </div>
+                        <input type="hidden" id="type" value="app">
+                    </div>
+
+                    <!-- Titre -->
+                    <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                        <label for="title">Titre *</label>
+                        <input type="text" id="title" placeholder="Nom de votre projet" required>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                        <label for="description">Description courte *</label>
+                        <textarea id="description" rows="3" placeholder="Décrivez brièvement votre projet..." required></textarea>
+                    </div>
+
+                    <!-- Contenu -->
+                    <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                        <label for="content">Contenu détaillé *</label>
+                        <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required style="font-family: monospace;"></textarea>
+                    </div>
+
+                    <!-- Technologies -->
+                    <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                        <label for="technologies">Technologies (séparées par des virgules)</label>
+                        <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                        <label for="tags">Tags (séparés par des virgules)</label>
+                        <input type="text" id="tags" placeholder="fintech, mobile, ecommerce...">
+                    </div>
+
+                    <!-- Liens -->
+                    <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                        <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
+                        <div class="form-group">
+                            <label for="githubUrl">URL GitHub</label>
+                            <input type="url" id="githubUrl" placeholder="https://github.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label for="demoUrl">URL Démo</label>
+                            <input type="url" id="demoUrl" placeholder="https://...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="coverImage">Image de couverture (URL)</label>
+                            <input type="url" id="coverImage" placeholder="https://...">
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                        <button type="button" class="btn btn-secondary" onclick="saveDraft()">Brouillon</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Publier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .type-btn {
+            padding: 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: var(--white);
+            transition: all 0.2s;
+        }
+        .type-btn:hover {
+            border-color: var(--bluesky-300);
+        }
+        .type-btn.active {
+            border-color: var(--bluesky-500);
+            background: var(--bluesky-50);
+            color: var(--bluesky-600);
+        }
+    </style>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/services/publications.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+
+    <script>
+        const form = document.getElementById('publishForm');
+        const authRequired = document.getElementById('authRequired');
+        const errorAlert = document.getElementById('errorAlert');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Vérifier l'authentification
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                form.style.display = 'block';
+                authRequired.style.display = 'none';
+            } else {
+                form.style.display = 'none';
+                authRequired.style.display = 'block';
+            }
+        });
+
+        // Gestion des boutons de type
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('type').value = btn.dataset.type;
+            });
+        });
+
+        // Soumission du formulaire
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await publish(false);
+        });
+
+        // Sauvegarder en brouillon
+        async function saveDraft() {
+            await publish(true);
+        }
+
+        // Publier
+        async function publish(isDraft) {
+            errorAlert.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Publication...';
+
+            try {
+                const title = document.getElementById('title').value.trim();
+                const technologies = document.getElementById('technologies').value
+                    .split(',').map(t => t.trim()).filter(t => t);
+                const tags = document.getElementById('tags').value
+                    .split(',').map(t => t.trim()).filter(t => t);
+
+                const data = {
+                    title,
+                    slug: generateSlug(title),
+                    description: document.getElementById('description').value.trim(),
+                    content: document.getElementById('content').value.trim(),
+                    type: document.getElementById('type').value,
+                    technologies,
+                    tags,
+                    categories: [],
+                    githubUrl: document.getElementById('githubUrl').value.trim(),
+                    demoUrl: document.getElementById('demoUrl').value.trim(),
+                    coverImage: document.getElementById('coverImage').value.trim(),
+                    status: isDraft ? 'draft' : 'published',
+                    publishedAt: isDraft ? null : serverTimestamp()
+                };
+
+                const id = await createPublication(data);
+                window.location.href = `/pages/publication.html?slug=${data.slug}`;
+            } catch (error) {
+                console.error('Erreur publication:', error);
+                errorAlert.textContent = error.message || 'Une erreur est survenue';
+                errorAlert.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Publier';
+            }
+        }
+    </script>
+</body>
+</html>
