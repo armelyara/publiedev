@@ -19,5 +19,8 @@
   "license": "MIT",
   "devDependencies": {
     "serve": "^14.2.0"
+  },
+  "dependencies": {
+    "firebase": "^12.6.0"
   }
 }

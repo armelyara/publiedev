@@ -1,165 +1,18 @@
-rules_version = '2';
+rules_version='2'
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // ===== Helper Functions =====
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    // Validate string field
-    function isValidString(field, minLen, maxLen) {
-      return field is string && field.size() >= minLen && field.size() <= maxLen;
-    }
-
-    // Validate URL
-    function isValidUrl(url) {
-      return url == null || url == '' || (url is string && url.size() <= 500 && url.matches('^https?://.*'));
-    }
-
-    // Validate email
-    function isValidEmail(email) {
-      return email is string && email.matches('^[^@]+@[^@]+\\.[^@]+$');
-    }
-
-    // Rate limiting - check if last write was recent
-    function notRateLimited() {
-      return !exists(/databases/$(database)/documents/rateLimits/$(request.auth.uid)) ||
-             get(/databases/$(database)/documents/rateLimits/$(request.auth.uid)).data.lastWrite < request.time - duration.value(1, 's');
-    }
-
-    // ===== Users Collection =====
-    match /users/{userId} {
-      // Only allow reading specific fields publicly
-      allow read: if true;
-
-      allow create: if isOwner(userId)
-        && isValidString(request.resource.data.displayName, 1, 100)
-        && isValidEmail(request.resource.data.email)
-        && (!('bio' in request.resource.data) || isValidString(request.resource.data.bio, 0, 500))
-        && (!('location' in request.resource.data) || isValidString(request.resource.data.location, 0, 100))
-        && (!('github' in request.resource.data) || isValidUrl(request.resource.data.github))
-        && (!('linkedin' in request.resource.data) || isValidUrl(request.resource.data.linkedin))
-        && (!('website' in request.resource.data) || isValidUrl(request.resource.data.website));
-
-      allow update: if isOwner(userId)
-        && (!('displayName' in request.resource.data) || isValidString(request.resource.data.displayName, 1, 100))
-        && (!('bio' in request.resource.data) || isValidString(request.resource.data.bio, 0, 500))
-        && (!('location' in request.resource.data) || isValidString(request.resource.data.location, 0, 100))
-        && (!('github' in request.resource.data) || isValidUrl(request.resource.data.github))
-        && (!('linkedin' in request.resource.data) || isValidUrl(request.resource.data.linkedin))
-        && (!('website' in request.resource.data) || isValidUrl(request.resource.data.website))
-        // Prevent changing critical fields
-        && request.resource.data.uid == resource.data.uid
-        && request.resource.data.email == resource.data.email;
-
-      allow delete: if false; // Users cannot delete their profiles
-    }
-
-    // ===== Publications Collection =====
-    match /publications/{publicationId} {
-      // Read rules
-      allow read: if resource.data.status == 'published' ||
-                    (isAuthenticated() && request.auth.uid == resource.data.authorId);
-
-      // Create rules with validation
-      allow create: if isAuthenticated()
-        // Required fields validation
-        && isValidString(request.resource.data.title, 3, 200)
-        && isValidString(request.resource.data.slug, 3, 250)
-        && isValidString(request.resource.data.description, 10, 1000)
-        && isValidString(request.resource.data.content, 10, 50000)
-        && request.resource.data.type in ['app', 'api', 'program', 'tutorial', 'article']
-        && request.resource.data.status in ['draft', 'published']
-        // Author must be current user
-        && request.resource.data.authorId == request.auth.uid
-        && isValidString(request.resource.data.authorName, 1, 100)
-        // Optional fields validation
-        && (!('githubUrl' in request.resource.data) || isValidUrl(request.resource.data.githubUrl))
-        && (!('demoUrl' in request.resource.data) || isValidUrl(request.resource.data.demoUrl))
-        && (!('documentationUrl' in request.resource.data) || isValidUrl(request.resource.data.documentationUrl))
-        && (!('coverImage' in request.resource.data) || isValidUrl(request.resource.data.coverImage))
-        // Arrays validation
-        && (!('tags' in request.resource.data) || (request.resource.data.tags is list && request.resource.data.tags.size() <= 10))
-        && (!('technologies' in request.resource.data) || (request.resource.data.technologies is list && request.resource.data.technologies.size() <= 20))
-        && (!('categories' in request.resource.data) || (request.resource.data.categories is list && request.resource.data.categories.size() <= 5))
-        // Initialize counters to 0
-        && request.resource.data.views == 0
-        && request.resource.data.likes == 0
-        && request.resource.data.bookmarks == 0
-        && request.resource.data.citations == 0;
-
-      // Update rules
-      allow update: if isAuthenticated()
-        && request.auth.uid == resource.data.authorId
-        // Cannot change author
-        && request.resource.data.authorId == resource.data.authorId
-        // Validate updated fields
-        && (!('title' in request.resource.data) || isValidString(request.resource.data.title, 3, 200))
-        && (!('description' in request.resource.data) || isValidString(request.resource.data.description, 10, 1000))
-        && (!('content' in request.resource.data) || isValidString(request.resource.data.content, 10, 50000))
-        && (!('githubUrl' in request.resource.data) || isValidUrl(request.resource.data.githubUrl))
-        && (!('demoUrl' in request.resource.data) || isValidUrl(request.resource.data.demoUrl))
-        && (!('coverImage' in request.resource.data) || isValidUrl(request.resource.data.coverImage));
-
-      allow delete: if isAuthenticated() && request.auth.uid == resource.data.authorId;
-    }
-
-    // ===== View/Like Counters (separate rules for increment) =====
-    match /publications/{publicationId} {
-      // Allow anyone to increment views (with validation)
-      allow update: if isAuthenticated()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views'])
-        && request.resource.data.views == resource.data.views + 1;
-    }
-
-    // ===== Comments Collection =====
-    match /comments/{commentId} {
-      allow read: if true;
-
-      allow create: if isAuthenticated()
-        && isValidString(request.resource.data.content, 1, 2000)
-        && request.resource.data.authorId == request.auth.uid
-        && isValidString(request.resource.data.authorName, 1, 100)
-        && request.resource.data.likes == 0
-        && exists(/databases/$(database)/documents/publications/$(request.resource.data.publicationId));
-
-      allow update: if isAuthenticated()
-        && request.auth.uid == resource.data.authorId
-        && request.resource.data.authorId == resource.data.authorId
-        && isValidString(request.resource.data.content, 1, 2000);
-
-      allow delete: if isAuthenticated() &&
-        (request.auth.uid == resource.data.authorId ||
-         request.auth.uid == get(/databases/$(database)/documents/publications/$(resource.data.publicationId)).data.authorId);
-    }
-
-    // ===== Categories Collection =====
-    match /categories/{categoryId} {
-      allow read: if true;
-      allow write: if false; // Admin only via Firebase console
-    }
-
-    // ===== User Likes/Bookmarks =====
-    match /users/{userId}/likes/{publicationId} {
-      allow read: if true;
-      allow write: if isOwner(userId)
-        && exists(/databases/$(database)/documents/publications/$(publicationId));
-    }
-
-    match /users/{userId}/bookmarks/{publicationId} {
-      allow read: if isOwner(userId);
-      allow write: if isOwner(userId)
-        && exists(/databases/$(database)/documents/publications/$(publicationId));
-    }
-
-    // ===== Rate Limiting Collection =====
-    match /rateLimits/{userId} {
-      allow read: if false;
-      allow write: if false; // Managed by Cloud Functions
+    match /{document=**} {
+      // This rule allows anyone with your database reference to view, edit,
+      // and delete all data in your database. It is useful for getting
+      // started, but it is configured to expire after 30 days because it
+      // leaves your app open to attackers. At that time, all client
+      // requests to your database will be denied.
+      //
+      // Make sure to write security rules for your app before that time, or
+      // else all client requests to your database will be denied until you
+      // update your rules.
+      allow read, write: if request.time < timestamp.date(2025, 12, 18);
     }
   }
 }
