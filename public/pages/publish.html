@@ -57,39 +57,14 @@
                     <div id="errorAlert" class="alert alert-error" style="display: none;"></div>
                     <div id="successAlert" class="alert alert-success" style="display: none;"></div>
 
-                    <!-- Type de publication -->
-                    <div class="form-card">
+                    <!-- Type -->
+                    <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid var(--gray-100);">
                         <label style="display: block; font-weight: 500; margin-bottom: 0.75rem;">Type de publication</label>
-                        <div class="type-grid">
-                            <button type="button" class="type-btn" data-type="article">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                </svg>
-                                Article
-                            </button>
-                            <button type="button" class="type-btn" data-type="app-mobile">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                                </svg>
-                                App Mobile
-                            </button>
-                            <button type="button" class="type-btn" data-type="app-web">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                                </svg>
-                                App Web
-                            </button>
-                            <button type="button" class="type-btn" data-type="api">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="16 18 22 12 16 6"></polyline>
-                                    <polyline points="8 6 2 12 8 18"></polyline>
-                                </svg>
-                                API
-                            </button>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                            <button type="button" class="type-btn" data-type="article">Article</button>
+                            <button type="button" class="type-btn" data-type="app-mobile">App Mobile</button>
+                            <button type="button" class="type-btn" data-type="app-web">App Web</button>
+                            <button type="button" class="type-btn" data-type="api">API</button>
                         </div>
                         <input type="hidden" id="type" value="">
                     </div>
@@ -97,26 +72,22 @@
                     <!-- Champs communs -->
                     <div id="commonFields" style="display: none;">
                         <!-- Titre -->
-                        <div class="form-card">
-                            <div class="form-group">
-                                <label for="title">Titre *</label>
-                                <input type="text" id="title" placeholder="Nom de votre projet" required>
-                            </div>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="title">Titre *</label>
+                            <input type="text" id="title" placeholder="Nom de votre projet" required>
                         </div>
 
                         <!-- Description -->
-                        <div class="form-card">
-                            <div class="form-group">
-                                <label for="description">Description courte *</label>
-                                <textarea id="description" rows="3" placeholder="Décrivez brièvement votre projet (10-200 caractères)..." required></textarea>
-                            </div>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="description">Description courte *</label>
+                            <textarea id="description" rows="3" placeholder="Décrivez brièvement votre projet (10-200 caractères)..." required></textarea>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques Article -->
                     <div id="articleFields" class="type-fields" style="display: none;">
-                        <div class="form-card">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Article scientifique / technique</h3>
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Détails de l'article</h3>
 
                             <div class="form-group">
                                 <label for="articleAuthors">Auteurs (séparés par des virgules)</label>
@@ -131,7 +102,7 @@
                             <div class="form-group">
                                 <label for="articlePdf">Document PDF *</label>
                                 <input type="file" id="articlePdf" accept=".pdf" required>
-                                <small style="color: var(--gray-500);">Format PDF uniquement, max 10MB</small>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Format PDF uniquement, max 10MB</small>
                             </div>
 
                             <div class="form-group">
@@ -139,7 +110,7 @@
                                 <input type="text" id="articleKeywords" placeholder="machine learning, NLP, python...">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom: 0;">
                                 <label for="articleDoi">DOI (optionnel)</label>
                                 <input type="text" id="articleDoi" placeholder="10.1234/exemple">
                             </div>
@@ -148,118 +119,68 @@
 
                     <!-- Champs spécifiques App Mobile -->
                     <div id="appMobileFields" class="type-fields" style="display: none;">
-                        <div class="form-card">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Application Mobile</h3>
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Liens de l'application</h3>
 
                             <div class="form-group">
-                                <label for="mobileContent">Description détaillée</label>
-                                <textarea id="mobileContent" rows="6" placeholder="Fonctionnalités, cas d'usage..."></textarea>
+                                <label for="playStoreUrl">URL Play Store</label>
+                                <input type="url" id="playStoreUrl" placeholder="https://play.google.com/store/apps/details?id=...">
                             </div>
 
                             <div class="form-group">
-                                <label for="mobilePlaystore">Lien Google Play Store</label>
-                                <input type="url" id="mobilePlaystore" placeholder="https://play.google.com/store/apps/...">
+                                <label for="appStoreUrl">URL App Store</label>
+                                <input type="url" id="appStoreUrl" placeholder="https://apps.apple.com/app/...">
                             </div>
 
-                            <div class="form-group">
-                                <label for="mobileAppstore">Lien Apple App Store</label>
-                                <input type="url" id="mobileAppstore" placeholder="https://apps.apple.com/...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="mobileTechnologies">Technologies (séparées par des virgules)</label>
-                                <input type="text" id="mobileTechnologies" placeholder="Flutter, React Native, Swift...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="mobileGithub">URL GitHub (optionnel)</label>
-                                <input type="url" id="mobileGithub" placeholder="https://github.com/...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="mobileCover">Image de couverture (URL)</label>
-                                <input type="url" id="mobileCover" placeholder="https://...">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="mobileGithubUrl">URL GitHub</label>
+                                <input type="url" id="mobileGithubUrl" placeholder="https://github.com/...">
                             </div>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques App Web -->
                     <div id="appWebFields" class="type-fields" style="display: none;">
-                        <div class="form-card">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Application Web</h3>
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Liens de l'application</h3>
 
                             <div class="form-group">
-                                <label for="webContent">Description détaillée</label>
-                                <textarea id="webContent" rows="6" placeholder="Fonctionnalités, cas d'usage..."></textarea>
+                                <label for="webDemoUrl">URL de démo</label>
+                                <input type="url" id="webDemoUrl" placeholder="https://...">
                             </div>
 
-                            <div class="form-group">
-                                <label for="webDemoUrl">URL de l'application *</label>
-                                <input type="url" id="webDemoUrl" placeholder="https://..." required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="webPlaystore">Lien Google Play Store (PWA)</label>
-                                <input type="url" id="webPlaystore" placeholder="https://play.google.com/store/apps/...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="webAppstore">Lien Apple App Store (PWA)</label>
-                                <input type="url" id="webAppstore" placeholder="https://apps.apple.com/...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="webTechnologies">Technologies (séparées par des virgules)</label>
-                                <input type="text" id="webTechnologies" placeholder="React, Vue.js, Node.js...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="webGithub">URL GitHub (optionnel)</label>
-                                <input type="url" id="webGithub" placeholder="https://github.com/...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="webCover">Image de couverture (URL)</label>
-                                <input type="url" id="webCover" placeholder="https://...">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="webGithubUrl">URL GitHub</label>
+                                <input type="url" id="webGithubUrl" placeholder="https://github.com/...">
                             </div>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques API -->
                     <div id="apiFields" class="type-fields" style="display: none;">
-                        <div class="form-card">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">API</h3>
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Détails de l'API</h3>
 
                             <div class="form-group">
-                                <label for="apiContent">Documentation / Description *</label>
-                                <textarea id="apiContent" rows="8" placeholder="Endpoints, authentification, exemples..." required style="font-family: monospace;"></textarea>
+                                <label for="apiDocsUrl">URL Documentation</label>
+                                <input type="url" id="apiDocsUrl" placeholder="https://docs.example.com/...">
                             </div>
 
                             <div class="form-group">
                                 <label for="apiBaseUrl">URL de base de l'API</label>
-                                <input type="url" id="apiBaseUrl" placeholder="https://api.exemple.com/v1">
+                                <input type="url" id="apiBaseUrl" placeholder="https://api.example.com/v1">
                             </div>
 
-                            <div class="form-group">
-                                <label for="apiDocsUrl">URL Documentation</label>
-                                <input type="url" id="apiDocsUrl" placeholder="https://docs.exemple.com">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="apiTechnologies">Technologies (séparées par des virgules)</label>
-                                <input type="text" id="apiTechnologies" placeholder="Node.js, Python, GraphQL...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="apiGithub">URL GitHub (optionnel)</label>
-                                <input type="url" id="apiGithub" placeholder="https://github.com/...">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="apiGithubUrl">URL GitHub</label>
+                                <input type="url" id="apiGithubUrl" placeholder="https://github.com/...">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tags communs -->
-                    <div id="tagsSection" class="form-card" style="display: none;">
-                        <div class="form-group" style="margin-bottom: 0;">
+                    <!-- Tags (pour tous les types) -->
+                    <div id="tagsSection" style="display: none;">
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="tags">Tags (séparés par des virgules)</label>
                             <input type="text" id="tags" placeholder="fintech, mobile, ecommerce...">
                         </div>
@@ -267,10 +188,8 @@
 
                     <!-- Actions -->
                     <div id="actionsSection" style="display: none; margin-top: 1.5rem;">
-                        <p style="font-size: 0.875rem; color: var(--gray-500); margin-bottom: 1rem;">
-                            Votre publication sera soumise à validation avant d'apparaître publiquement.
-                        </p>
                         <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                            <a href="/" class="btn btn-secondary">Annuler</a>
                             <button type="submit" class="btn btn-primary" id="submitBtn">Soumettre pour validation</button>
                         </div>
                     </div>
@@ -280,51 +199,29 @@
     </main>
 
     <style>
-        .form-card {
-            background: var(--white);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid var(--gray-100);
-        }
-        .type-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-        }
-        @media (min-width: 640px) {
-            .type-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
         .type-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            border: 2px solid var(--gray-200);
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
             font-weight: 500;
             background: var(--white);
             transition: all 0.2s;
-            color: var(--gray-600);
         }
         .type-btn:hover {
             border-color: var(--bluesky-300);
-            color: var(--bluesky-500);
         }
         .type-btn.active {
             border-color: var(--bluesky-500);
             background: var(--bluesky-50);
             color: var(--bluesky-600);
         }
-        .type-btn svg {
-            opacity: 0.7;
-        }
-        .type-btn.active svg {
-            opacity: 1;
+
+        @media (max-width: 640px) {
+            .type-btn {
+                padding: 0.625rem;
+                font-size: 0.6875rem;
+            }
         }
     </style>
 
@@ -393,6 +290,14 @@
             await publish();
         });
 
+        // Fonction pour générer les mots-clés de recherche
+        function generateKeywords(text) {
+            return text.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .split(/\s+/)
+                .filter(word => word.length > 2);
+        }
+
         // Publier
         async function publish() {
             errorAlert.style.display = 'none';
@@ -403,7 +308,7 @@
             try {
                 // Vérification de sécurité: utilisateur authentifié
                 if (!currentUser) {
-                    throw new Error('Vous devez être connecté pour publier. Veuillez vous connecter.');
+                    throw new Error('Vous devez être connecté pour soumettre. Veuillez vous connecter.');
                 }
 
                 const type = document.getElementById('type').value;
@@ -442,64 +347,50 @@
 
                 // Ajouter les champs spécifiques selon le type
                 if (type === 'article') {
-                    // Upload PDF
-                    const pdfFile = document.getElementById('articlePdf').files[0];
-                    if (!pdfFile) {
-                        throw new Error('Veuillez sélectionner un fichier PDF');
-                    }
-                    if (pdfFile.size > 10 * 1024 * 1024) {
-                        throw new Error('Le fichier PDF ne doit pas dépasser 10MB');
-                    }
+                    // Upload PDF si présent
+                    const pdfInput = document.getElementById('articlePdf');
+                    if (pdfInput.files.length > 0) {
+                        const file = pdfInput.files[0];
+                        if (file.size > 10 * 1024 * 1024) {
+                            throw new Error('Le fichier PDF ne doit pas dépasser 10MB');
+                        }
 
-                    submitBtn.textContent = 'Upload du PDF...';
-                    const pdfRef = storage.ref(`publications/${Date.now()}_${pdfFile.name}`);
-                    await pdfRef.put(pdfFile);
-                    const pdfUrl = await pdfRef.getDownloadURL();
+                        submitBtn.textContent = 'Upload du PDF...';
+                        const storageRef = storage.ref(`publications/${currentUser.uid}/${Date.now()}_${file.name}`);
+                        await storageRef.put(file);
+                        data.pdfUrl = await storageRef.getDownloadURL();
+                    }
 
                     data.authors = document.getElementById('articleAuthors').value
                         .split(',').map(a => a.trim()).filter(a => a);
                     data.abstract = document.getElementById('articleAbstract').value.trim();
-                    data.pdfUrl = pdfUrl;
                     data.articleKeywords = document.getElementById('articleKeywords').value
                         .split(',').map(k => k.trim().toLowerCase()).filter(k => k);
                     data.doi = document.getElementById('articleDoi').value.trim();
 
                 } else if (type === 'app-mobile') {
-                    data.content = document.getElementById('mobileContent').value.trim();
-                    data.playstoreUrl = document.getElementById('mobilePlaystore').value.trim();
-                    data.appstoreUrl = document.getElementById('mobileAppstore').value.trim();
-                    data.technologies = document.getElementById('mobileTechnologies').value
-                        .split(',').map(t => t.trim()).filter(t => t);
-                    data.githubUrl = document.getElementById('mobileGithub').value.trim();
-                    data.coverImage = document.getElementById('mobileCover').value.trim();
+                    data.playStoreUrl = document.getElementById('playStoreUrl').value.trim();
+                    data.appStoreUrl = document.getElementById('appStoreUrl').value.trim();
+                    data.githubUrl = document.getElementById('mobileGithubUrl').value.trim();
 
                 } else if (type === 'app-web') {
-                    data.content = document.getElementById('webContent').value.trim();
                     data.demoUrl = document.getElementById('webDemoUrl').value.trim();
-                    data.playstoreUrl = document.getElementById('webPlaystore').value.trim();
-                    data.appstoreUrl = document.getElementById('webAppstore').value.trim();
-                    data.technologies = document.getElementById('webTechnologies').value
-                        .split(',').map(t => t.trim()).filter(t => t);
-                    data.githubUrl = document.getElementById('webGithub').value.trim();
-                    data.coverImage = document.getElementById('webCover').value.trim();
+                    data.githubUrl = document.getElementById('webGithubUrl').value.trim();
 
                 } else if (type === 'api') {
-                    data.content = document.getElementById('apiContent').value.trim();
-                    data.apiBaseUrl = document.getElementById('apiBaseUrl').value.trim();
                     data.docsUrl = document.getElementById('apiDocsUrl').value.trim();
-                    data.technologies = document.getElementById('apiTechnologies').value
-                        .split(',').map(t => t.trim()).filter(t => t);
-                    data.githubUrl = document.getElementById('apiGithub').value.trim();
+                    data.baseUrl = document.getElementById('apiBaseUrl').value.trim();
+                    data.githubUrl = document.getElementById('apiGithubUrl').value.trim();
                 }
 
-                // Créer la publication
                 submitBtn.textContent = 'Création...';
-                const docRef = await db.collection('publications').add(data);
 
-                successAlert.textContent = 'Publication soumise avec succès! Elle sera visible après validation.';
+                // Créer la publication
+                await db.collection('publications').add(data);
+
+                // Succès
+                successAlert.textContent = 'Votre publication a été soumise pour validation. Elle sera visible après approbation par un administrateur.';
                 successAlert.style.display = 'block';
-
-                // Reset form
                 form.reset();
                 document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
                 document.getElementById('commonFields').style.display = 'none';
@@ -511,21 +402,12 @@
                 submitBtn.textContent = 'Soumettre pour validation';
 
             } catch (error) {
-                console.error('Erreur publication:', error);
+                console.error('Erreur:', error);
                 errorAlert.textContent = error.message || 'Une erreur est survenue';
                 errorAlert.style.display = 'block';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Soumettre pour validation';
             }
-        }
-
-        // Générer des mots-clés pour la recherche
-        function generateKeywords(text) {
-            const words = text.toLowerCase()
-                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                .split(/\s+/)
-                .filter(w => w.length > 2);
-            return [...new Set(words)].slice(0, 30);
         }
     </script>
 </body>
