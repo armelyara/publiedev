@@ -1,5 +1,12 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="32" height="32" rx="8" fill="#0ea5e9"/>
-  <path d="M21 12L26 16L21 20" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M11 20L6 16L11 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- P letter with document fold -->
+  <path d="M8 8V24M8 8H14C16.2091 8 18 9.79086 18 12C18 14.2091 16.2091 16 14 16H8" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Document fold accent -->
+  <path d="M15 8L18 11" stroke="#bae6fd" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- D letter -->
+  <path d="M20 8V24M20 8H24C26.2091 8 28 9.79086 28 12V20C28 22.2091 26.2091 24 24 24H20" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Code brackets subtle -->
+  <path d="M4 12L2 16L4 20" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M30 12L32 16L30 20" stroke="white" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
 </svg>

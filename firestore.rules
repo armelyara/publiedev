@@ -50,11 +50,12 @@ service cloud.firestore {
       allow create: if isAuthenticated()
                     && isValidString(request.resource.data.title, 3, 200)
                     && isValidString(request.resource.data.description, 10, 1000)
-                    && request.resource.data.type in ['app', 'api', 'program', 'tutorial', 'article']
+                    && request.resource.data.type in ['article', 'app-mobile', 'app-web', 'api']
                     && request.resource.data.authorId == request.auth.uid
                     && request.resource.data.status == 'pending'
                     && (!('githubUrl' in request.resource.data) || isValidUrl(request.resource.data.githubUrl))
                     && (!('demoUrl' in request.resource.data) || isValidUrl(request.resource.data.demoUrl))
+                    && (!('pdfUrl' in request.resource.data) || isValidUrl(request.resource.data.pdfUrl))
                     && (!('tags' in request.resource.data) || request.resource.data.tags.size() <= 10)
                     && (!('technologies' in request.resource.data) || request.resource.data.technologies.size() <= 20);
 

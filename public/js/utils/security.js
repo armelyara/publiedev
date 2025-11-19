@@ -114,7 +114,7 @@ function validatePublication(data) {
     }
 
     // Type
-    const validTypes = ['app', 'api', 'program', 'tutorial', 'article'];
+    const validTypes = ['article', 'app-mobile', 'app-web', 'api'];
     if (!validTypes.includes(data.type)) {
         errors.push('Type de publication invalide');
     }

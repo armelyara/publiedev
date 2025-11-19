@@ -16,7 +16,7 @@ async function searchPublications(query, options = {}) {
         }
 
         let queryRef = db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .where('searchKeywords', 'array-contains-any', keywords);
 
         if (type) {
@@ -74,7 +74,7 @@ async function getSuggestions(prefix, maxResults = 5) {
             .replace(/[\u0300-\u036f]/g, '');
 
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .where('searchKeywords', 'array-contains', prefixLower)
             .limit(maxResults * 3)
             .get();
@@ -110,7 +110,7 @@ async function getRelatedPublications(publication, maxResults = 3) {
 
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .where('tags', 'array-contains-any', publication.tags.slice(0, 3))
             .limit(maxResults + 1)
             .get();
@@ -184,7 +184,7 @@ async function ragQuery(query, options = {}) {
 async function getPopularTopics(limit = 10) {
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .orderBy('views', 'desc')
             .limit(50)
             .get();

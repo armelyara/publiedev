@@ -1,10 +1,40 @@
 rules_version = '2';
 
-// Craft rules based on data in your Firestore database
-// allow write: if firestore.get(
-//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
   match /b/{bucket}/o {
+
+    // Publications (PDFs, images)
+    match /publications/{userId}/{fileName} {
+      // Lecture publique pour tous les fichiers de publications
+      allow read: if true;
+
+      // Upload uniquement par l'utilisateur authentifié propriétaire du dossier
+      allow create: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.size < 10 * 1024 * 1024  // Max 10MB
+                    && (request.resource.contentType.matches('application/pdf')
+                        || request.resource.contentType.matches('image/.*'));
+
+      // Mise à jour par le propriétaire ou admin
+      allow update: if request.auth != null
+                    && request.auth.uid == userId
+                    && request.resource.size < 10 * 1024 * 1024;
+
+      // Suppression par le propriétaire uniquement
+      allow delete: if request.auth != null
+                    && request.auth.uid == userId;
+    }
+
+    // Avatars utilisateurs
+    match /avatars/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 2 * 1024 * 1024  // Max 2MB
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Bloquer tout le reste
     match /{allPaths=**} {
       allow read, write: if false;
     }
