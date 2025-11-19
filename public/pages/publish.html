@@ -345,9 +345,8 @@
         const errorAlert = document.getElementById('errorAlert');
         const successAlert = document.getElementById('successAlert');
         const submitBtn = document.getElementById('submitBtn');
-        let currentUser = null;
 
-        // Vérifier l'authentification
+        // Vérifier l'authentification (currentUser est déclaré dans auth.js)
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             loadingState.style.display = 'none';
