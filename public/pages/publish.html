@@ -61,16 +61,16 @@
                     <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid var(--gray-100);">
                         <label style="display: block; font-weight: 500; margin-bottom: 0.75rem;">Type de publication</label>
                         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
-                            <button type="button" class="type-btn" data-type="article">Article</button>
+                            <button type="button" class="type-btn active" data-type="article">Article</button>
                             <button type="button" class="type-btn" data-type="app-mobile">App Mobile</button>
                             <button type="button" class="type-btn" data-type="app-web">App Web</button>
                             <button type="button" class="type-btn" data-type="api">API</button>
                         </div>
-                        <input type="hidden" id="type" value="">
+                        <input type="hidden" id="type" value="article">
                     </div>
 
-                    <!-- Champs communs (cachés jusqu'à sélection du type) -->
-                    <div id="commonFields" style="display: none;">
+                    <!-- Champs communs -->
+                    <div id="commonFields">
                         <!-- Titre -->
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="title">Titre *</label>
@@ -85,7 +85,7 @@
                     </div>
 
                     <!-- Champs spécifiques Article -->
-                    <div id="articleFields" class="type-fields" style="display: none;">
+                    <div id="articleFields" class="type-fields">
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="articleAuthors">Auteurs (séparés par des virgules)</label>
                             <input type="text" id="articleAuthors" placeholder="Nom A, Nom B, Nom C...">
@@ -167,7 +167,7 @@
                     </div>
 
                     <!-- Tags (pour tous les types) -->
-                    <div id="tagsSection" style="display: none;">
+                    <div id="tagsSection">
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="tags">Tags (séparés par des virgules)</label>
                             <input type="text" id="tags" placeholder="fintech, mobile, ecommerce...">
@@ -175,7 +175,7 @@
                     </div>
 
                     <!-- Actions -->
-                    <div id="actionsSection" style="display: none;">
+                    <div id="actionsSection">
                         <div style="display: flex; justify-content: flex-end; gap: 1rem;">
                             <a href="/" class="btn btn-secondary">Annuler</a>
                             <button type="submit" class="btn btn-primary" id="submitBtn">Soumettre</button>
