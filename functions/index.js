@@ -77,7 +77,7 @@ exports.onPublicationCreated = onDocumentCreated(
     } catch (error) {
       logger.error(`Error indexing publication: ${objectID}`, error);
     }
-  }
+  },
 );
 
 /**
@@ -123,7 +123,7 @@ exports.onPublicationUpdated = onDocumentUpdated(
       try {
         await algoliaIndex.saveObject(algoliaRecord);
         logger.info(
-          `Publication added to Algolia (approved): ${objectID}`
+          `Publication added to Algolia (approved): ${objectID}`,
         );
       } catch (error) {
         logger.error(`Error indexing publication: ${objectID}`, error);
@@ -136,7 +136,7 @@ exports.onPublicationUpdated = onDocumentUpdated(
       try {
         await algoliaIndex.deleteObject(objectID);
         logger.info(
-          `Publication removed from Algolia (unapproved): ${objectID}`
+          `Publication removed from Algolia (unapproved): ${objectID}`,
         );
       } catch (error) {
         logger.error(`Error removing publication: ${objectID}`, error);
@@ -173,7 +173,7 @@ exports.onPublicationUpdated = onDocumentUpdated(
         logger.error(`Error updating publication: ${objectID}`, error);
       }
     }
-  }
+  },
 );
 
 /**
@@ -190,7 +190,7 @@ exports.onPublicationDeleted = onDocumentDeleted(
     } catch (error) {
       logger.error(`Error deleting publication: ${objectID}`, error);
     }
-  }
+  },
 );
 
 /**
