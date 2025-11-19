@@ -12,7 +12,7 @@ const {
 } = require("firebase-functions/v2/firestore");
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
-const algoliasearch = require("algoliasearch");
+const {algoliasearch} = require("algoliasearch");
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -22,8 +22,7 @@ const ALGOLIA_APP_ID = "1JSU865M6S";
 const ALGOLIA_WRITE_KEY = "285280399089c8a86599db06ed65ed17";
 const ALGOLIA_INDEX_NAME = "publications";
 
-const algoliaClient = algoliasearch.default(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY);
-const algoliaIndex = algoliaClient.initIndex(ALGOLIA_INDEX_NAME);
+const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY);
 
 // Set global options for cost control
 setGlobalOptions({maxInstances: 10});
@@ -72,7 +71,10 @@ exports.onPublicationCreated = onDocumentCreated(
     };
 
     try {
-      await algoliaIndex.saveObject(algoliaRecord);
+      await client.saveObject({
+        indexName: ALGOLIA_INDEX_NAME,
+        body: algoliaRecord,
+      });
       logger.info(`Publication indexed in Algolia: ${objectID}`);
     } catch (error) {
       logger.error(`Error indexing publication: ${objectID}`, error);
@@ -121,7 +123,10 @@ exports.onPublicationUpdated = onDocumentUpdated(
       };
 
       try {
-        await algoliaIndex.saveObject(algoliaRecord);
+        await client.saveObject({
+          indexName: ALGOLIA_INDEX_NAME,
+          body: algoliaRecord,
+        });
         logger.info(
           `Publication added to Algolia (approved): ${objectID}`,
         );
@@ -134,7 +139,10 @@ exports.onPublicationUpdated = onDocumentUpdated(
     ) {
       // Remove from Algolia if no longer approved
       try {
-        await algoliaIndex.deleteObject(objectID);
+        await client.deleteObject({
+          indexName: ALGOLIA_INDEX_NAME,
+          objectID,
+        });
         logger.info(
           `Publication removed from Algolia (unapproved): ${objectID}`,
         );
@@ -167,7 +175,11 @@ exports.onPublicationUpdated = onDocumentUpdated(
       };
 
       try {
-        await algoliaIndex.partialUpdateObject(algoliaRecord);
+        await client.partialUpdateObject({
+          indexName: ALGOLIA_INDEX_NAME,
+          objectID,
+          attributesToUpdate: algoliaRecord,
+        });
         logger.info(`Publication updated in Algolia: ${objectID}`);
       } catch (error) {
         logger.error(`Error updating publication: ${objectID}`, error);
@@ -185,7 +197,10 @@ exports.onPublicationDeleted = onDocumentDeleted(
     const objectID = event.params.publicationId;
 
     try {
-      await algoliaIndex.deleteObject(objectID);
+      await client.deleteObject({
+        indexName: ALGOLIA_INDEX_NAME,
+        objectID,
+      });
       logger.info(`Publication deleted from Algolia: ${objectID}`);
     } catch (error) {
       logger.error(`Error deleting publication: ${objectID}`, error);
@@ -231,7 +246,10 @@ exports.reindexAllPublications = onRequest(async (request, response) => {
     });
 
     if (records.length > 0) {
-      await algoliaIndex.saveObjects(records);
+      await client.saveObjects({
+        indexName: ALGOLIA_INDEX_NAME,
+        objects: records,
+      });
       logger.info(`Reindexed ${records.length} publications`);
       response.json({success: true, indexed: records.length});
     } else {
