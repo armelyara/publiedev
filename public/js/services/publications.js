@@ -47,7 +47,7 @@ async function getPublicationBySlug(slug) {
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
             .where('slug', '==', slug)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .limit(1)
             .get();
 
@@ -66,7 +66,7 @@ async function getPublicationBySlug(slug) {
 async function getRecentPublications(limit = 6) {
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .orderBy('publishedAt', 'desc')
             .limit(limit)
             .get();
@@ -82,7 +82,7 @@ async function getRecentPublications(limit = 6) {
 async function getTrendingPublications(limit = 4) {
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .orderBy('views', 'desc')
             .limit(limit)
             .get();
@@ -98,7 +98,7 @@ async function getTrendingPublications(limit = 4) {
 async function getPublicationsByType(type, limit = 20) {
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'published')
+            .where('status', '==', 'approved')
             .where('type', '==', type)
             .orderBy('publishedAt', 'desc')
             .limit(limit)

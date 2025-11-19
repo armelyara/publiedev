@@ -294,6 +294,12 @@
 
                 const article = { id: doc.id, ...doc.data() };
 
+                // Vérification de sécurité: seuls les articles approuvés sont visibles publiquement
+                if (article.status !== 'approved') {
+                    container.innerHTML = '<div class="loading">Cet article n\'est pas encore publié</div>';
+                    return;
+                }
+
                 // Incrémenter les vues
                 await db.collection('publications').doc(articleId).update({
                     views: firebase.firestore.FieldValue.increment(1)

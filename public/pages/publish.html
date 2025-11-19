@@ -395,6 +395,11 @@
             submitBtn.textContent = 'Envoi en cours...';
 
             try {
+                // Vérification de sécurité: utilisateur authentifié
+                if (!currentUser) {
+                    throw new Error('Vous devez être connecté pour publier. Veuillez vous connecter.');
+                }
+
                 const type = document.getElementById('type').value;
                 if (!type) {
                     throw new Error('Veuillez sélectionner un type de publication');
