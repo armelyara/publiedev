@@ -56,6 +56,11 @@ service cloud.firestore {
                     && (!('githubUrl' in request.resource.data) || isValidUrl(request.resource.data.githubUrl))
                     && (!('demoUrl' in request.resource.data) || isValidUrl(request.resource.data.demoUrl))
                     && (!('pdfUrl' in request.resource.data) || isValidUrl(request.resource.data.pdfUrl))
+                    && (!('playStoreUrl' in request.resource.data) || isValidUrl(request.resource.data.playStoreUrl))
+                    && (!('appStoreUrl' in request.resource.data) || isValidUrl(request.resource.data.appStoreUrl))
+                    && (!('docsUrl' in request.resource.data) || isValidUrl(request.resource.data.docsUrl))
+                    && (!('baseUrl' in request.resource.data) || isValidUrl(request.resource.data.baseUrl))
+                    && (!('coverImage' in request.resource.data) || isValidUrl(request.resource.data.coverImage))
                     && (!('tags' in request.resource.data) || request.resource.data.tags.size() <= 10)
                     && (!('technologies' in request.resource.data) || request.resource.data.technologies.size() <= 20);
 

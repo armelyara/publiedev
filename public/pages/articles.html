@@ -236,17 +236,27 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
     <script src="/js/config.js"></script>
     <script src="/js/services/firebase.js"></script>
     <script src="/js/services/auth.js"></script>
+    <script src="/js/services/algolia.js"></script>
 
     <script>
         let allArticles = [];
         let currentPage = 1;
         const articlesPerPage = 20;
+        let totalHits = 0;
+        let useAlgolia = false;
 
         // Charger les articles au démarrage
-        document.addEventListener('DOMContentLoaded', loadArticles);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Algolia
+            if (window.AlgoliaSearch && AlgoliaSearch.init()) {
+                useAlgolia = true;
+            }
+            loadArticles();
+        });
 
         // Recherche avec Enter
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
@@ -262,57 +272,109 @@
         async function loadArticles() {
             const listContainer = document.getElementById('articlesList');
             const resultsInfo = document.getElementById('resultsInfo');
+            const searchTerm = document.getElementById('searchInput').value.trim();
 
             try {
-                let query = db.collection('publications')
-                    .where('type', '==', 'article')
-                    .where('status', '==', 'approved');
-
-                const sortBy = document.getElementById('sortFilter').value;
-                if (sortBy === 'recent') {
-                    query = query.orderBy('createdAt', 'desc');
-                } else if (sortBy === 'cited') {
-                    query = query.orderBy('views', 'desc');
-                }
-
-                const snapshot = await query.get();
-                allArticles = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-
-                // Filtrer par année si sélectionnée
-                const yearFilter = document.getElementById('yearFilter').value;
-                if (yearFilter) {
-                    allArticles = allArticles.filter(a => {
-                        if (!a.createdAt) return false;
-                        const date = a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
-                        return date.getFullYear().toString() === yearFilter;
-                    });
-                }
-
-                // Filtrer par recherche
-                const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-                if (searchTerm) {
-                    allArticles = allArticles.filter(a => {
-                        const searchText = [
-                            a.title,
-                            a.abstract,
-                            (a.authors || []).join(' '),
-                            (a.articleKeywords || []).join(' '),
-                            (a.tags || []).join(' ')
-                        ].join(' ').toLowerCase();
-                        return searchText.includes(searchTerm);
-                    });
+                // Use Algolia for search queries
+                if (useAlgolia && searchTerm) {
+                    await loadArticlesFromAlgolia(searchTerm);
+                } else {
+                    await loadArticlesFromFirestore();
                 }
 
                 displayArticles();
 
             } catch (error) {
-                console.error('Erreur chargement:', error);
                 listContainer.innerHTML = '<div class="empty-state">Erreur de chargement des articles</div>';
                 resultsInfo.textContent = '';
             }
+        }
+
+        async function loadArticlesFromAlgolia(searchTerm) {
+            const sortBy = document.getElementById('sortFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+
+            // Build filters
+            let filters = ['type:article', 'status:approved'];
+
+            if (yearFilter) {
+                const startTimestamp = new Date(yearFilter, 0, 1).getTime();
+                const endTimestamp = new Date(parseInt(yearFilter) + 1, 0, 1).getTime();
+                filters.push(`createdAt >= ${startTimestamp} AND createdAt < ${endTimestamp}`);
+            }
+
+            const options = {
+                filters: filters.join(' AND '),
+                page: currentPage - 1,
+                hitsPerPage: articlesPerPage
+            };
+
+            // Add sorting
+            if (sortBy === 'cited') {
+                options.customRanking = ['desc(views)'];
+            }
+
+            const results = await AlgoliaSearch.search(searchTerm, options);
+
+            allArticles = results.hits.map(hit => ({
+                id: hit.objectID,
+                title: hit._highlightResult?.title?.value || hit.title,
+                abstract: hit._highlightResult?.abstract?.value || hit.abstract,
+                authors: hit.authors || [],
+                tags: hit.tags || [],
+                articleKeywords: hit.tags || [],
+                views: hit.views || 0,
+                likes: hit.likes || 0,
+                createdAt: hit.createdAt ? { toDate: () => new Date(hit.createdAt) } : null
+            }));
+
+            totalHits = results.nbHits;
+        }
+
+        async function loadArticlesFromFirestore() {
+            let query = db.collection('publications')
+                .where('type', '==', 'article')
+                .where('status', '==', 'approved');
+
+            const sortBy = document.getElementById('sortFilter').value;
+            if (sortBy === 'recent') {
+                query = query.orderBy('createdAt', 'desc');
+            } else if (sortBy === 'cited') {
+                query = query.orderBy('views', 'desc');
+            }
+
+            const snapshot = await query.get();
+            allArticles = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            // Filtrer par année si sélectionnée
+            const yearFilter = document.getElementById('yearFilter').value;
+            if (yearFilter) {
+                allArticles = allArticles.filter(a => {
+                    if (!a.createdAt) return false;
+                    const date = a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                    return date.getFullYear().toString() === yearFilter;
+                });
+            }
+
+            // Client-side search fallback if Algolia not available
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (searchTerm) {
+                allArticles = allArticles.filter(a => {
+                    const searchText = [
+                        a.title,
+                        a.abstract,
+                        (a.authors || []).join(' '),
+                        (a.articleKeywords || []).join(' '),
+                        (a.tags || []).join(' ')
+                    ].join(' ').toLowerCase();
+                    return searchText.includes(searchTerm);
+                });
+            }
+
+            totalHits = allArticles.length;
         }
 
         function searchArticles() {
@@ -325,10 +387,14 @@
             const resultsInfo = document.getElementById('resultsInfo');
             const paginationContainer = document.getElementById('pagination');
 
-            const total = allArticles.length;
-            const start = (currentPage - 1) * articlesPerPage;
-            const end = start + articlesPerPage;
-            const pageArticles = allArticles.slice(start, end);
+            // Use totalHits for Algolia (server-side pagination) or allArticles.length for Firestore
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const isAlgoliaSearch = useAlgolia && searchTerm;
+            const total = isAlgoliaSearch ? totalHits : allArticles.length;
+
+            // For Algolia, allArticles already contains the current page
+            // For Firestore, we need to slice
+            const pageArticles = isAlgoliaSearch ? allArticles : allArticles.slice((currentPage - 1) * articlesPerPage, currentPage * articlesPerPage);
 
             resultsInfo.textContent = total === 0 ?
                 'Aucun article trouvé' :
@@ -398,10 +464,20 @@
         }
 
         function goToPage(page) {
-            const totalPages = Math.ceil(allArticles.length / articlesPerPage);
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            const isAlgoliaSearch = useAlgolia && searchTerm;
+            const total = isAlgoliaSearch ? totalHits : allArticles.length;
+            const totalPages = Math.ceil(total / articlesPerPage);
+
             if (page < 1 || page > totalPages) return;
             currentPage = page;
-            displayArticles();
+
+            // For Algolia, we need to reload data for the new page
+            if (isAlgoliaSearch) {
+                loadArticles();
+            } else {
+                displayArticles();
+            }
             window.scrollTo(0, 0);
         }
 

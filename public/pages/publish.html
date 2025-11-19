@@ -381,7 +381,6 @@
                     }
                     data.authors = document.getElementById('articleAuthors').value.split(',').map(a => a.trim()).filter(a => a);
                     data.abstract = document.getElementById('articleAbstract').value.trim();
-                    data.articleKeywords = document.getElementById('articleKeywords').value.split(',').map(k => k.trim().toLowerCase()).filter(k => k);
                     data.doi = document.getElementById('articleDoi').value.trim();
 
                 } else if (type === 'app-mobile') {

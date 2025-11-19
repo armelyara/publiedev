@@ -268,6 +268,7 @@
     <script src="/js/config.js"></script>
     <script src="/js/services/firebase.js"></script>
     <script src="/js/services/auth.js"></script>
+    <script src="/js/utils/tfidf.js"></script>
 
     <script>
         const container = document.getElementById('articleContent');
@@ -431,47 +432,69 @@
             const relatedContainer = document.getElementById('relatedArticles');
 
             try {
-                // Chercher des articles avec des mots-clés similaires
-                const keywords = article.articleKeywords || article.tags || [];
-                let relatedDocs = [];
+                // Fetch all approved articles for TF-IDF comparison
+                const snapshot = await db.collection('publications')
+                    .where('type', '==', 'article')
+                    .where('status', '==', 'approved')
+                    .get();
 
-                if (keywords.length > 0) {
-                    const snapshot = await db.collection('publications')
-                        .where('type', '==', 'article')
-                        .where('status', '==', 'approved')
-                        .limit(10)
-                        .get();
-
-                    relatedDocs = snapshot.docs
-                        .filter(doc => doc.id !== article.id)
-                        .slice(0, 5);
-                }
-
-                if (relatedDocs.length === 0) {
+                if (snapshot.empty) {
                     relatedContainer.innerHTML = '<div style="color: var(--gray-500); font-size: 0.875rem;">Aucun article similaire</div>';
                     return;
                 }
 
-                relatedContainer.innerHTML = relatedDocs.map(doc => {
+                // Prepare documents for TF-IDF
+                const documents = snapshot.docs.map(doc => {
                     const data = doc.data();
+                    // Combine title, abstract, and tags for text similarity
+                    const text = [
+                        data.title || '',
+                        data.abstract || '',
+                        data.description || '',
+                        (data.tags || []).join(' '),
+                        (data.authors || []).join(' ')
+                    ].join(' ');
+
+                    return {
+                        id: doc.id,
+                        text: text,
+                        metadata: data
+                    };
+                });
+
+                // Initialize TF-IDF and add documents
+                const tfidf = new TFIDF();
+                tfidf.addDocuments(documents);
+
+                // Find similar articles
+                const similar = tfidf.findSimilar(article.id, 5);
+
+                if (similar.length === 0) {
+                    relatedContainer.innerHTML = '<div style="color: var(--gray-500); font-size: 0.875rem;">Aucun article similaire</div>';
+                    return;
+                }
+
+                relatedContainer.innerHTML = similar.map(item => {
+                    const data = item.metadata;
                     const authors = formatAuthors(data.authors || []);
                     const year = data.createdAt ?
                         (data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt)).getFullYear() :
                         'N/A';
+                    const score = Math.round(item.score * 100);
 
                     return `
                         <div class="related-item">
-                            <div class="related-title" onclick="window.location.href='/pages/article.html?id=${doc.id}'">
+                            <div class="related-title" onclick="window.location.href='/pages/article.html?id=${item.id}'">
                                 ${escapeHtml(data.title)}
                             </div>
-                            <div class="related-meta">${authors} - ${year}</div>
+                            <div class="related-meta">${authors} - ${year} <span style="color: var(--bluesky-500);">(${score}% similaire)</span></div>
                         </div>
                     `;
                 }).join('');
 
             } catch (error) {
                 console.error('Erreur articles similaires:', error);
-                relatedContainer.innerHTML = '';
+                relatedContainer.innerHTML = '<div style="color: var(--gray-500); font-size: 0.875rem;">Erreur de chargement</div>';
             }
         }
 
