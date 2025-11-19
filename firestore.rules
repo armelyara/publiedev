@@ -1,18 +1,108 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2025, 12, 18);
+
+    // Fonctions utilitaires
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true;
+    }
+
+    function isValidString(field, minLen, maxLen) {
+      return field is string && field.size() >= minLen && field.size() <= maxLen;
+    }
+
+    function isValidUrl(url) {
+      return url == null || url == '' || (url is string && url.size() <= 500 && url.matches('^https?://.*'));
+    }
+
+    // Collection admins
+    match /admins/{adminId} {
+      allow read: if isOwner(adminId) || isAdmin();
+      allow write: if false; // Seul via console Firebase
+    }
+
+    // Collection utilisateurs
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Collection publications
+    match /publications/{pubId} {
+      // Lecture: publications approuvées ou propres publications ou admin
+      allow read: if resource.data.status == 'approved' ||
+                    isOwner(resource.data.authorId) ||
+                    isAdmin();
+
+      // Création: utilisateur authentifié avec validation
+      allow create: if isAuthenticated()
+                    && isValidString(request.resource.data.title, 3, 200)
+                    && isValidString(request.resource.data.description, 10, 1000)
+                    && request.resource.data.type in ['app', 'api', 'program', 'tutorial', 'article']
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.status == 'pending'
+                    && (!('githubUrl' in request.resource.data) || isValidUrl(request.resource.data.githubUrl))
+                    && (!('demoUrl' in request.resource.data) || isValidUrl(request.resource.data.demoUrl))
+                    && (!('tags' in request.resource.data) || request.resource.data.tags.size() <= 10)
+                    && (!('technologies' in request.resource.data) || request.resource.data.technologies.size() <= 20);
+
+      // Mise à jour: auteur (limité) ou admin (complet)
+      allow update: if isAdmin() ||
+                    (isOwner(resource.data.authorId) &&
+                     request.resource.data.authorId == resource.data.authorId &&
+                     request.resource.data.status == resource.data.status); // L'auteur ne peut pas changer le statut
+
+      // Suppression: admin uniquement
+      allow delete: if isAdmin();
+    }
+
+    // Collection messages (entre admin et utilisateurs)
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() &&
+                    (request.auth.uid == resource.data.fromId ||
+                     request.auth.uid == resource.data.toId ||
+                     isAdmin());
+      allow create: if isAuthenticated() &&
+                     request.resource.data.fromId == request.auth.uid;
+      allow update: if isAdmin() ||
+                     (isAuthenticated() && request.auth.uid == resource.data.toId);
+      allow delete: if isAdmin();
+    }
+
+    // Collection statistiques (lecture seule pour tous, écriture admin)
+    match /stats/{statId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Collection likes
+    match /likes/{likeId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    // Collection commentaires
+    match /comments/{commentId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                     request.resource.data.authorId == request.auth.uid &&
+                     isValidString(request.resource.data.content, 1, 1000);
+      allow update: if isOwner(resource.data.authorId) || isAdmin();
+      allow delete: if isOwner(resource.data.authorId) || isAdmin();
     }
   }
 }

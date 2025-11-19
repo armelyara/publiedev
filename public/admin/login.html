@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin - PublieDev</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-login-page">
+    <div class="admin-login-container">
+        <div class="admin-login-header">
+            <div class="admin-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+            </div>
+            <h1>PublieDev Admin</h1>
+            <p>Panneau d'administration</p>
+        </div>
+
+        <div class="admin-login-box">
+            <div id="errorAlert" class="admin-alert admin-alert-error" style="display: none;"></div>
+
+            <form id="adminLoginForm">
+                <div class="admin-form-group">
+                    <label for="email">Email administrateur</label>
+                    <input type="email" id="email" placeholder="admin@publiedev.ci" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="admin-btn admin-btn-primary admin-btn-block" id="submitBtn">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+
+        <a href="/" class="admin-back-link">← Retour au site</a>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+
+    <script>
+        const form = document.getElementById('adminLoginForm');
+        const errorAlert = document.getElementById('errorAlert');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Vérifier si déjà connecté
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const isAdmin = await checkAdminStatus(user.uid);
+                if (isAdmin) {
+                    window.location.href = '/admin/';
+                }
+            }
+        });
+
+        async function checkAdminStatus(uid) {
+            try {
+                const doc = await db.collection('admins').doc(uid).get();
+                return doc.exists && doc.data().active === true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorAlert.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Vérification...';
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const { user } = await auth.signInWithEmailAndPassword(email, password);
+
+                // Vérifier le statut admin
+                const isAdmin = await checkAdminStatus(user.uid);
+
+                if (!isAdmin) {
+                    await auth.signOut();
+                    throw new Error('not-admin');
+                }
+
+                window.location.href = '/admin/';
+            } catch (error) {
+                let message = 'Une erreur est survenue';
+                if (error.message === 'not-admin') {
+                    message = 'Accès refusé. Vous n\'êtes pas administrateur.';
+                } else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    message = 'Email ou mot de passe incorrect';
+                } else if (error.code === 'auth/invalid-email') {
+                    message = 'Email invalide';
+                }
+
+                errorAlert.textContent = message;
+                errorAlert.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Se connecter';
+            }
+        });
+    </script>
+</body>
+</html>
