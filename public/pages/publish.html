@@ -103,11 +103,6 @@
                         </div>
 
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="articleKeywords">Mots-clés (séparés par des virgules)</label>
-                            <input type="text" id="articleKeywords" placeholder="machine learning, NLP, python...">
-                        </div>
-
-                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="articleDoi">DOI (optionnel)</label>
                             <input type="text" id="articleDoi" placeholder="10.1234/exemple">
                         </div>
@@ -120,6 +115,12 @@
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="content">Contenu détaillé *</label>
                             <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required></textarea>
+                        </div>
+                        <!-- Technologies -->
+                        <div class="form-group"
+                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="technologies">Technologies (séparées par des virgules)</label>
+                            <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
                         </div>
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
                             <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
@@ -135,11 +136,27 @@
                                 <label for="mobileGithubUrl">URL GitHub</label>
                                 <input type="url" id="mobileGithubUrl" placeholder="https://github.com/...">
                             </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="coverImage">Image de couverture (URL)</label>
+                                <input type="url" id="coverImage" placeholder="https://...">
+                            </div>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques App Web -->
                     <div id="appWebFields" class="type-fields" style="display: none;">
+                        <!-- Contenu -->
+                        <div class="form-group"
+                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="content">Contenu détaillé *</label>
+                            <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required></textarea>
+                        </div>
+                        <!-- Technologies -->
+                        <div class="form-group"
+                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="technologies">Technologies (séparées par des virgules)</label>
+                            <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
+                        </div>
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
                             <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
                             <div class="form-group">
@@ -155,6 +172,18 @@
 
                     <!-- Champs spécifiques API -->
                     <div id="apiFields" class="type-fields" style="display: none;">
+                        <!-- Contenu -->
+                        <div class="form-group"
+                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="content">Contenu détaillé *</label>
+                            <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required></textarea>
+                        </div>
+                        <!-- Technologies -->
+                        <div class="form-group"
+                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="technologies">Technologies (séparées par des virgules)</label>
+                            <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
+                        </div>
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
                             <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
                             <div class="form-group">
