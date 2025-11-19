@@ -89,7 +89,7 @@ async function loadTrendingPublications() {
             container.innerHTML = createEmptyState(
                 'Aucune publication',
                 'Soyez le premier à partager votre projet!',
-                'Publier maintenant',
+                'Soumettre maintenant',
                 '/pages/publish.html'
             );
             return;

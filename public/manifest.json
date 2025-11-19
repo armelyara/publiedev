@@ -56,8 +56,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Publier",
-      "short_name": "Publier",
+      "name": "Soumettre",
+      "short_name": "Soumettre",
       "description": "Créer une nouvelle publication",
       "url": "/pages/publish.html",
       "icons": [{ "src": "/assets/icons/icon-96.png", "sizes": "96x96" }]
