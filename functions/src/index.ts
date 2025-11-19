@@ -184,7 +184,8 @@ export const onPublicationUpdated = onDocumentUpdated(
         pdfUrl: afterData.pdfUrl || "",
         githubUrl: afterData.githubUrl || "",
         demoUrl: afterData.demoUrl || "",
-        createdAt: afterData.createdAt ? afterData.createdAt.toMillis() : Date.now(),
+        createdAt: afterData.createdAt ?
+          afterData.createdAt.toMillis() : Date.now(),
       };
 
       try {
@@ -225,7 +226,7 @@ export const reindexAllPublications = onRequest(async (request, response) => {
       .where("status", "==", "approved")
       .get();
 
-    const records = snapshot.docs.map(doc => {
+    const records = snapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         objectID: doc.id,
@@ -246,19 +247,24 @@ export const reindexAllPublications = onRequest(async (request, response) => {
         pdfUrl: data.pdfUrl || "",
         githubUrl: data.githubUrl || "",
         demoUrl: data.demoUrl || "",
-        createdAt: data.createdAt ? data.createdAt.toMillis() : Date.now(),
+        createdAt: data.createdAt ?
+          data.createdAt.toMillis() : Date.now(),
       };
     });
 
     if (records.length > 0) {
       await algoliaIndex.saveObjects(records);
       logger.info(`Reindexed ${records.length} publications`);
-      response.json({ success: true, indexed: records.length });
+      response.json({success: true, indexed: records.length});
     } else {
-      response.json({ success: true, indexed: 0, message: "No approved publications to index" });
+      response.json({
+        success: true,
+        indexed: 0,
+        message: "No approved publications to index",
+      });
     }
   } catch (error) {
     logger.error("Error reindexing publications:", error);
-    response.status(500).json({ success: false, error: String(error) });
+    response.status(500).json({success: false, error: String(error)});
   }
 });
