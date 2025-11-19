@@ -136,7 +136,7 @@ function updateAuthUI(isLoggedIn) {
 
         const authHTML = `
             <a href="/pages/publish.html" class="btn btn-primary">
-                + Publier
+                + Soumettre
             </a>
             <div class="user-menu">
                 <a href="/pages/profile.html">${safeDisplayName}</a>
