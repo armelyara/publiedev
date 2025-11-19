@@ -49,11 +49,44 @@ function truncate(text, length = 100) {
     return text.substring(0, length).trim() + '...';
 }
 
-// Échapper le HTML
+// Échapper le HTML (utiliser Security.escapeHtml si disponible)
 function escapeHtml(text) {
+    if (window.Security && window.Security.escapeHtml) {
+        return window.Security.escapeHtml(text);
+    }
+    if (!text) return '';
     const div = document.createElement('div');
-    div.textContent = text;
+    div.textContent = String(text);
     return div.innerHTML;
+}
+
+// Échapper les attributs
+function escapeAttr(text) {
+    if (window.Security && window.Security.escapeAttr) {
+        return window.Security.escapeAttr(text);
+    }
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/'/g, '&#39;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+// Valider et nettoyer une URL
+function sanitizeUrl(url) {
+    if (window.Security && window.Security.sanitizeUrl) {
+        return window.Security.sanitizeUrl(url);
+    }
+    if (!url) return '';
+    try {
+        const parsed = new URL(url);
+        if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+        return parsed.href;
+    } catch {
+        return '';
+    }
 }
 
 // Créer une carte de publication HTML
@@ -61,21 +94,27 @@ function createPublicationCard(publication) {
     const typeLabels = APP_CONFIG.typeLabels;
     const date = formatRelativeDate(publication.publishedAt);
 
+    // Sécuriser le slug
+    const safeSlug = escapeAttr(publication.slug || '').replace(/[^a-z0-9-]/g, '');
+    // Sécuriser les URLs
+    const safeCoverImage = sanitizeUrl(publication.coverImage);
+    const safeAuthorPhoto = sanitizeUrl(publication.authorPhoto);
+
     return `
         <article class="publication-card">
-            ${publication.coverImage ? `
-                <a href="/pages/publication.html?slug=${publication.slug}">
-                    <img src="${escapeHtml(publication.coverImage)}" alt="${escapeHtml(publication.title)}">
+            ${safeCoverImage ? `
+                <a href="/pages/publication.html?slug=${safeSlug}">
+                    <img src="${escapeAttr(safeCoverImage)}" alt="${escapeAttr(publication.title)}" loading="lazy">
                 </a>
             ` : ''}
             <div class="publication-card-content">
                 <div class="publication-card-header">
-                    <span class="publication-type ${publication.type}">
-                        ${typeLabels[publication.type] || publication.type}
+                    <span class="publication-type ${escapeAttr(publication.type)}">
+                        ${escapeHtml(typeLabels[publication.type] || publication.type)}
                     </span>
-                    <span class="publication-date">${date}</span>
+                    <span class="publication-date">${escapeHtml(date)}</span>
                 </div>
-                <a href="/pages/publication.html?slug=${publication.slug}">
+                <a href="/pages/publication.html?slug=${safeSlug}">
                     <h3>${escapeHtml(publication.title)}</h3>
                 </a>
                 <p>${escapeHtml(truncate(publication.description, 120))}</p>
@@ -92,8 +131,8 @@ function createPublicationCard(publication) {
                 <div class="publication-card-footer">
                     <div class="publication-author">
                         <div class="publication-author-avatar">
-                            ${publication.authorPhoto ?
-                                `<img src="${publication.authorPhoto}" alt="">` :
+                            ${safeAuthorPhoto ?
+                                `<img src="${escapeAttr(safeAuthorPhoto)}" alt="" loading="lazy">` :
                                 escapeHtml(publication.authorName?.charAt(0) || '?')
                             }
                         </div>

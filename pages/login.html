@@ -81,6 +81,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script src="/js/config.js"></script>
     <script src="/js/services/firebase.js"></script>
+    <script src="/js/utils/security.js"></script>
     <script src="/js/services/auth.js"></script>
 
     <script>
@@ -91,16 +92,35 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             errorAlert.style.display = 'none';
+
+            // Rate limiting - max 5 tentatives par minute
+            if (!Security.checkRateLimit('login', 5, 60000)) {
+                errorAlert.textContent = 'Trop de tentatives. Veuillez patienter une minute.';
+                errorAlert.style.display = 'block';
+                Security.logSecurityEvent('rate_limit_exceeded', { action: 'login' });
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = 'Connexion...';
 
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+
+            // Validation email
+            if (!Security.isValidEmail(email)) {
+                errorAlert.textContent = 'Veuillez entrer un email valide';
+                errorAlert.style.display = 'block';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Se connecter';
+                return;
+            }
 
             try {
                 await signInWithEmail(email, password);
                 window.location.href = '/';
             } catch (error) {
+                Security.logSecurityEvent('login_failed', { email, error: error.code });
                 errorAlert.textContent = getErrorMessage(error.code);
                 errorAlert.style.display = 'block';
                 submitBtn.disabled = false;

@@ -129,12 +129,17 @@ function updateAuthUI(isLoggedIn) {
     const mobileAuthNav = document.getElementById('mobileAuthNav');
 
     if (isLoggedIn && currentUser) {
+        // Échapper le nom d'utilisateur pour prévenir XSS
+        const safeDisplayName = window.Security ?
+            window.Security.escapeHtml(currentUser.displayName || 'Mon compte') :
+            (currentUser.displayName || 'Mon compte').replace(/[<>&"']/g, '');
+
         const authHTML = `
             <a href="/pages/publish.html" class="btn btn-primary">
                 + Publier
             </a>
             <div class="user-menu">
-                <a href="/pages/profile.html">${currentUser.displayName || 'Mon compte'}</a>
+                <a href="/pages/profile.html">${safeDisplayName}</a>
                 <button onclick="signOut()">Déconnexion</button>
             </div>
         `;
