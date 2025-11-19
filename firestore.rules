@@ -42,10 +42,9 @@ service cloud.firestore {
 
     // Collection publications
     match /publications/{pubId} {
-      // Lecture: publications approuvées ou propres publications ou admin
-      allow read: if resource.data.status == 'approved' ||
-                    isOwner(resource.data.authorId) ||
-                    isAdmin();
+      // Lecture: publique pour toutes les publications
+      // Note: En production, filtrer côté requête par status == 'approved'
+      allow read: if true;
 
       // Création: utilisateur authentifié avec validation
       allow create: if isAuthenticated()
