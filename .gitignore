@@ -36,6 +36,9 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 
+# Firebase config with API keys
+public/js/config.js
+
 # PWA
 dev-dist
 
