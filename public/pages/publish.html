@@ -69,7 +69,7 @@
                         <input type="hidden" id="type" value="">
                     </div>
 
-                    <!-- Champs communs -->
+                    <!-- Champs communs (cachés jusqu'à sélection du type) -->
                     <div id="commonFields" style="display: none;">
                         <!-- Titre -->
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
@@ -80,58 +80,51 @@
                         <!-- Description -->
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="description">Description courte *</label>
-                            <textarea id="description" rows="3" placeholder="Décrivez brièvement votre projet (10-200 caractères)..." required></textarea>
+                            <textarea id="description" rows="3" placeholder="Décrivez brièvement votre projet..." required></textarea>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques Article -->
                     <div id="articleFields" class="type-fields" style="display: none;">
-                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Détails de l'article</h3>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="articleAuthors">Auteurs (séparés par des virgules)</label>
+                            <input type="text" id="articleAuthors" placeholder="Nom A, Nom B, Nom C...">
+                        </div>
 
-                            <div class="form-group">
-                                <label for="articleAuthors">Auteurs (séparés par des virgules)</label>
-                                <input type="text" id="articleAuthors" placeholder="Nom A, Nom B, Nom C...">
-                            </div>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="articleAbstract">Résumé (Abstract) *</label>
+                            <textarea id="articleAbstract" rows="5" placeholder="Résumé de l'article..." required></textarea>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="articleAbstract">Résumé (Abstract) *</label>
-                                <textarea id="articleAbstract" rows="5" placeholder="Résumé de l'article..." required></textarea>
-                            </div>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="articlePdf">Document PDF *</label>
+                            <input type="file" id="articlePdf" accept=".pdf" required>
+                            <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Format PDF uniquement, max 10MB</small>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="articlePdf">Document PDF *</label>
-                                <input type="file" id="articlePdf" accept=".pdf" required>
-                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Format PDF uniquement, max 10MB</small>
-                            </div>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="articleKeywords">Mots-clés (séparés par des virgules)</label>
+                            <input type="text" id="articleKeywords" placeholder="machine learning, NLP, python...">
+                        </div>
 
-                            <div class="form-group">
-                                <label for="articleKeywords">Mots-clés (séparés par des virgules)</label>
-                                <input type="text" id="articleKeywords" placeholder="machine learning, NLP, python...">
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <label for="articleDoi">DOI (optionnel)</label>
-                                <input type="text" id="articleDoi" placeholder="10.1234/exemple">
-                            </div>
+                        <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
+                            <label for="articleDoi">DOI (optionnel)</label>
+                            <input type="text" id="articleDoi" placeholder="10.1234/exemple">
                         </div>
                     </div>
 
                     <!-- Champs spécifiques App Mobile -->
                     <div id="appMobileFields" class="type-fields" style="display: none;">
-                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Liens de l'application</h3>
-
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
                             <div class="form-group">
                                 <label for="playStoreUrl">URL Play Store</label>
                                 <input type="url" id="playStoreUrl" placeholder="https://play.google.com/store/apps/details?id=...">
                             </div>
-
                             <div class="form-group">
                                 <label for="appStoreUrl">URL App Store</label>
                                 <input type="url" id="appStoreUrl" placeholder="https://apps.apple.com/app/...">
                             </div>
-
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="mobileGithubUrl">URL GitHub</label>
                                 <input type="url" id="mobileGithubUrl" placeholder="https://github.com/...">
@@ -141,14 +134,12 @@
 
                     <!-- Champs spécifiques App Web -->
                     <div id="appWebFields" class="type-fields" style="display: none;">
-                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Liens de l'application</h3>
-
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
                             <div class="form-group">
                                 <label for="webDemoUrl">URL de démo</label>
                                 <input type="url" id="webDemoUrl" placeholder="https://...">
                             </div>
-
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="webGithubUrl">URL GitHub</label>
                                 <input type="url" id="webGithubUrl" placeholder="https://github.com/...">
@@ -158,19 +149,16 @@
 
                     <!-- Champs spécifiques API -->
                     <div id="apiFields" class="type-fields" style="display: none;">
-                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem; color: var(--bluesky-600);">Détails de l'API</h3>
-
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
                             <div class="form-group">
                                 <label for="apiDocsUrl">URL Documentation</label>
                                 <input type="url" id="apiDocsUrl" placeholder="https://docs.example.com/...">
                             </div>
-
                             <div class="form-group">
                                 <label for="apiBaseUrl">URL de base de l'API</label>
                                 <input type="url" id="apiBaseUrl" placeholder="https://api.example.com/v1">
                             </div>
-
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="apiGithubUrl">URL GitHub</label>
                                 <input type="url" id="apiGithubUrl" placeholder="https://github.com/...">
@@ -187,10 +175,10 @@
                     </div>
 
                     <!-- Actions -->
-                    <div id="actionsSection" style="display: none; margin-top: 1.5rem;">
+                    <div id="actionsSection" style="display: none;">
                         <div style="display: flex; justify-content: flex-end; gap: 1rem;">
                             <a href="/" class="btn btn-secondary">Annuler</a>
-                            <button type="submit" class="btn btn-primary" id="submitBtn">Soumettre pour validation</button>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Soumettre</button>
                         </div>
                     </div>
                 </form>
@@ -216,13 +204,6 @@
             background: var(--bluesky-50);
             color: var(--bluesky-600);
         }
-
-        @media (max-width: 640px) {
-            .type-btn {
-                padding: 0.625rem;
-                font-size: 0.6875rem;
-            }
-        }
     </style>
 
     <!-- Scripts -->
@@ -243,7 +224,7 @@
         const successAlert = document.getElementById('successAlert');
         const submitBtn = document.getElementById('submitBtn');
 
-        // Vérifier l'authentification (currentUser est déclaré dans auth.js)
+        // Vérifier l'authentification
         auth.onAuthStateChanged((user) => {
             currentUser = user;
             loadingState.style.display = 'none';
@@ -306,9 +287,8 @@
             submitBtn.textContent = 'Envoi en cours...';
 
             try {
-                // Vérification de sécurité: utilisateur authentifié
                 if (!currentUser) {
-                    throw new Error('Vous devez être connecté pour soumettre. Veuillez vous connecter.');
+                    throw new Error('Vous devez être connecté pour soumettre.');
                 }
 
                 const type = document.getElementById('type').value;
@@ -321,13 +301,11 @@
                 const tags = document.getElementById('tags').value
                     .split(',').map(t => t.trim().toLowerCase()).filter(t => t);
 
-                // Générer le slug
                 const slug = title.toLowerCase()
                     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/(^-|-$)/g, '');
 
-                // Données de base
                 const data = {
                     title,
                     slug,
@@ -345,27 +323,22 @@
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                // Ajouter les champs spécifiques selon le type
+                // Champs spécifiques selon le type
                 if (type === 'article') {
-                    // Upload PDF si présent
                     const pdfInput = document.getElementById('articlePdf');
                     if (pdfInput.files.length > 0) {
                         const file = pdfInput.files[0];
                         if (file.size > 10 * 1024 * 1024) {
                             throw new Error('Le fichier PDF ne doit pas dépasser 10MB');
                         }
-
                         submitBtn.textContent = 'Upload du PDF...';
                         const storageRef = storage.ref(`publications/${currentUser.uid}/${Date.now()}_${file.name}`);
                         await storageRef.put(file);
                         data.pdfUrl = await storageRef.getDownloadURL();
                     }
-
-                    data.authors = document.getElementById('articleAuthors').value
-                        .split(',').map(a => a.trim()).filter(a => a);
+                    data.authors = document.getElementById('articleAuthors').value.split(',').map(a => a.trim()).filter(a => a);
                     data.abstract = document.getElementById('articleAbstract').value.trim();
-                    data.articleKeywords = document.getElementById('articleKeywords').value
-                        .split(',').map(k => k.trim().toLowerCase()).filter(k => k);
+                    data.articleKeywords = document.getElementById('articleKeywords').value.split(',').map(k => k.trim().toLowerCase()).filter(k => k);
                     data.doi = document.getElementById('articleDoi').value.trim();
 
                 } else if (type === 'app-mobile') {
@@ -384,12 +357,9 @@
                 }
 
                 submitBtn.textContent = 'Création...';
-
-                // Créer la publication
                 await db.collection('publications').add(data);
 
-                // Succès
-                successAlert.textContent = 'Votre publication a été soumise pour validation. Elle sera visible après approbation par un administrateur.';
+                successAlert.textContent = 'Votre publication a été soumise pour validation. Elle sera visible après approbation.';
                 successAlert.style.display = 'block';
                 form.reset();
                 document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
@@ -399,14 +369,14 @@
                 document.getElementById('actionsSection').style.display = 'none';
 
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Soumettre pour validation';
+                submitBtn.textContent = 'Soumettre';
 
             } catch (error) {
                 console.error('Erreur:', error);
                 errorAlert.textContent = error.message || 'Une erreur est survenue';
                 errorAlert.style.display = 'block';
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Soumettre pour validation';
+                submitBtn.textContent = 'Soumettre';
             }
         }
     </script>
