@@ -40,10 +40,15 @@
                 <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Nouvelle publication</h1>
                 <p style="color: var(--gray-600); margin-bottom: 2rem;">Partagez votre projet avec la communauté des développeurs ivoiriens</p>
 
+                <!-- État de chargement -->
+                <div id="loadingState" style="text-align: center; padding: 4rem 2rem;">
+                    <p style="color: var(--gray-500);">Chargement...</p>
+                </div>
+
                 <!-- Vérification authentification -->
                 <div id="authRequired" style="display: none; text-align: center; padding: 4rem 2rem;">
                     <h2 style="margin-bottom: 1rem;">Connexion requise</h2>
-                    <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Vous devez être connecté pour publier du contenu.</p>
+                    <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Vous devez être connecté pour soumettre du contenu.</p>
                     <a href="/pages/login.html" class="btn btn-primary">Se connecter</a>
                 </div>
 
@@ -336,6 +341,7 @@
     <script>
         const form = document.getElementById('publishForm');
         const authRequired = document.getElementById('authRequired');
+        const loadingState = document.getElementById('loadingState');
         const errorAlert = document.getElementById('errorAlert');
         const successAlert = document.getElementById('successAlert');
         const submitBtn = document.getElementById('submitBtn');
@@ -344,6 +350,7 @@
         // Vérifier l'authentification
         auth.onAuthStateChanged((user) => {
             currentUser = user;
+            loadingState.style.display = 'none';
             if (user) {
                 form.style.display = 'block';
                 authRequired.style.display = 'none';
