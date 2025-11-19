@@ -1,0 +1,23 @@
+{
+  "name": "publiedev",
+  "version": "1.0.0",
+  "description": "Plateforme de référence des applications, APIs et programmes développés par les développeurs ivoiriens",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "deploy": "firebase deploy --only hosting"
+  },
+  "keywords": [
+    "cote-ivoire",
+    "developers",
+    "pwa",
+    "firebase",
+    "tech",
+    "innovation"
+  ],
+  "author": "PublieDev Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

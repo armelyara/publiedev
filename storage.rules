@@ -1,0 +1,84 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Allowed image types (more restrictive)
+    function isAllowedImageType() {
+      return request.resource.contentType.matches('image/(jpeg|png|gif|webp)');
+    }
+
+    // Check file extension matches content type
+    function hasValidExtension(fileName) {
+      return fileName.matches('.*\\.(jpg|jpeg|png|gif|webp)$');
+    }
+
+    // ===== User Profile Images =====
+    match /users/{userId}/profile/{fileName} {
+      // Anyone can read profile images
+      allow read: if true;
+
+      // Only owner can write, with strict validation
+      allow write: if isOwner(userId)
+        && request.resource.size < 2 * 1024 * 1024  // Max 2MB
+        && isAllowedImageType()
+        && hasValidExtension(fileName);
+
+      // Allow delete
+      allow delete: if isOwner(userId);
+    }
+
+    // ===== Publication Images =====
+    match /publications/{publicationId}/cover/{fileName} {
+      // Anyone can read published publication images
+      allow read: if true;
+
+      // Authenticated users can upload with validation
+      allow write: if isAuthenticated()
+        && request.resource.size < 5 * 1024 * 1024  // Max 5MB
+        && isAllowedImageType()
+        && hasValidExtension(fileName);
+
+      // Author can delete (would need to verify in Cloud Function)
+      allow delete: if isAuthenticated();
+    }
+
+    match /publications/{publicationId}/screenshots/{fileName} {
+      allow read: if true;
+
+      allow write: if isAuthenticated()
+        && request.resource.size < 5 * 1024 * 1024
+        && isAllowedImageType()
+        && hasValidExtension(fileName);
+
+      allow delete: if isAuthenticated();
+    }
+
+    // ===== Temporary Uploads (for processing) =====
+    match /temp/{userId}/{allPaths=**} {
+      // Only owner can read their temp files
+      allow read: if isOwner(userId);
+
+      // Only owner can write with strict limits
+      allow write: if isOwner(userId)
+        && request.resource.size < 10 * 1024 * 1024  // Max 10MB
+        && (isAllowedImageType() || request.resource.contentType.matches('application/octet-stream'));
+
+      // Auto-cleanup should be done via Cloud Functions
+      allow delete: if isOwner(userId);
+    }
+
+    // ===== Block everything else =====
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
