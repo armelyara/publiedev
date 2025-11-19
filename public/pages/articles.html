@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0ea5e9">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Articles - PublieDev</title>
+    <style>
+        .articles-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .search-header {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-100);
+        }
+        .search-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--bluesky-500);
+        }
+        .search-box button {
+            padding: 0.75rem 1.5rem;
+            background: var(--bluesky-500);
+            color: white;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .results-info {
+            padding: 0.75rem 0;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            border-bottom: 1px solid var(--gray-100);
+            margin-bottom: 1rem;
+        }
+        .article-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .article-item:last-child {
+            border-bottom: none;
+        }
+        .article-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--bluesky-600);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+        .article-title:hover {
+            text-decoration: underline;
+        }
+        .article-authors {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            margin-bottom: 0.25rem;
+        }
+        .article-meta {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+        .article-meta span {
+            margin-right: 0.5rem;
+        }
+        .article-meta .pubid {
+            color: var(--bluesky-500);
+            font-weight: 500;
+        }
+        .article-abstract {
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+            margin-top: 0.5rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .article-keywords {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        .article-keywords span {
+            font-size: 0.6875rem;
+            padding: 0.125rem 0.375rem;
+            background: var(--gray-100);
+            color: var(--gray-600);
+            border-radius: 0.25rem;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-100);
+        }
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            background: white;
+        }
+        .pagination button:hover:not(:disabled) {
+            border-color: var(--bluesky-500);
+            color: var(--bluesky-500);
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination button.active {
+            background: var(--bluesky-500);
+            color: white;
+            border-color: var(--bluesky-500);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-500);
+        }
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .filters select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            font-size: 0.8125rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <a href="/pages/articles.html" style="color: var(--bluesky-500);">Articles</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container" style="padding: 2rem 1rem;">
+            <div class="articles-container">
+                <!-- Search Header -->
+                <div class="search-header">
+                    <h1>Articles Scientifiques & Techniques</h1>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Rechercher par titre, auteur, mots-clés...">
+                        <button onclick="searchArticles()">Rechercher</button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <select id="sortFilter" onchange="loadArticles()">
+                        <option value="recent">Plus récents</option>
+                        <option value="relevant">Pertinence</option>
+                        <option value="cited">Plus cités</option>
+                    </select>
+                    <select id="yearFilter" onchange="loadArticles()">
+                        <option value="">Toutes les années</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+
+                <!-- Results -->
+                <div id="resultsInfo" class="results-info">Chargement...</div>
+                <div id="articlesList"></div>
+
+                <!-- Pagination -->
+                <div id="pagination" class="pagination" style="display: none;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 PublieDev. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+
+    <script>
+        let allArticles = [];
+        let currentPage = 1;
+        const articlesPerPage = 20;
+
+        // Charger les articles au démarrage
+        document.addEventListener('DOMContentLoaded', loadArticles);
+
+        // Recherche avec Enter
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchArticles();
+        });
+
+        // Charger depuis URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('q')) {
+            document.getElementById('searchInput').value = urlParams.get('q');
+        }
+
+        async function loadArticles() {
+            const listContainer = document.getElementById('articlesList');
+            const resultsInfo = document.getElementById('resultsInfo');
+
+            try {
+                let query = db.collection('publications')
+                    .where('type', '==', 'article')
+                    .where('status', '==', 'approved');
+
+                const sortBy = document.getElementById('sortFilter').value;
+                if (sortBy === 'recent') {
+                    query = query.orderBy('createdAt', 'desc');
+                } else if (sortBy === 'cited') {
+                    query = query.orderBy('views', 'desc');
+                }
+
+                const snapshot = await query.get();
+                allArticles = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Filtrer par année si sélectionnée
+                const yearFilter = document.getElementById('yearFilter').value;
+                if (yearFilter) {
+                    allArticles = allArticles.filter(a => {
+                        if (!a.createdAt) return false;
+                        const date = a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                        return date.getFullYear().toString() === yearFilter;
+                    });
+                }
+
+                // Filtrer par recherche
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+                if (searchTerm) {
+                    allArticles = allArticles.filter(a => {
+                        const searchText = [
+                            a.title,
+                            a.abstract,
+                            (a.authors || []).join(' '),
+                            (a.articleKeywords || []).join(' '),
+                            (a.tags || []).join(' ')
+                        ].join(' ').toLowerCase();
+                        return searchText.includes(searchTerm);
+                    });
+                }
+
+                displayArticles();
+
+            } catch (error) {
+                console.error('Erreur chargement:', error);
+                listContainer.innerHTML = '<div class="empty-state">Erreur de chargement des articles</div>';
+                resultsInfo.textContent = '';
+            }
+        }
+
+        function searchArticles() {
+            currentPage = 1;
+            loadArticles();
+        }
+
+        function displayArticles() {
+            const listContainer = document.getElementById('articlesList');
+            const resultsInfo = document.getElementById('resultsInfo');
+            const paginationContainer = document.getElementById('pagination');
+
+            const total = allArticles.length;
+            const start = (currentPage - 1) * articlesPerPage;
+            const end = start + articlesPerPage;
+            const pageArticles = allArticles.slice(start, end);
+
+            resultsInfo.textContent = total === 0 ?
+                'Aucun article trouvé' :
+                `${total} article${total > 1 ? 's' : ''} trouvé${total > 1 ? 's' : ''}`;
+
+            if (pageArticles.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>Aucun article disponible</p>
+                        <a href="/pages/publish.html" class="btn btn-primary" style="margin-top: 1rem;">Publier un article</a>
+                    </div>
+                `;
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            listContainer.innerHTML = pageArticles.map(article => {
+                const authors = formatAuthors(article.authors || []);
+                const year = article.createdAt ?
+                    (article.createdAt.toDate ? article.createdAt.toDate() : new Date(article.createdAt)).getFullYear() :
+                    'N/A';
+                const pubId = article.id.substring(0, 8).toUpperCase();
+
+                return `
+                    <div class="article-item">
+                        <div class="article-title" onclick="viewArticle('${article.id}')">
+                            ${escapeHtml(article.title)}
+                        </div>
+                        <div class="article-authors">${authors}</div>
+                        <div class="article-meta">
+                            <span>PublieDev. ${year}.</span>
+                            <span class="pubid">PDID: ${pubId}</span>
+                        </div>
+                        ${article.abstract ? `<div class="article-abstract">${escapeHtml(article.abstract)}</div>` : ''}
+                        ${article.articleKeywords && article.articleKeywords.length > 0 ? `
+                            <div class="article-keywords">
+                                ${article.articleKeywords.slice(0, 5).map(k => `<span>${escapeHtml(k)}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Pagination
+            const totalPages = Math.ceil(total / articlesPerPage);
+            if (totalPages > 1) {
+                paginationContainer.style.display = 'flex';
+                let paginationHTML = '';
+
+                paginationHTML += `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
+
+                for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                    paginationHTML += `<button onclick="goToPage(${i})" class="${currentPage === i ? 'active' : ''}">${i}</button>`;
+                }
+
+                if (totalPages > 5) {
+                    paginationHTML += `<span>...</span>`;
+                    paginationHTML += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+                }
+
+                paginationHTML += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
+
+                paginationContainer.innerHTML = paginationHTML;
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(allArticles.length / articlesPerPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            displayArticles();
+            window.scrollTo(0, 0);
+        }
+
+        function viewArticle(id) {
+            window.location.href = `/pages/article.html?id=${id}`;
+        }
+
+        function formatAuthors(authors) {
+            if (!authors || authors.length === 0) return 'Auteur inconnu';
+            if (authors.length === 1) return escapeHtml(authors[0]);
+            if (authors.length === 2) return `${escapeHtml(authors[0])}, ${escapeHtml(authors[1])}`;
+            return `${escapeHtml(authors[0])}, et al.`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+        }
+    </script>
+</body>
+</html>

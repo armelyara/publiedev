@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0ea5e9">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Article - PublieDev</title>
+    <style>
+        .article-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .article-header {
+            background: var(--white);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-100);
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+        .article-authors {
+            margin-bottom: 1rem;
+        }
+        .article-authors-list {
+            font-size: 0.9375rem;
+            color: var(--bluesky-600);
+            margin-bottom: 0.5rem;
+        }
+        .article-authors-list a {
+            color: var(--bluesky-600);
+        }
+        .article-authors-list a:hover {
+            text-decoration: underline;
+        }
+        .article-affiliation {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-top: 1px solid var(--gray-100);
+            border-bottom: 1px solid var(--gray-100);
+            margin-bottom: 1rem;
+        }
+        .meta-item {
+            font-size: 0.8125rem;
+        }
+        .meta-label {
+            color: var(--gray-500);
+        }
+        .meta-value {
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+        .meta-value.pubid {
+            color: var(--bluesky-600);
+        }
+        .article-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .action-btn-primary {
+            background: var(--bluesky-500);
+            color: white;
+        }
+        .action-btn-primary:hover {
+            background: var(--bluesky-600);
+        }
+        .action-btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+        .action-btn-secondary:hover {
+            background: var(--gray-200);
+        }
+        .article-section {
+            background: var(--white);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray-100);
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--bluesky-500);
+            display: inline-block;
+        }
+        .abstract-text {
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            color: var(--gray-700);
+            text-align: justify;
+        }
+        .keywords-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .keyword-tag {
+            padding: 0.375rem 0.75rem;
+            background: var(--bluesky-50);
+            color: var(--bluesky-700);
+            border-radius: 9999px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
+        .citation-box {
+            background: var(--gray-50);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            color: var(--gray-700);
+        }
+        .citation-box strong {
+            color: var(--gray-900);
+        }
+        .copy-btn {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            background: var(--gray-200);
+            border-radius: 0.25rem;
+            color: var(--gray-600);
+        }
+        .copy-btn:hover {
+            background: var(--gray-300);
+        }
+        .related-articles {
+            margin-top: 0.5rem;
+        }
+        .related-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .related-item:last-child {
+            border-bottom: none;
+        }
+        .related-title {
+            font-size: 0.875rem;
+            color: var(--bluesky-600);
+            cursor: pointer;
+        }
+        .related-title:hover {
+            text-decoration: underline;
+        }
+        .related-meta {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--bluesky-500);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .back-link:hover {
+            color: var(--bluesky-600);
+        }
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: var(--gray-500);
+        }
+        .stats-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-100);
+        }
+        .stat-item {
+            font-size: 0.8125rem;
+            color: var(--gray-500);
+        }
+        .stat-item strong {
+            color: var(--gray-700);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <a href="/pages/articles.html">Articles</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container" style="padding: 2rem 1rem;">
+            <div class="article-container">
+                <a href="/pages/articles.html" class="back-link">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Retour aux articles
+                </a>
+
+                <div id="articleContent">
+                    <div class="loading">Chargement de l'article...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 PublieDev. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+
+    <script>
+        const container = document.getElementById('articleContent');
+
+        // Charger l'article
+        document.addEventListener('DOMContentLoaded', loadArticle);
+
+        async function loadArticle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id');
+
+            if (!articleId) {
+                container.innerHTML = '<div class="loading">Article non trouvé</div>';
+                return;
+            }
+
+            try {
+                const doc = await db.collection('publications').doc(articleId).get();
+
+                if (!doc.exists) {
+                    container.innerHTML = '<div class="loading">Article non trouvé</div>';
+                    return;
+                }
+
+                const article = { id: doc.id, ...doc.data() };
+
+                // Incrémenter les vues
+                await db.collection('publications').doc(articleId).update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                });
+
+                displayArticle(article);
+                loadRelatedArticles(article);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                container.innerHTML = '<div class="loading">Erreur de chargement</div>';
+            }
+        }
+
+        function displayArticle(article) {
+            const date = article.createdAt ?
+                (article.createdAt.toDate ? article.createdAt.toDate() : new Date(article.createdAt)) :
+                new Date();
+            const year = date.getFullYear();
+            const pubId = article.id.substring(0, 8).toUpperCase();
+            const authors = article.authors || [];
+
+            document.title = `${article.title} - PublieDev`;
+
+            container.innerHTML = `
+                <!-- Header -->
+                <div class="article-header">
+                    <h1 class="article-title">${escapeHtml(article.title)}</h1>
+
+                    <div class="article-authors">
+                        <div class="article-authors-list">
+                            ${authors.map(a => `<a href="/pages/articles.html?q=${encodeURIComponent(a)}">${escapeHtml(a)}</a>`).join(', ') || 'Auteur inconnu'}
+                        </div>
+                    </div>
+
+                    <div class="article-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">PublieDev</span>
+                            <span class="meta-value"> ${year}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">PDID:</span>
+                            <span class="meta-value pubid">${pubId}</span>
+                        </div>
+                        ${article.doi ? `
+                        <div class="meta-item">
+                            <span class="meta-label">DOI:</span>
+                            <span class="meta-value">${escapeHtml(article.doi)}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="article-actions">
+                        ${article.pdfUrl ? `
+                        <a href="${escapeHtml(article.pdfUrl)}" target="_blank" class="action-btn action-btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Télécharger PDF
+                        </a>
+                        ` : ''}
+                        <button onclick="copycitation()" class="action-btn action-btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copier citation
+                        </button>
+                        <button onclick="shareArticle()" class="action-btn action-btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                            Partager
+                        </button>
+                    </div>
+
+                    <div class="stats-row">
+                        <div class="stat-item"><strong>${article.views || 0}</strong> vues</div>
+                        <div class="stat-item"><strong>${article.likes || 0}</strong> citations</div>
+                    </div>
+                </div>
+
+                <!-- Abstract -->
+                ${article.abstract ? `
+                <div class="article-section">
+                    <h2 class="section-title">Résumé</h2>
+                    <div class="abstract-text">${escapeHtml(article.abstract)}</div>
+                </div>
+                ` : ''}
+
+                <!-- Keywords -->
+                ${article.articleKeywords && article.articleKeywords.length > 0 ? `
+                <div class="article-section">
+                    <h2 class="section-title">Mots-clés</h2>
+                    <div class="keywords-list">
+                        ${article.articleKeywords.map(k => `
+                            <a href="/pages/articles.html?q=${encodeURIComponent(k)}" class="keyword-tag">${escapeHtml(k)}</a>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+
+                <!-- Citation -->
+                <div class="article-section">
+                    <h2 class="section-title">Citation</h2>
+                    <div class="citation-box" id="citationText">
+                        ${authors.join(', ')}. ${escapeHtml(article.title)}. <strong>PublieDev</strong>. ${year}. PDID: ${pubId}${article.doi ? `. doi: ${article.doi}` : ''}.
+                    </div>
+                    <button onclick="copyCitation()" class="copy-btn">Copier la citation</button>
+                </div>
+
+                <!-- Related Articles -->
+                <div class="article-section">
+                    <h2 class="section-title">Articles similaires</h2>
+                    <div class="related-articles" id="relatedArticles">
+                        <div style="color: var(--gray-500); font-size: 0.875rem;">Chargement...</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadRelatedArticles(article) {
+            const relatedContainer = document.getElementById('relatedArticles');
+
+            try {
+                // Chercher des articles avec des mots-clés similaires
+                const keywords = article.articleKeywords || article.tags || [];
+                let relatedDocs = [];
+
+                if (keywords.length > 0) {
+                    const snapshot = await db.collection('publications')
+                        .where('type', '==', 'article')
+                        .where('status', '==', 'approved')
+                        .limit(10)
+                        .get();
+
+                    relatedDocs = snapshot.docs
+                        .filter(doc => doc.id !== article.id)
+                        .slice(0, 5);
+                }
+
+                if (relatedDocs.length === 0) {
+                    relatedContainer.innerHTML = '<div style="color: var(--gray-500); font-size: 0.875rem;">Aucun article similaire</div>';
+                    return;
+                }
+
+                relatedContainer.innerHTML = relatedDocs.map(doc => {
+                    const data = doc.data();
+                    const authors = formatAuthors(data.authors || []);
+                    const year = data.createdAt ?
+                        (data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt)).getFullYear() :
+                        'N/A';
+
+                    return `
+                        <div class="related-item">
+                            <div class="related-title" onclick="window.location.href='/pages/article.html?id=${doc.id}'">
+                                ${escapeHtml(data.title)}
+                            </div>
+                            <div class="related-meta">${authors} - ${year}</div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Erreur articles similaires:', error);
+                relatedContainer.innerHTML = '';
+            }
+        }
+
+        function copycitation() {
+            const citationText = document.getElementById('citationText').innerText;
+            navigator.clipboard.writeText(citationText).then(() => {
+                alert('Citation copiée dans le presse-papiers');
+            }).catch(() => {
+                alert('Erreur lors de la copie');
+            });
+        }
+
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Lien copié dans le presse-papiers');
+                });
+            }
+        }
+
+        function formatAuthors(authors) {
+            if (!authors || authors.length === 0) return 'Auteur inconnu';
+            if (authors.length === 1) return escapeHtml(authors[0]);
+            if (authors.length === 2) return `${escapeHtml(authors[0])}, ${escapeHtml(authors[1])}`;
+            return `${escapeHtml(authors[0])}, et al.`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+        }
+    </script>
+</body>
+</html>
