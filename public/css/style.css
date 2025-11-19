@@ -1090,3 +1090,407 @@ input, textarea, select {
 .form-footer a:hover {
     color: var(--bluesky-600);
 }
+
+/* ===== Mobile Responsive Fixes ===== */
+
+/* Mobile Hero */
+@media (max-width: 767px) {
+    .hero {
+        padding: 2.5rem 0;
+    }
+
+    .hero h1 {
+        font-size: 1.75rem;
+        padding: 0 0.5rem;
+    }
+
+    .hero > .container > p {
+        font-size: 0.9375rem;
+        padding: 0 0.5rem;
+    }
+
+    .hero-search {
+        flex-direction: column;
+        margin: 0 0.5rem 1.5rem;
+        padding: 0.75rem;
+    }
+
+    .hero-search input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+    }
+
+    .hero-search button {
+        width: 100%;
+        padding: 0.875rem;
+    }
+
+    .popular-tags {
+        padding: 0 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .popular-tags a {
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Hide some hero animations on mobile for performance */
+    .hero-tag,
+    .hero-circle {
+        display: none;
+    }
+}
+
+/* Mobile Header */
+@media (max-width: 767px) {
+    .header-content {
+        height: 3.5rem;
+    }
+
+    .logo {
+        font-size: 1.125rem;
+    }
+
+    .logo-icon {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+}
+
+/* Mobile Categories */
+@media (max-width: 767px) {
+    .categories {
+        padding: 2rem 0;
+    }
+
+    .categories-grid {
+        gap: 0.75rem;
+    }
+
+    .category-card {
+        padding: 1rem;
+    }
+
+    .category-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .category-card span {
+        font-size: 0.875rem;
+    }
+}
+
+/* Mobile Sections */
+@media (max-width: 767px) {
+    .section {
+        padding: 2.5rem 0;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Mobile Publication Cards */
+@media (max-width: 767px) {
+    .publications-grid {
+        gap: 1rem;
+    }
+
+    .publication-card img {
+        height: 10rem;
+    }
+
+    .publication-card-content {
+        padding: 1rem;
+    }
+
+    .publication-card h3 {
+        font-size: 1rem;
+    }
+
+    .publication-card p {
+        font-size: 0.8125rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .publication-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
+
+/* Mobile CTA */
+@media (max-width: 767px) {
+    .cta {
+        padding: 3rem 0;
+    }
+
+    .cta h2 {
+        font-size: 1.5rem;
+    }
+
+    .cta p {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Footer */
+@media (max-width: 767px) {
+    .footer {
+        padding: 2.5rem 0 1.5rem;
+    }
+
+    .footer-grid {
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .footer-brand p {
+        font-size: 0.8125rem;
+    }
+}
+
+/* Mobile Forms */
+@media (max-width: 767px) {
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 0.875rem 1rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .form-group textarea {
+        min-height: 6rem;
+    }
+
+    .btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9375rem;
+        width: 100%;
+    }
+}
+
+/* Mobile Page Header */
+@media (max-width: 767px) {
+    .page-header {
+        padding: 1.5rem 0;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .page-header p {
+        font-size: 0.875rem;
+    }
+}
+
+/* Mobile Filters */
+@media (max-width: 767px) {
+    .filters {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-group select {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Mobile Auth Pages */
+@media (max-width: 767px) {
+    .auth-page {
+        padding: 1rem;
+    }
+
+    .auth-container {
+        max-width: 100%;
+    }
+
+    .auth-box {
+        padding: 1.5rem;
+    }
+
+    .auth-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Mobile Type Grid (Publish Page) */
+.type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (max-width: 767px) {
+    .type-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .type-btn {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+}
+
+/* Mobile Form Card */
+.form-card {
+    background: var(--white);
+    border: 1px solid var(--gray-100);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 767px) {
+    .form-card {
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border-radius: 0.5rem;
+    }
+}
+
+/* Mobile Article List */
+@media (max-width: 767px) {
+    .article-item {
+        padding: 1rem;
+    }
+
+    .article-title {
+        font-size: 1rem;
+    }
+
+    .article-authors {
+        font-size: 0.8125rem;
+    }
+
+    .article-meta {
+        font-size: 0.75rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .article-abstract {
+        font-size: 0.8125rem;
+        -webkit-line-clamp: 2;
+    }
+}
+
+/* Mobile Article Detail */
+@media (max-width: 767px) {
+    .article-detail {
+        padding: 1rem;
+    }
+
+    .article-detail h1 {
+        font-size: 1.375rem;
+    }
+
+    .citation-box {
+        padding: 1rem;
+        font-size: 0.8125rem;
+    }
+
+    .article-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .article-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Mobile Empty State */
+@media (max-width: 767px) {
+    .empty-state {
+        padding: 2.5rem 1rem;
+    }
+
+    .empty-state svg {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Search Results */
+@media (max-width: 767px) {
+    .search-results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Mobile Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+}
+
+@media (max-width: 767px) {
+    .pagination {
+        gap: 0.25rem;
+    }
+
+    .pagination button,
+    .pagination a {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+        min-width: 2.25rem;
+    }
+}
+
+/* General Mobile Improvements */
+@media (max-width: 767px) {
+    /* Better touch targets */
+    a, button {
+        min-height: 44px;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    /* Fix text sizes */
+    html {
+        font-size: 15px;
+    }
+}
