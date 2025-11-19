@@ -93,12 +93,12 @@
 
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="articleAbstract">Résumé (Abstract) *</label>
-                            <textarea id="articleAbstract" rows="5" placeholder="Résumé de l'article..." required></textarea>
+                            <textarea id="articleAbstract" rows="5" placeholder="Résumé de l'article..."></textarea>
                         </div>
 
                         <div class="form-group" style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
                             <label for="articlePdf">Document PDF *</label>
-                            <input type="file" id="articlePdf" accept=".pdf" required>
+                            <input type="file" id="articlePdf" accept=".pdf">
                             <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Format PDF uniquement, max 10MB</small>
                         </div>
 
@@ -113,14 +113,14 @@
                         <!-- Contenu -->
                         <div class="form-group"
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="content">Contenu détaillé *</label>
-                            <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required></textarea>
+                            <label for="mobileContent">Contenu détaillé *</label>
+                            <textarea id="mobileContent" rows="10" placeholder="Détaillez votre projet..."></textarea>
                         </div>
                         <!-- Technologies -->
                         <div class="form-group"
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="technologies">Technologies (séparées par des virgules)</label>
-                            <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
+                            <label for="mobileTechnologies">Technologies (séparées par des virgules)</label>
+                            <input type="text" id="mobileTechnologies" placeholder="React, Node.js, Firebase...">
                         </div>
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
                             <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
@@ -137,8 +137,8 @@
                                 <input type="url" id="mobileGithubUrl" placeholder="https://github.com/...">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="coverImage">Image de couverture</label>
-                                <input type="url" id="coverImage" placeholder="https://...">
+                                <label for="mobileCoverImage">Image de couverture</label>
+                                <input type="url" id="mobileCoverImage" placeholder="https://...">
                             </div>
                         </div>
                     </div>
@@ -148,14 +148,14 @@
                         <!-- Contenu -->
                         <div class="form-group"
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="content">Contenu détaillé *</label>
-                            <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required></textarea>
+                            <label for="webContent">Contenu détaillé *</label>
+                            <textarea id="webContent" rows="10" placeholder="Détaillez votre projet..."></textarea>
                         </div>
                         <!-- Technologies -->
                         <div class="form-group"
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="technologies">Technologies (séparées par des virgules)</label>
-                            <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
+                            <label for="webTechnologies">Technologies (séparées par des virgules)</label>
+                            <input type="text" id="webTechnologies" placeholder="React, Node.js, Firebase...">
                         </div>
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
                             <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
@@ -168,8 +168,8 @@
                                 <input type="url" id="webGithubUrl" placeholder="https://github.com/...">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="coverImage">Image de couverture (URL)</label>
-                                <input type="url" id="coverImage" placeholder="https://...">
+                                <label for="webCoverImage">Image de couverture (URL)</label>
+                                <input type="url" id="webCoverImage" placeholder="https://...">
                             </div>
                         </div>
                     </div>
@@ -179,14 +179,14 @@
                         <!-- Contenu -->
                         <div class="form-group"
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="content">Contenu détaillé *</label>
-                            <textarea id="content" rows="10" placeholder="Détaillez votre projet..." required></textarea>
+                            <label for="apiContent">Contenu détaillé *</label>
+                            <textarea id="apiContent" rows="10" placeholder="Détaillez votre projet..."></textarea>
                         </div>
                         <!-- Technologies -->
                         <div class="form-group"
                             style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="technologies">Technologies (séparées par des virgules)</label>
-                            <input type="text" id="technologies" placeholder="React, Node.js, Firebase...">
+                            <label for="apiTechnologies">Technologies (séparées par des virgules)</label>
+                            <input type="text" id="apiTechnologies" placeholder="React, Node.js, Firebase...">
                         </div>
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
                             <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
@@ -203,8 +203,8 @@
                                 <input type="url" id="apiGithubUrl" placeholder="https://github.com/...">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="coverImage">Image de couverture (URL)</label>
-                                <input type="url" id="coverImage" placeholder="https://...">
+                                <label for="apiCoverImage">Image de couverture (URL)</label>
+                                <input type="url" id="apiCoverImage" placeholder="https://...">
                             </div>
                         </div>
                     </div>
@@ -385,18 +385,27 @@
                     data.doi = document.getElementById('articleDoi').value.trim();
 
                 } else if (type === 'app-mobile') {
+                    data.content = document.getElementById('mobileContent').value.trim();
+                    data.technologies = document.getElementById('mobileTechnologies').value.split(',').map(t => t.trim()).filter(t => t);
                     data.playStoreUrl = document.getElementById('playStoreUrl').value.trim();
                     data.appStoreUrl = document.getElementById('appStoreUrl').value.trim();
                     data.githubUrl = document.getElementById('mobileGithubUrl').value.trim();
+                    data.coverImage = document.getElementById('mobileCoverImage').value.trim();
 
                 } else if (type === 'app-web') {
+                    data.content = document.getElementById('webContent').value.trim();
+                    data.technologies = document.getElementById('webTechnologies').value.split(',').map(t => t.trim()).filter(t => t);
                     data.demoUrl = document.getElementById('webDemoUrl').value.trim();
                     data.githubUrl = document.getElementById('webGithubUrl').value.trim();
+                    data.coverImage = document.getElementById('webCoverImage').value.trim();
 
                 } else if (type === 'api') {
+                    data.content = document.getElementById('apiContent').value.trim();
+                    data.technologies = document.getElementById('apiTechnologies').value.split(',').map(t => t.trim()).filter(t => t);
                     data.docsUrl = document.getElementById('apiDocsUrl').value.trim();
                     data.baseUrl = document.getElementById('apiBaseUrl').value.trim();
                     data.githubUrl = document.getElementById('apiGithubUrl').value.trim();
+                    data.coverImage = document.getElementById('apiCoverImage').value.trim();
                 }
 
                 submitBtn.textContent = 'Création...';
