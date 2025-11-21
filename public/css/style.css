@@ -78,7 +78,7 @@ input, textarea, select {
 }
 
 .desktop-only {
-    display: none;
+    display: none !important;
 }
 
 .mobile-only {
@@ -87,10 +87,10 @@ input, textarea, select {
 
 @media (min-width: 768px) {
     .desktop-only {
-        display: flex;
+        display: flex !important;
     }
     .mobile-only {
-        display: none;
+        display: none !important;
     }
 }
 
