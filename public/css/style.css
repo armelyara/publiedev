@@ -282,7 +282,7 @@ input, textarea, select {
         rgba(2, 132, 199, 0.9),
         rgba(3, 105, 161, 0.95));
     color: var(--white);
-    padding: 4rem 0;
+    padding: 4rem 1rem;
     text-align: center;
     overflow: hidden;
 }
@@ -432,9 +432,10 @@ input, textarea, select {
     font-size: 1.125rem;
     color: var(--bluesky-100);
     margin-bottom: 2rem;
-    max-width: 600px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.6;
 }
 
 .hero-search {
@@ -445,6 +446,7 @@ input, textarea, select {
     background: var(--white);
     padding: 0.5rem;
     border-radius: 0.75rem;
+    box-shadow: var(--shadow-lg);
 }
 
 .hero-search input {
@@ -1093,6 +1095,19 @@ input, textarea, select {
 
 /* ===== Mobile Responsive Fixes ===== */
 
+/* Tablet Adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .hero > .container > p {
+        max-width: 700px;
+        font-size: 1rem;
+    }
+
+    .hero-search {
+        max-width: 700px;
+        padding: 0.5rem;
+    }
+}
+
 /* Mobile Hero */
 @media (max-width: 767px) {
     .hero {
@@ -1107,6 +1122,8 @@ input, textarea, select {
     .hero > .container > p {
         font-size: 0.9375rem;
         padding: 0 0.5rem;
+        max-width: 100%;
+        line-height: 1.5;
     }
 
     .hero-search {
