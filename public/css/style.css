@@ -247,14 +247,15 @@ input, textarea, select {
 }
 
 .mobile-menu {
-    display: none;
     padding: 1rem;
     border-top: 1px solid var(--gray-100);
     background: var(--white);
 }
 
-.mobile-menu.active {
-    display: block;
+@media (min-width: 768px) {
+    .mobile-menu {
+        display: none;
+    }
 }
 
 .mobile-menu a {
@@ -1105,6 +1106,31 @@ input, textarea, select {
     .hero-search {
         max-width: 700px;
         padding: 0.5rem;
+    }
+}
+
+/* Mobile Header */
+@media (max-width: 767px) {
+    .header-content {
+        height: 3.5rem;
+    }
+
+    .mobile-search {
+        padding: 0.5rem 1rem;
+    }
+
+    .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+        padding: 0 1rem;
+        border-top: none;
+    }
+
+    .mobile-menu.active {
+        max-height: 500px;
+        padding: 1rem;
+        border-top: 1px solid var(--gray-100);
     }
 }
 
