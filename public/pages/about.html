@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>À propos - PublieDev</title>
+    <style>
+        .content-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .content-page h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .content-page h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .content-page h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray-800);
+        }
+
+        .content-page p {
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+
+        .content-page ul,
+        .content-page ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            line-height: 1.7;
+            color: var(--gray-700);
+        }
+
+        .content-page li {
+            margin-bottom: 0.5rem;
+        }
+
+        .content-page a {
+            color: var(--bluesky-500);
+            text-decoration: none;
+        }
+
+        .content-page a:hover {
+            text-decoration: underline;
+        }
+
+        .highlight-box {
+            background: var(--bluesky-50);
+            border-left: 4px solid var(--bluesky-500);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+            <button class="menu-btn mobile-only" id="menuBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <nav class="mobile-menu" id="mobileMenu">
+            <a href="/pages/explore.html">Explorer</a>
+            <a href="/pages/articles.html">Articles</a>
+            <div class="mobile-menu-auth" id="mobileAuthNav">
+                <a href="/pages/login.html" class="btn btn-primary btn-block">Connexion</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="content-page">
+            <h1>À propos de PublieDev</h1>
+
+            <p>PublieDev est la première revue technologique à comité de lecture dédiée aux développeurs. Notre mission
+                est de créer un espace où les développeurs peuvent partager leurs innovations, documenter leur
+                savoir-faire et établir une preuve d'antériorité pour leurs créations, tout en protégeant leur code
+                source.</p>
+
+            <div class="highlight-box">
+                <p><strong>Notre vision :</strong> Permettre à chaque développeur de valoriser son travail et de
+                    contribuer à l'avancement de la communauté tech, sans compromettre la confidentialité de son code.
+                </p>
+            </div>
+
+            <h2>Qu'est-ce que PublieDev ?</h2>
+
+            <p>PublieDev est une plateforme de publication scientifique et technique qui permet aux développeurs de :
+            </p>
+
+            <ul>
+                <li><strong>Publier leurs DevLogs</strong> - Documentez vos projets, vos découvertes techniques et vos
+                    innovations</li>
+                <li><strong>Créer une preuve d'antériorité</strong> - Établissez officiellement la date de création de
+                    vos concepts et innovations</li>
+                <li><strong>Partager sans exposer</strong> - Publiez vos résultats et méthodologies sans révéler votre
+                    code source</li>
+                <li><strong>Obtenir une validation par les pairs</strong> - Toutes les publications sont évaluées par un
+                    comité d'experts</li>
+            </ul>
+
+            <h2>Comment ça fonctionne ?</h2>
+
+            <h3>1. Soumission</h3>
+            <p>Les développeurs soumettent leurs travaux (applications mobiles, APIs, applications web, articles
+                techniques) via notre plateforme. Chaque soumission doit inclure une description détaillée, des captures
+                d'écran ou démonstrations, et une explication de l'innovation proposée.</p>
+
+            <h3>2. Évaluation par le comité</h3>
+            <p>Chaque soumission est examinée par notre comité de lecture composé d'experts techniques. Le comité évalue
+                la qualité technique, l'originalité, et la pertinence de la contribution.</p>
+
+            <h3>3. Publication</h3>
+            <p>Une fois approuvées, les publications sont indexées avec un identifiant unique (PDID - PublieDev ID) et
+                horodatées, créant ainsi une preuve d'antériorité officielle.</p>
+
+            <h2>Qui sommes-nous ?</h2>
+
+            <p>PublieDev est une initiative de <a href="https://thedayinfo.com/" target="_blank">The Day Info</a>, une
+                entreprise dédiée à l'innovation et à la valorisation du travail des développeurs.</p>
+
+            <h3>Notre comité de lecture</h3>
+            <p>Notre comité est composé de développeurs expérimentés, d'architectes logiciels, et d'experts techniques
+                issus de diverses industries (fintech, mobile, web, IA, etc.).</p>
+
+            <h2>Types de publications</h2>
+
+            <ul>
+                <li><strong>Applications Mobiles</strong> - iOS, Android, React Native, Flutter, etc.</li>
+                <li><strong>APIs</strong> - REST, GraphQL, WebSocket, microservices, etc.</li>
+                <li><strong>Applications Web</strong> - SPA, PWA, applications full-stack, etc.</li>
+                <li><strong>Articles Techniques</strong> - Recherches, études de cas, nouvelles méthodologies, etc.</li>
+            </ul>
+
+            <h2>Pourquoi PublieDev ?</h2>
+
+            <p>Dans un monde où l'innovation technologique est cruciale mais où la protection du code source est
+                primordiale, PublieDev offre une solution unique :</p>
+
+            <ul>
+                <li>✓ <strong>Protection intellectuelle</strong> - Établissez une preuve d'antériorité sans révéler
+                    votre code</li>
+                <li>✓ <strong>Crédibilité</strong> - Obtenez une validation par des pairs experts</li>
+                <li>✓ <strong>Visibilité</strong> - Partagez vos innovations avec la communauté tech mondiale</li>
+                <li>✓ <strong>Portfolio</strong> - Construisez un portfolio de publications vérifiées</li>
+                <li>✓ <strong>Réseau</strong> - Connectez-vous avec d'autres développeurs innovants</li>
+            </ul>
+
+            <h2>Contact</h2>
+
+            <p>Pour toute question, suggestion ou demande de partenariat, n'hésitez pas à nous contacter via <a
+                    href="https://thedayinfo.com/" target="_blank">The Day Info</a>.</p>
+
+            <div class="highlight-box" style="margin-top: 3rem;">
+                <p><strong>Prêt à publier vos innovations ?</strong><br>
+                    <a href="/pages/publish.html" class="btn btn-primary"
+                        style="display: inline-block; margin-top: 1rem;">Soumettre une publication →</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                        </div>
+                        <span>PublieDev</span>
+                    </a>
+                    <p>PublieDev, la revue technologique des développeurs</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="GitHub">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Explorer</h4>
+                    <ul>
+                        <li><a href="/pages/mobileapp.html">Application Mobile</a></li>
+                        <li><a href="/pages/apis.html">APIs</a></li>
+                        <li><a href="/pages/webapp.html">Application Web</a></li>
+                        <li><a href="/pages/articles.html">Articles</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Ressources</h4>
+                    <ul>
+                        <li><a href="/pages/about.html">À propos</a></li>
+                        <li><a href="/pages/guidelines.html">Directives</a></li>
+                        <li><a href="/pages/privacy.html">Confidentialité</a></li>
+                        <li><a href="/pages/terms.html">Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 PublieDev. Le mot PublieDev ainsi que le logo "balise de code en blanc sur un fond bleu"
+                    sont des marques déposées de <a href="https://thedayinfo.com/">The Day Info</a>. L'utilisation
+                    non-autorisée de ces marques est strictement interdite.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+
+</html>
