@@ -1116,7 +1116,7 @@ input, textarea, select {
     }
 
     .mobile-search {
-        padding: 0.5rem 1rem;
+        display: none;
     }
 
     .mobile-menu {
@@ -1131,6 +1131,13 @@ input, textarea, select {
         max-height: 500px;
         padding: 1rem;
         border-top: 1px solid var(--gray-100);
+    }
+
+    .mobile-menu.active .mobile-search {
+        display: block;
+        padding: 0 0 0.75rem 0;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid var(--gray-100);
     }
 }
 
