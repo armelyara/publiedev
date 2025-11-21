@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Politique de confidentialité - PublieDev</title>
+    <style>
+        .content-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        .content-page h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+        .content-page h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+        .content-page h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray-800);
+        }
+        .content-page p {
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+        .content-page ul, .content-page ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            line-height: 1.7;
+            color: var(--gray-700);
+        }
+        .content-page li {
+            margin-bottom: 0.5rem;
+        }
+        .content-page a {
+            color: var(--bluesky-500);
+            text-decoration: none;
+        }
+        .content-page a:hover {
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background: var(--bluesky-50);
+            border-left: 4px solid var(--bluesky-500);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+        .info-box {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--gray-200);
+        }
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+            <button class="menu-btn mobile-only" id="menuBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <nav class="mobile-menu" id="mobileMenu">
+            <a href="/pages/explore.html">Explorer</a>
+            <a href="/pages/articles.html">Articles</a>
+            <div class="mobile-menu-auth" id="mobileAuthNav">
+                <a href="/pages/login.html" class="btn btn-primary btn-block">Connexion</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="content-page">
+            <h1>Politique de confidentialité</h1>
+
+            <p><em>Dernière mise à jour : 21 novembre 2025</em></p>
+
+            <div class="highlight-box">
+                <p><strong>En résumé :</strong> PublieDev respecte votre vie privée et protège vos données personnelles. Nous ne collectons que les informations nécessaires au fonctionnement de la plateforme et ne partageons jamais vos données avec des tiers à des fins commerciales.</p>
+            </div>
+
+            <h2>1. Introduction</h2>
+
+            <p>PublieDev, exploité par The Day Info, s'engage à protéger la confidentialité et la sécurité de vos données personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations personnelles.</p>
+
+            <p>En utilisant PublieDev, vous acceptez les pratiques décrites dans cette politique de confidentialité.</p>
+
+            <h2>2. Données collectées</h2>
+
+            <h3>2.1 Informations de compte</h3>
+            <p>Lorsque vous créez un compte sur PublieDev, nous collectons :</p>
+            <ul>
+                <li>Nom complet</li>
+                <li>Adresse email</li>
+                <li>Mot de passe (crypté)</li>
+                <li>Informations de profil optionnelles (bio, liens, photo de profil)</li>
+            </ul>
+
+            <h3>2.2 Informations de publication</h3>
+            <p>Lorsque vous soumettez une publication, nous collectons :</p>
+            <ul>
+                <li>Titre et description de votre projet</li>
+                <li>Technologies et tags associés</li>
+                <li>Captures d'écran et médias que vous uploadez</li>
+                <li>Métadonnées de publication (date, heure, statut)</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>Important :</strong> PublieDev ne collecte JAMAIS votre code source. Nous ne stockons que la documentation et les informations que vous choisissez de partager publiquement.</p>
+            </div>
+
+            <h3>2.3 Données d'utilisation</h3>
+            <p>Pour améliorer nos services, nous collectons des données d'utilisation anonymisées :</p>
+            <ul>
+                <li>Pages visitées et temps passé</li>
+                <li>Recherches effectuées</li>
+                <li>Interactions avec les publications (vues, likes)</li>
+                <li>Informations techniques (navigateur, appareil, système d'exploitation)</li>
+                <li>Adresse IP (pour la sécurité et la prévention de la fraude)</li>
+            </ul>
+
+            <h3>2.4 Cookies et technologies similaires</h3>
+            <p>Nous utilisons des cookies pour :</p>
+            <ul>
+                <li>Maintenir votre session connectée</li>
+                <li>Mémoriser vos préférences</li>
+                <li>Analyser l'utilisation du site (via Firebase Analytics)</li>
+                <li>Améliorer la sécurité</li>
+            </ul>
+
+            <h2>3. Utilisation des données</h2>
+
+            <p>Nous utilisons vos données personnelles uniquement pour :</p>
+
+            <h3>3.1 Fournir nos services</h3>
+            <ul>
+                <li>Créer et gérer votre compte</li>
+                <li>Publier et indexer vos soumissions</li>
+                <li>Faciliter le processus de révision par le comité</li>
+                <li>Générer des identifiants uniques (PDID) pour vos publications</li>
+            </ul>
+
+            <h3>3.2 Communication</h3>
+            <ul>
+                <li>Vous envoyer des notifications concernant vos publications</li>
+                <li>Répondre à vos demandes de support</li>
+                <li>Vous informer des mises à jour importantes de la plateforme</li>
+                <li>Envoyer des newsletters (avec votre consentement explicite)</li>
+            </ul>
+
+            <h3>3.3 Amélioration des services</h3>
+            <ul>
+                <li>Analyser l'utilisation de la plateforme</li>
+                <li>Identifier et corriger les bugs</li>
+                <li>Développer de nouvelles fonctionnalités</li>
+                <li>Améliorer l'expérience utilisateur</li>
+            </ul>
+
+            <h3>3.4 Sécurité et conformité</h3>
+            <ul>
+                <li>Prévenir la fraude et les abus</li>
+                <li>Protéger contre les accès non autorisés</li>
+                <li>Respecter nos obligations légales</li>
+            </ul>
+
+            <h2>4. Partage des données</h2>
+
+            <h3>4.1 Données publiques</h3>
+            <p>Les informations suivantes sont publiquement visibles :</p>
+            <ul>
+                <li>Votre nom d'utilisateur et informations de profil public</li>
+                <li>Vos publications approuvées et leur contenu</li>
+                <li>Les statistiques publiques de vos publications (vues, likes)</li>
+            </ul>
+
+            <h3>4.2 Données privées</h3>
+            <p>Nous ne partageons JAMAIS vos données privées avec des tiers, sauf :</p>
+            <ul>
+                <li><strong>Avec le comité de lecture :</strong> pour évaluer vos soumissions (sous confidentialité)</li>
+                <li><strong>Avec nos prestataires de services :</strong> Firebase (hébergement et authentification), services de stockage cloud (pour les médias)</li>
+                <li><strong>En cas d'obligation légale :</strong> si requis par la loi ou une autorité compétente</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>Engagement :</strong> PublieDev ne vend ni ne loue jamais vos données personnelles à des tiers.</p>
+            </div>
+
+            <h2>5. Stockage et sécurité</h2>
+
+            <h3>5.1 Localisation des données</h3>
+            <p>Vos données sont stockées sur des serveurs sécurisés via Firebase (Google Cloud Platform), avec des centres de données répartis selon les standards de Google Cloud.</p>
+
+            <h3>5.2 Mesures de sécurité</h3>
+            <p>Nous mettons en œuvre des mesures de sécurité appropriées :</p>
+            <ul>
+                <li>Cryptage SSL/TLS pour toutes les communications</li>
+                <li>Mots de passe cryptés avec des algorithmes sécurisés</li>
+                <li>Authentification Firebase sécurisée</li>
+                <li>Contrôles d'accès stricts aux données</li>
+                <li>Surveillance et détection des intrusions</li>
+                <li>Sauvegardes régulières</li>
+            </ul>
+
+            <h3>5.3 Durée de conservation</h3>
+            <p>Nous conservons vos données :</p>
+            <ul>
+                <li><strong>Données de compte :</strong> tant que votre compte est actif</li>
+                <li><strong>Publications :</strong> indéfiniment (pour maintenir l'archive et la preuve d'antériorité)</li>
+                <li><strong>Données d'utilisation :</strong> 24 mois maximum</li>
+            </ul>
+
+            <h2>6. Vos droits</h2>
+
+            <p>Conformément aux réglementations sur la protection des données, vous disposez des droits suivants :</p>
+
+            <h3>6.1 Droit d'accès</h3>
+            <p>Vous pouvez demander une copie de toutes les données personnelles que nous détenons sur vous.</p>
+
+            <h3>6.2 Droit de rectification</h3>
+            <p>Vous pouvez modifier vos informations personnelles à tout moment via votre profil.</p>
+
+            <h3>6.3 Droit à l'effacement</h3>
+            <p>Vous pouvez demander la suppression de votre compte et de vos données personnelles. Note : les publications déjà approuvées resteront dans l'archive avec un auteur anonymisé pour maintenir l'intégrité de la preuve d'antériorité.</p>
+
+            <h3>6.4 Droit d'opposition</h3>
+            <p>Vous pouvez vous opposer au traitement de vos données à des fins de marketing direct.</p>
+
+            <h3>6.5 Droit à la portabilité</h3>
+            <p>Vous pouvez demander l'export de vos données dans un format structuré et couramment utilisé.</p>
+
+            <h3>6.6 Exercer vos droits</h3>
+            <p>Pour exercer ces droits, contactez-nous via <a href="https://thedayinfo.com/" target="_blank">The Day Info</a>.</p>
+
+            <h2>7. Services tiers</h2>
+
+            <p>PublieDev utilise les services tiers suivants :</p>
+            <ul>
+                <li><strong>Firebase (Google) :</strong> Authentification, base de données, hébergement, analytics</li>
+                <li><strong>Google Cloud Storage :</strong> Stockage de médias (captures d'écran, vidéos)</li>
+            </ul>
+
+            <p>Ces services ont leurs propres politiques de confidentialité que nous vous encourageons à consulter.</p>
+
+            <h2>8. Protection des mineurs</h2>
+
+            <p>PublieDev est destiné aux utilisateurs de 16 ans et plus. Nous ne collectons pas sciemment de données personnelles auprès de mineurs de moins de 16 ans. Si vous pensez qu'un mineur a fourni des informations personnelles, veuillez nous contacter.</p>
+
+            <h2>9. Modifications de cette politique</h2>
+
+            <p>Nous pouvons mettre à jour cette politique de confidentialité périodiquement. En cas de changements significatifs, nous vous en informerons par email ou via une notification sur la plateforme.</p>
+
+            <p>La date de dernière mise à jour est indiquée en haut de cette page.</p>
+
+            <h2>10. Contact</h2>
+
+            <p>Pour toute question concernant cette politique de confidentialité ou vos données personnelles, veuillez nous contacter :</p>
+
+            <p>
+                <strong>The Day Info</strong><br>
+                Site web : <a href="https://thedayinfo.com/" target="_blank">https://thedayinfo.com/</a>
+            </p>
+
+            <h2>11. Conformité RGPD</h2>
+
+            <p>PublieDev s'engage à respecter le Règlement Général sur la Protection des Données (RGPD) et les lois applicables en matière de protection des données personnelles.</p>
+
+            <p>Si vous êtes situé dans l'Union Européenne, vous bénéficiez de tous les droits prévus par le RGPD, incluant le droit de déposer une plainte auprès de votre autorité de contrôle locale.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                        </div>
+                        <span>PublieDev</span>
+                    </a>
+                    <p>PublieDev, la revue technologique des développeurs</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="GitHub">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Explorer</h4>
+                    <ul>
+                        <li><a href="/pages/mobileapp.html">Application Mobile</a></li>
+                        <li><a href="/pages/apis.html">APIs</a></li>
+                        <li><a href="/pages/webapp.html">Application Web</a></li>
+                        <li><a href="/pages/articles.html">Articles</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Ressources</h4>
+                    <ul>
+                        <li><a href="/pages/about.html">À propos</a></li>
+                        <li><a href="/pages/guidelines.html">Directives</a></li>
+                        <li><a href="/pages/privacy.html">Confidentialité</a></li>
+                        <li><a href="/pages/terms.html">Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 PublieDev. Le mot PublieDev ainsi que le logo "balise de code en blanc sur un fond bleu" sont des marques déposées de <a href="https://thedayinfo.com/">The Day Info</a>. L'utilisation non-autorisée de ces marques est strictement interdite.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

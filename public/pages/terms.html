@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Conditions d'utilisation - PublieDev</title>
+    <style>
+        .content-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        .content-page h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+        .content-page h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+        .content-page h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray-800);
+        }
+        .content-page p {
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+            color: var(--gray-700);
+        }
+        .content-page ul, .content-page ol {
+            margin-bottom: 1.25rem;
+            padding-left: 1.5rem;
+            line-height: 1.7;
+            color: var(--gray-700);
+        }
+        .content-page li {
+            margin-bottom: 0.5rem;
+        }
+        .content-page a {
+            color: var(--bluesky-500);
+            text-decoration: none;
+        }
+        .content-page a:hover {
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background: var(--bluesky-50);
+            border-left: 4px solid var(--bluesky-500);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+        .warning-box {
+            background: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+        .warning-box p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+            <button class="menu-btn mobile-only" id="menuBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <nav class="mobile-menu" id="mobileMenu">
+            <a href="/pages/explore.html">Explorer</a>
+            <a href="/pages/articles.html">Articles</a>
+            <div class="mobile-menu-auth" id="mobileAuthNav">
+                <a href="/pages/login.html" class="btn btn-primary btn-block">Connexion</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="content-page">
+            <h1>Conditions d'utilisation</h1>
+
+            <p><em>Dernière mise à jour : 21 novembre 2025</em></p>
+
+            <div class="highlight-box">
+                <p><strong>En résumé :</strong> En utilisant PublieDev, vous acceptez ces conditions d'utilisation. Vous conservez tous les droits sur votre travail, mais accordez à PublieDev le droit de publier et diffuser votre documentation. Vous vous engagez à respecter notre code de conduite et les droits des autres utilisateurs.</p>
+            </div>
+
+            <h2>1. Acceptation des conditions</h2>
+
+            <p>En accédant et en utilisant la plateforme PublieDev, vous acceptez d'être lié par ces conditions d'utilisation, notre <a href="/pages/privacy.html">Politique de confidentialité</a> et nos <a href="/pages/guidelines.html">Directives de publication</a>.</p>
+
+            <p>Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser PublieDev.</p>
+
+            <h2>2. Description du service</h2>
+
+            <p>PublieDev est une revue technologique à comité de lecture qui permet aux développeurs de :</p>
+            <ul>
+                <li>Publier des DevLogs et articles techniques</li>
+                <li>Documenter leurs innovations sans révéler leur code source</li>
+                <li>Créer une preuve d'antériorité horodatée</li>
+                <li>Obtenir une validation par des pairs experts</li>
+                <li>Partager leurs réalisations avec la communauté</li>
+            </ul>
+
+            <h2>3. Comptes utilisateurs</h2>
+
+            <h3>3.1 Création de compte</h3>
+            <p>Pour publier sur PublieDev, vous devez créer un compte. Vous vous engagez à :</p>
+            <ul>
+                <li>Fournir des informations exactes et à jour</li>
+                <li>Avoir au moins 16 ans</li>
+                <li>Maintenir la sécurité de votre mot de passe</li>
+                <li>Ne créer qu'un seul compte par personne</li>
+                <li>Nous informer immédiatement de tout accès non autorisé à votre compte</li>
+            </ul>
+
+            <h3>3.2 Responsabilité du compte</h3>
+            <p>Vous êtes entièrement responsable de toutes les activités effectuées depuis votre compte. PublieDev ne peut être tenu responsable des pertes résultant d'une utilisation non autorisée de votre compte.</p>
+
+            <h3>3.3 Suspension et résiliation</h3>
+            <p>Nous nous réservons le droit de suspendre ou de résilier votre compte en cas de :</p>
+            <ul>
+                <li>Violation de ces conditions d'utilisation</li>
+                <li>Activité frauduleuse ou illégale</li>
+                <li>Comportement abusif envers d'autres utilisateurs</li>
+                <li>Publication de contenu inapproprié</li>
+            </ul>
+
+            <h2>4. Propriété intellectuelle et licences</h2>
+
+            <h3>4.1 Votre propriété intellectuelle</h3>
+            <p>Vous conservez tous les droits de propriété intellectuelle sur :</p>
+            <ul>
+                <li>Votre code source (que vous ne partagez pas avec PublieDev)</li>
+                <li>Vos concepts et innovations</li>
+                <li>Vos textes, images et médias originaux</li>
+            </ul>
+
+            <h3>4.2 Licence accordée à PublieDev</h3>
+            <p>En publiant du contenu sur PublieDev, vous nous accordez une licence mondiale, non exclusive, libre de redevances, perpétuelle et irrévocable pour :</p>
+            <ul>
+                <li>Publier, afficher et distribuer votre contenu sur la plateforme</li>
+                <li>Créer des archives permanentes de vos publications</li>
+                <li>Permettre à d'autres utilisateurs de consulter et de citer vos publications</li>
+                <li>Utiliser vos publications à des fins promotionnelles de PublieDev</li>
+            </ul>
+
+            <div class="warning-box">
+                <p><strong>Important :</strong> Cette licence concerne uniquement la documentation que vous publiez sur PublieDev, PAS votre code source ou votre propriété intellectuelle sous-jacente.</p>
+            </div>
+
+            <h3>4.3 Propriété de PublieDev</h3>
+            <p>PublieDev, son logo, son design, et tous les contenus créés par PublieDev sont la propriété de The Day Info et sont protégés par les lois sur la propriété intellectuelle.</p>
+
+            <p>Les marques "PublieDev" et le logo "balise de code en blanc sur un fond bleu" sont des marques déposées de The Day Info.</p>
+
+            <h2>5. Contenu et conduite des utilisateurs</h2>
+
+            <h3>5.1 Vos garanties</h3>
+            <p>En soumettant du contenu, vous garantissez que :</p>
+            <ul>
+                <li>Le contenu est votre propre travail original</li>
+                <li>Vous détenez tous les droits nécessaires pour publier ce contenu</li>
+                <li>Le contenu ne viole aucun droit de propriété intellectuelle de tiers</li>
+                <li>Le contenu est exact et non trompeur</li>
+                <li>Le contenu respecte toutes les lois applicables</li>
+            </ul>
+
+            <h3>5.2 Contenu interdit</h3>
+            <p>Vous ne pouvez pas publier de contenu qui :</p>
+            <ul>
+                <li>Est illégal, offensant, diffamatoire ou discriminatoire</li>
+                <li>Viole les droits de propriété intellectuelle de tiers</li>
+                <li>Contient des logiciels malveillants ou du code nuisible</li>
+                <li>Fait la promotion d'activités illégales</li>
+                <li>Est du spam ou du contenu promotionnel non sollicité</li>
+                <li>Contient des informations personnelles de tiers sans leur consentement</li>
+                <li>Est plagié ou copié sans attribution appropriée</li>
+            </ul>
+
+            <h3>5.3 Code de conduite</h3>
+            <p>Vous vous engagez à :</p>
+            <ul>
+                <li>Traiter les autres utilisateurs avec respect</li>
+                <li>Fournir des critiques constructives et professionnelles</li>
+                <li>Ne pas harceler, intimider ou menacer d'autres utilisateurs</li>
+                <li>Respecter la confidentialité des soumissions en cours de révision (pour les membres du comité)</li>
+            </ul>
+
+            <h2>6. Processus de publication</h2>
+
+            <h3>6.1 Soumission</h3>
+            <p>Toutes les publications sont soumises à un processus de révision par le comité de lecture. La soumission ne garantit pas la publication.</p>
+
+            <h3>6.2 Révision</h3>
+            <p>Le comité de lecture évalue les soumissions selon les critères définis dans nos <a href="/pages/guidelines.html">Directives de publication</a>. Le processus est confidentiel et impartial.</p>
+
+            <h3>6.3 Décisions de publication</h3>
+            <p>Les décisions du comité peuvent être :</p>
+            <ul>
+                <li><strong>Acceptation :</strong> votre publication est approuvée et sera publiée</li>
+                <li><strong>Révision demandée :</strong> des modifications sont nécessaires avant publication</li>
+                <li><strong>Rejet :</strong> la publication n'est pas acceptée</li>
+            </ul>
+
+            <p>Les décisions du comité sont finales.</p>
+
+            <h3>6.4 Identifiant de publication (PDID)</h3>
+            <p>Chaque publication approuvée reçoit un identifiant unique (PDID - PublieDev ID) et un horodatage, créant ainsi une preuve d'antériorité.</p>
+
+            <h2>7. Preuve d'antériorité</h2>
+
+            <h3>7.1 Nature de la preuve</h3>
+            <p>La publication sur PublieDev crée une preuve horodatée de l'existence de votre innovation à une date donnée. Cette preuve peut être utile pour :</p>
+            <ul>
+                <li>Documenter la création d'une innovation</li>
+                <li>Établir une chronologie de développement</li>
+                <li>Soutenir des revendications de propriété intellectuelle</li>
+            </ul>
+
+            <h3>7.2 Limitations</h3>
+            <p>Cependant, PublieDev :</p>
+            <ul>
+                <li>Ne fournit pas de conseil juridique</li>
+                <li>Ne garantit pas la protection juridique de votre propriété intellectuelle</li>
+                <li>Ne remplace pas les protections légales formelles (brevets, marques, etc.)</li>
+                <li>Ne vérifie pas l'antériorité absolue de votre innovation</li>
+            </ul>
+
+            <div class="warning-box">
+                <p><strong>Clause de non-responsabilité :</strong> PublieDev ne peut garantir que la publication constitue une protection légale complète de votre propriété intellectuelle. Pour une protection complète, consultez un avocat spécialisé en propriété intellectuelle.</p>
+            </div>
+
+            <h2>8. Limitations de responsabilité</h2>
+
+            <h3>8.1 Disponibilité du service</h3>
+            <p>PublieDev est fourni "tel quel" et "selon disponibilité". Nous ne garantissons pas :</p>
+            <ul>
+                <li>Une disponibilité ininterrompue du service</li>
+                <li>L'absence d'erreurs ou de bugs</li>
+                <li>La résolution de tous les problèmes techniques</li>
+            </ul>
+
+            <h3>8.2 Contenu des utilisateurs</h3>
+            <p>PublieDev n'est pas responsable :</p>
+            <ul>
+                <li>De l'exactitude ou de la qualité du contenu publié par les utilisateurs</li>
+                <li>Des litiges de propriété intellectuelle entre utilisateurs</li>
+                <li>Des dommages résultant de l'utilisation du contenu publié</li>
+            </ul>
+
+            <h3>8.3 Limitation de responsabilité</h3>
+            <p>Dans les limites permises par la loi, PublieDev et The Day Info ne seront pas responsables des dommages indirects, accessoires, spéciaux ou consécutifs résultant de l'utilisation ou de l'impossibilité d'utiliser le service.</p>
+
+            <h2>9. Modifications du service et des conditions</h2>
+
+            <h3>9.1 Modifications du service</h3>
+            <p>Nous nous réservons le droit de modifier, suspendre ou interrompre tout ou partie du service à tout moment, avec ou sans préavis.</p>
+
+            <h3>9.2 Modifications des conditions</h3>
+            <p>Nous pouvons modifier ces conditions d'utilisation périodiquement. En cas de modifications importantes, nous vous en informerons par email ou via une notification sur la plateforme.</p>
+
+            <p>Votre utilisation continue de PublieDev après les modifications constitue votre acceptation des nouvelles conditions.</p>
+
+            <h2>10. Résiliation</h2>
+
+            <h3>10.1 Par vous</h3>
+            <p>Vous pouvez fermer votre compte à tout moment via les paramètres de votre profil.</p>
+
+            <h3>10.2 Par PublieDev</h3>
+            <p>Nous nous réservons le droit de suspendre ou de résilier votre compte en cas de violation de ces conditions.</p>
+
+            <h3>10.3 Effet de la résiliation</h3>
+            <p>Après la résiliation de votre compte :</p>
+            <ul>
+                <li>Vous ne pourrez plus accéder à votre compte</li>
+                <li>Vos publications approuvées resteront dans l'archive avec un auteur anonymisé (pour préserver l'intégrité de l'archive et des preuves d'antériorité)</li>
+                <li>Vos données personnelles seront supprimées conformément à notre <a href="/pages/privacy.html">Politique de confidentialité</a></li>
+            </ul>
+
+            <h2>11. Droit applicable et juridiction</h2>
+
+            <p>Ces conditions d'utilisation sont régies par les lois françaises. Tout litige relatif à ces conditions sera soumis à la juridiction exclusive des tribunaux français.</p>
+
+            <h2>12. Divisibilité</h2>
+
+            <p>Si une disposition de ces conditions est jugée invalide ou inapplicable, les autres dispositions resteront en vigueur.</p>
+
+            <h2>13. Intégralité de l'accord</h2>
+
+            <p>Ces conditions d'utilisation, ainsi que notre <a href="/pages/privacy.html">Politique de confidentialité</a> et nos <a href="/pages/guidelines.html">Directives de publication</a>, constituent l'intégralité de l'accord entre vous et PublieDev concernant l'utilisation du service.</p>
+
+            <h2>14. Contact</h2>
+
+            <p>Pour toute question concernant ces conditions d'utilisation, veuillez nous contacter :</p>
+
+            <p>
+                <strong>The Day Info</strong><br>
+                Site web : <a href="https://thedayinfo.com/" target="_blank">https://thedayinfo.com/</a>
+            </p>
+
+            <h2>15. Mentions légales</h2>
+
+            <p><strong>Éditeur :</strong> The Day Info<br>
+            <strong>Site web :</strong> <a href="https://thedayinfo.com/" target="_blank">https://thedayinfo.com/</a></p>
+
+            <p><strong>Marques déposées :</strong> Le mot "PublieDev" ainsi que le logo "balise de code en blanc sur un fond bleu" sont des marques déposées de The Day Info. L'utilisation non-autorisée de ces marques est strictement interdite.</p>
+
+            <div class="highlight-box" style="margin-top: 3rem;">
+                <p><strong>Questions ?</strong> Si vous avez des questions sur ces conditions d'utilisation, n'hésitez pas à nous contacter via <a href="https://thedayinfo.com/" target="_blank">The Day Info</a>.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                        </div>
+                        <span>PublieDev</span>
+                    </a>
+                    <p>PublieDev, la revue technologique des développeurs</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="GitHub">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Explorer</h4>
+                    <ul>
+                        <li><a href="/pages/mobileapp.html">Application Mobile</a></li>
+                        <li><a href="/pages/apis.html">APIs</a></li>
+                        <li><a href="/pages/webapp.html">Application Web</a></li>
+                        <li><a href="/pages/articles.html">Articles</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Ressources</h4>
+                    <ul>
+                        <li><a href="/pages/about.html">À propos</a></li>
+                        <li><a href="/pages/guidelines.html">Directives</a></li>
+                        <li><a href="/pages/privacy.html">Confidentialité</a></li>
+                        <li><a href="/pages/terms.html">Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 PublieDev. Le mot PublieDev ainsi que le logo "balise de code en blanc sur un fond bleu" sont des marques déposées de <a href="https://thedayinfo.com/">The Day Info</a>. L'utilisation non-autorisée de ces marques est strictement interdite.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
