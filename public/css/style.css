@@ -438,7 +438,7 @@ input, textarea, select {
 }
 
 .hero-search {
-    max-width: 48rem;
+    max-width: 60rem;
     margin: 0 auto 1.5rem;
     display: flex;
     gap: 0.5rem;
