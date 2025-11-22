@@ -170,23 +170,25 @@ exports.searchPublications = onRequest(
 
       // Sort results
       switch (sortBy) {
-        case "date":
-          results.sort((a, b) =>
-            (b.publishedAt?._seconds || 0) - (a.publishedAt?._seconds || 0));
-          break;
-        case "views":
-          results.sort((a, b) => (b.views || 0) - (a.views || 0));
-          break;
-        case "likes":
-          results.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-          break;
-        default: // relevance
-          results.sort((a, b) => b.score - a.score);
+      case "date":
+        results.sort((a, b) =>
+          (b.publishedAt?._seconds || 0) - (a.publishedAt?._seconds || 0),
+        );
+        break;
+      case "views":
+        results.sort((a, b) => (b.views || 0) - (a.views || 0));
+        break;
+      case "likes":
+        results.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        break;
+      default: // relevance
+        results.sort((a, b) => b.score - a.score);
       }
 
       // Limit results and remove score from response (keep algorithm secret)
       results = results.slice(0, parseInt(limit)).map((r) => {
-        const {score, ...publicData} = r;
+        // eslint-disable-next-line no-unused-vars
+        const {score, searchKeywords, ...publicData} = r;
         return publicData;
       });
 

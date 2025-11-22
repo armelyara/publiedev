@@ -22,7 +22,7 @@
 
 // Get Firebase Functions URL from config
 const FUNCTIONS_URL = window.FIREBASE_CONFIG?.functionsUrl ||
-    'https://us-central1-publiedev-ci.cloudfunctions.net';
+    'https://us-central1-pubdev-71378.cloudfunctions.net';
 
 // Recherche de publications (via Firebase Function)
 async function searchPublications(query, options = {}) {
