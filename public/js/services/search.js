@@ -3,7 +3,7 @@
 // Recherche de publications
 async function searchPublications(query, options = {}) {
     try {
-        const { type, sortBy = 'relevance', limit = 20 } = options;
+        const { type, category, sortBy = 'relevance', limit = 20 } = options;
 
         const keywords = query.toLowerCase()
             .normalize('NFD')
@@ -11,31 +11,56 @@ async function searchPublications(query, options = {}) {
             .split(/\s+/)
             .filter(k => k.length > 2);
 
-        if (keywords.length === 0) {
+        if (keywords.length === 0 && !category) {
             return [];
         }
 
         let queryRef = db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'approved')
-            .where('searchKeywords', 'array-contains-any', keywords);
+            .where('status', '==', 'approved');
 
+        // Hard Filter: Category (Filtre Dur)
+        if (category) {
+            queryRef = queryRef.where('category', '==', category);
+        }
+
+        // Type filter
         if (type) {
             queryRef = queryRef.where('type', '==', type);
         }
 
-        const snapshot = await queryRef.limit(limit).get();
+        // Get all matching documents
+        let snapshot;
+        if (keywords.length > 0) {
+            queryRef = queryRef.where('searchKeywords', 'array-contains-any', keywords);
+            snapshot = await queryRef.limit(limit * 2).get();
+        } else {
+            // Category-only filter
+            snapshot = await queryRef.limit(limit).get();
+        }
 
         let results = snapshot.docs.map(doc => {
             const data = { id: doc.id, ...doc.data() };
 
-            // Calculer le score de pertinence
+            // Calculer le score de pertinence (TF-IDF inspired)
             let score = 0;
             const queryLower = query.toLowerCase();
 
+            // Title match: +10 points
             if (data.title && data.title.toLowerCase().includes(queryLower)) score += 10;
-            if (data.description && data.description.toLowerCase().includes(queryLower)) score += 5;
-            if (data.tags && data.tags.some(tag => tag.toLowerCase().includes(queryLower))) score += 3;
 
+            // Description match: +5 points
+            if (data.description && data.description.toLowerCase().includes(queryLower)) score += 5;
+
+            // Tags match: +15 points (5x multiplier - was +3, now +15)
+            if (data.tags && data.tags.some(tag => tag.toLowerCase().includes(queryLower))) score += 15;
+
+            // Exact tag match: +25 points (extra boost for exact matches)
+            if (data.tags && data.tags.some(tag => tag.toLowerCase() === queryLower)) score += 25;
+
+            // Category match: +8 points
+            if (data.category && data.category.toLowerCase().includes(queryLower)) score += 8;
+
+            // Engagement metrics (logarithmic scale)
             score += Math.log10((data.views || 0) + 1);
             score += Math.log10((data.likes || 0) + 1) * 2;
 
@@ -57,7 +82,7 @@ async function searchPublications(query, options = {}) {
                 results.sort((a, b) => b.score - a.score);
         }
 
-        return results;
+        return results.slice(0, limit);
     } catch (error) {
         console.error('Erreur searchPublications:', error);
         return [];
