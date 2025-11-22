@@ -1,4 +1,35 @@
 // Service de recherche et RAG
+//
+// ============================================================================
+// OPTION B - CUSTOM JS SEARCH (CURRENT IMPLEMENTATION)
+// ============================================================================
+//
+// Cette implémentation fait la recherche côté client avec Firestore + TF-IDF manuel.
+//
+// WORKFLOW:
+// 1. Query Firestore avec Hard Filter sur category (SQL WHERE)
+// 2. Récupère les documents matchant les searchKeywords
+// 3. Calcule le score de pertinence manuellement:
+//    - Exact tag match: +25 points
+//    - Tags contains query: +15 points (5x multiplier vs ancien +3)
+//    - Title contains query: +10 points
+//    - Category match: +8 points
+//    - Description contains query: +5 points
+//    - Engagement: Log(views) + Log(likes)*2
+// 4. Trie par score décroissant
+//
+// AVANTAGES:
+// - Gratuit (pas de coûts Algolia)
+// - Contrôle total du scoring
+// - Simple à debugger
+//
+// INCONVÉNIENTS:
+// - Pas de typo-tolerance
+// - Moins rapide qu'Algolia pour gros volumes (>10k docs)
+// - Pas de synonymes automatiques
+//
+// Pour migrer vers Algolia: Voir functions/index.js (Option A)
+// ============================================================================
 
 // Recherche de publications
 async function searchPublications(query, options = {}) {
