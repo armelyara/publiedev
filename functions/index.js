@@ -51,6 +51,157 @@ const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY);
 setGlobalOptions({maxInstances: 10});
 
 // ============================================================================
+// CUSTOM SEARCH FUNCTION - SERVER-SIDE (SECRET SAUCE 🔒)
+// ============================================================================
+
+/**
+ * Search publications with custom TF-IDF scoring
+ * This function keeps the scoring algorithm secret (server-side only)
+ *
+ * @param {string} query - Search query
+ * @param {string} category - Category filter (optional)
+ * @param {string} type - Type filter (optional)
+ * @param {string} sortBy - Sort method (relevance, date, views, likes)
+ * @param {number} limit - Max results
+ */
+exports.searchPublications = onRequest(
+  {cors: true},
+  async (request, response) => {
+    try {
+      // Parse query parameters
+      const {
+        q: query = "",
+        category = "",
+        type = "",
+        sortBy = "relevance",
+        limit = 20,
+      } = request.query;
+
+      const db = admin.firestore();
+
+      // Normalize and tokenize query
+      const keywords = query.toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .split(/\s+/)
+        .filter((k) => k.length > 2);
+
+      if (keywords.length === 0 && !category) {
+        response.json({success: true, results: []});
+        return;
+      }
+
+      // Build Firestore query with Hard Filters
+      let queryRef = db.collection("publications")
+        .where("status", "==", "approved");
+
+      // Hard Filter: Category
+      if (category) {
+        queryRef = queryRef.where("category", "==", category);
+      }
+
+      // Hard Filter: Type
+      if (type) {
+        queryRef = queryRef.where("type", "==", type);
+      }
+
+      // Get matching documents
+      let snapshot;
+      if (keywords.length > 0) {
+        queryRef = queryRef.where(
+          "searchKeywords",
+          "array-contains-any",
+          keywords,
+        );
+        snapshot = await queryRef.limit(parseInt(limit) * 2).get();
+      } else {
+        snapshot = await queryRef.limit(parseInt(limit)).get();
+      }
+
+      // Calculate relevance scores (SECRET SAUCE 🔒)
+      let results = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        const queryLower = query.toLowerCase();
+
+        // TF-IDF Scoring Algorithm (Hidden from client)
+        let score = 0;
+
+        // Exact tag match: +25 points (maximum boost)
+        if (data.tags &&
+            data.tags.some((tag) => tag.toLowerCase() === queryLower)) {
+          score += 25;
+        }
+
+        // Tags contains query: +15 points (5x multiplier)
+        if (data.tags &&
+            data.tags.some((tag) => tag.toLowerCase().includes(queryLower))) {
+          score += 15;
+        }
+
+        // Title match: +10 points
+        if (data.title && data.title.toLowerCase().includes(queryLower)) {
+          score += 10;
+        }
+
+        // Category match: +8 points
+        if (data.category &&
+            data.category.toLowerCase().includes(queryLower)) {
+          score += 8;
+        }
+
+        // Description match: +5 points
+        if (data.description &&
+            data.description.toLowerCase().includes(queryLower)) {
+          score += 5;
+        }
+
+        // Engagement metrics (logarithmic scale)
+        score += Math.log10((data.views || 0) + 1);
+        score += Math.log10((data.likes || 0) + 1) * 2;
+
+        return {
+          id: doc.id,
+          ...data,
+          score,
+          // Remove searchKeywords from response for security
+          searchKeywords: undefined,
+        };
+      });
+
+      // Sort results
+      switch (sortBy) {
+        case "date":
+          results.sort((a, b) =>
+            (b.publishedAt?._seconds || 0) - (a.publishedAt?._seconds || 0));
+          break;
+        case "views":
+          results.sort((a, b) => (b.views || 0) - (a.views || 0));
+          break;
+        case "likes":
+          results.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+          break;
+        default: // relevance
+          results.sort((a, b) => b.score - a.score);
+      }
+
+      // Limit results and remove score from response (keep algorithm secret)
+      results = results.slice(0, parseInt(limit)).map((r) => {
+        const {score, ...publicData} = r;
+        return publicData;
+      });
+
+      response.json({success: true, results});
+    } catch (error) {
+      logger.error("Error in searchPublications:", error);
+      response.status(500).json({
+        success: false,
+        error: "Search error",
+      });
+    }
+  },
+);
+
+// ============================================================================
 // ALGOLIA SYNC FUNCTIONS - CURRENTLY DISABLED (FUTURE USE)
 // ============================================================================
 

@@ -2,7 +2,9 @@
 
 ## 📋 Vue d'ensemble
 
-PublieDev utilise actuellement **Option B: Custom JS Search** avec Firestore + TF-IDF manuel côté client.
+PublieDev utilise **Option B: Server-Side Custom Search** avec Firestore + TF-IDF côté serveur.
+
+**🔒 SÉCURITÉ:** L'algorithme de scoring est désormais **côté serveur** (Firebase Functions) pour protéger la sauce secrète. Le code client ne contient AUCUNE logique de scoring.
 
 Les Firebase Functions pour Algolia sont **préparées mais non utilisées** - elles sont prêtes pour une future migration vers Option A si nécessaire.
 
@@ -36,38 +38,54 @@ L'admin change le statut de `"pending"` à `"approved"`.
 ---
 
 ### 3. Recherche par l'utilisateur
-**Fichier:** `public/js/services/search.js`
 
-#### Étape A: Hard Filter (SQL WHERE)
+#### 🔒 Workflow Sécurisé (Client → Server)
+
+**Client Side** (`public/js/services/search.js`):
 ```javascript
-let queryRef = db.collection(COLLECTIONS.PUBLICATIONS)
+// Simple API call - NO scoring logic exposed
+const params = new URLSearchParams({
+    q: query,
+    category: category,
+    type: type,
+    sortBy: sortBy,
+    limit: 20
+});
+
+const response = await fetch(`${FUNCTIONS_URL}/searchPublications?${params}`);
+const data = await response.json();
+return data.results; // Already sorted by server
+```
+
+**Server Side** (`functions/index.js` - SECRET SAUCE 🔒):
+
+##### Étape A: Hard Filter (SQL WHERE)
+```javascript
+let queryRef = db.collection('publications')
     .where('status', '==', 'approved');
 
-// Hard Filter sur catégorie (pas de scoring)
+// Hard Filter sur catégorie
 if (category) {
     queryRef = queryRef.where('category', '==', category);
 }
 
-// Filter sur type
+// Hard Filter sur type
 if (type) {
     queryRef = queryRef.where('type', '==', type);
 }
-
-// Recherche textuelle
-if (keywords.length > 0) {
-    queryRef = queryRef.where('searchKeywords', 'array-contains-any', keywords);
-}
 ```
 
-#### Étape B: TF-IDF Scoring Manuel
+##### Étape B: TF-IDF Scoring (HIDDEN FROM CLIENT 🔒)
 ```javascript
+// ⚠️ This logic is ONLY in functions/index.js (not visible on GitHub frontend)
+
 let score = 0;
 
-// Exact tag match: +25 points (boost maximum)
+// Exact tag match: +25 points
 if (data.tags && data.tags.some(tag => tag.toLowerCase() === queryLower))
     score += 25;
 
-// Tags contains query: +15 points (5x multiplier)
+// Tags contains: +15 points (5x multiplier)
 if (data.tags && data.tags.some(tag => tag.toLowerCase().includes(queryLower)))
     score += 15;
 
@@ -88,9 +106,16 @@ score += Math.log10((data.views || 0) + 1);
 score += Math.log10((data.likes || 0) + 1) * 2;
 ```
 
-#### Étape C: Tri et Affichage
+##### Étape C: Tri et Nettoyage (SECURITY)
 ```javascript
+// Sort by score
 results.sort((a, b) => b.score - a.score);
+
+// Remove score from response (keep algorithm secret)
+results = results.map(r => {
+    const {score, searchKeywords, ...publicData} = r;
+    return publicData; // Client never sees the scores
+});
 ```
 
 ---
@@ -136,24 +161,28 @@ results.sort((a, b) => b.score - a.score);
 - Besoin de typo-tolerance
 - Budget disponible
 
-### Option B: Custom JS (ACTUEL ✓)
-**Fichiers:** `public/js/services/search.js`
+### Option B: Server-Side Custom Search (ACTUEL ✓)
+**Fichiers:**
+- `functions/index.js` (Server-side - SECRET SAUCE 🔒)
+- `public/js/services/search.js` (Client-side - Simple API caller)
 
 ✅ **Avantages:**
-- Gratuit
-- Contrôle total du scoring
-- Simple à debugger
-- Pas de dépendance externe
+- **Gratuit** (pas de coûts Algolia)
+- **Sécurisé** - Algorithme secret côté serveur
+- **Contrôle total** du scoring
+- **Impossible à reverse-engineer** (code non visible sur GitHub frontend)
+- **Flexible** - Peut modifier l'algo sans redéployer le frontend
 
 ❌ **Inconvénients:**
-- Pas de typo-tolerance
-- Moins performant pour gros volumes
-- Pas de synonymes
+- Pas de typo-tolerance (pour l'instant)
+- Moins performant qu'Algolia pour gros volumes (>10k)
+- Pas de synonymes automatiques
 
 **Parfait pour:**
 - MVP et lancement
 - Budget limité
 - < 10,000 publications
+- **Protection de la propriété intellectuelle**
 
 ---
 
@@ -204,23 +233,72 @@ curl https://YOUR_REGION-YOUR_PROJECT.cloudfunctions.net/reindexAllPublications
 
 ---
 
+## 🔒 Sécurité - Protection de la Sauce Secrète
+
+### Principe de Sécurité
+L'algorithme de scoring (+25, +15, +10, +8, +5) est **votre avantage concurrentiel**. Il ne doit JAMAIS être visible publiquement.
+
+### Architecture Sécurisée
+
+**❌ AVANT (Client-Side - DANGEREUX):**
+```
+Frontend (GitHub public) → Contient TOUT le code de scoring
+                          → N'importe qui peut voir les coefficients
+                          → Facile à copier
+```
+
+**✅ MAINTENANT (Server-Side - SÉCURISÉ):**
+```
+Frontend (GitHub public) → Simple fetch() API call
+                          → AUCUNE logique de scoring
+
+Firebase Functions      → Scoring algorithm (SECRET)
+(Code privé)            → Impossible à voir depuis le navigateur
+                        → Protégé par Firebase
+```
+
+### Ce qui est caché:
+- Les coefficients (+25, +15, +10, +8, +5)
+- La logique logarithmique pour l'engagement
+- Les multiplicateurs exacts
+- Le champ `searchKeywords` (supprimé des réponses)
+- Les scores calculés (jamais renvoyés au client)
+
+### Ce qui est visible:
+- Les résultats finaux (triés)
+- Les filtres disponibles (category, type)
+- Les options de tri (relevance, date, views, likes)
+
+### Déploiement Sécurisé
+
+**⚠️ IMPORTANT:** Ne JAMAIS commit `functions/` sur un repo GitHub public!
+
+Options:
+1. **Git privé:** Gardez le repo privé sur GitHub
+2. **Git submodule privé:** `functions/` dans un sous-module privé
+3. **Déploiement direct:** `firebase deploy --only functions` depuis votre machine locale
+4. **.gitignore:** Ajouter `functions/index.js` au `.gitignore` (mais garder `package.json`)
+
+---
+
 ## 📁 Structure des Fichiers
 
 ```
 publiedev/
-├── functions/
-│   └── index.js                    # Firebase Functions (Algolia - FUTURE USE)
+├── functions/                       # 🔒 PRIVÉ - Ne pas publier sur GitHub
+│   ├── index.js                    # SECRET SAUCE: Scoring algorithm
+│   └── package.json                # Dépendances (peut être public)
 │
-├── public/
+├── public/                          # ✅ PUBLIC - Peut être sur GitHub
 │   ├── pages/
-│   │   ├── publish.html            # Formulaire de soumission (catégorie + tags)
-│   │   └── search.html             # Page de recherche (avec filtres catégorie)
+│   │   ├── publish.html            # Formulaire (catégorie + tags)
+│   │   └── search.html             # Page recherche (filtres)
 │   │
 │   └── js/
 │       └── services/
-│           └── search.js           # Logique TF-IDF manuel (CURRENT)
+│           └── search.js           # Simple API caller (PAS de scoring)
 │
-└── SEARCH_ARCHITECTURE.md          # Ce fichier
+└── SEARCH_ARCHITECTURE.md          # Ce fichier (peut être public si générique)
 ```
 
 ---

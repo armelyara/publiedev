@@ -1,119 +1,60 @@
 // Service de recherche et RAG
 //
 // ============================================================================
-// OPTION B - CUSTOM JS SEARCH (CURRENT IMPLEMENTATION)
+// SECURE SERVER-SIDE SEARCH (SECRET SAUCE PROTECTED 🔒)
 // ============================================================================
 //
-// Cette implémentation fait la recherche côté client avec Firestore + TF-IDF manuel.
+// La logique de scoring TF-IDF est maintenant côté serveur (Firebase Functions)
+// pour protéger l'algorithme propriétaire.
 //
 // WORKFLOW:
-// 1. Query Firestore avec Hard Filter sur category (SQL WHERE)
-// 2. Récupère les documents matchant les searchKeywords
-// 3. Calcule le score de pertinence manuellement:
-//    - Exact tag match: +25 points
-//    - Tags contains query: +15 points (5x multiplier vs ancien +3)
-//    - Title contains query: +10 points
-//    - Category match: +8 points
-//    - Description contains query: +5 points
-//    - Engagement: Log(views) + Log(likes)*2
-// 4. Trie par score décroissant
+// 1. Client envoie query + filters → Firebase Function
+// 2. Server calcule les scores (SECRET SAUCE 🔒)
+// 3. Server retourne les résultats triés (sans exposer les scores)
 //
 // AVANTAGES:
-// - Gratuit (pas de coûts Algolia)
-// - Contrôle total du scoring
-// - Simple à debugger
+// - Algorithme secret (pas visible sur GitHub)
+// - Pas de reverse engineering possible
+// - Contrôle total côté serveur
+// - Peut être modifié sans redéployer le frontend
 //
-// INCONVÉNIENTS:
-// - Pas de typo-tolerance
-// - Moins rapide qu'Algolia pour gros volumes (>10k docs)
-// - Pas de synonymes automatiques
-//
-// Pour migrer vers Algolia: Voir functions/index.js (Option A)
 // ============================================================================
 
-// Recherche de publications
+// Get Firebase Functions URL from config
+const FUNCTIONS_URL = window.FIREBASE_CONFIG?.functionsUrl ||
+    'https://us-central1-publiedev-ci.cloudfunctions.net';
+
+// Recherche de publications (via Firebase Function)
 async function searchPublications(query, options = {}) {
     try {
-        const { type, category, sortBy = 'relevance', limit = 20 } = options;
+        const {type, category, sortBy = 'relevance', limit = 20} = options;
 
-        const keywords = query.toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .split(/\s+/)
-            .filter(k => k.length > 2);
-
-        if (keywords.length === 0 && !category) {
-            return [];
-        }
-
-        let queryRef = db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'approved');
-
-        // Hard Filter: Category (Filtre Dur)
-        if (category) {
-            queryRef = queryRef.where('category', '==', category);
-        }
-
-        // Type filter
-        if (type) {
-            queryRef = queryRef.where('type', '==', type);
-        }
-
-        // Get all matching documents
-        let snapshot;
-        if (keywords.length > 0) {
-            queryRef = queryRef.where('searchKeywords', 'array-contains-any', keywords);
-            snapshot = await queryRef.limit(limit * 2).get();
-        } else {
-            // Category-only filter
-            snapshot = await queryRef.limit(limit).get();
-        }
-
-        let results = snapshot.docs.map(doc => {
-            const data = { id: doc.id, ...doc.data() };
-
-            // Calculer le score de pertinence (TF-IDF inspired)
-            let score = 0;
-            const queryLower = query.toLowerCase();
-
-            // Title match: +10 points
-            if (data.title && data.title.toLowerCase().includes(queryLower)) score += 10;
-
-            // Description match: +5 points
-            if (data.description && data.description.toLowerCase().includes(queryLower)) score += 5;
-
-            // Tags match: +15 points (5x multiplier - was +3, now +15)
-            if (data.tags && data.tags.some(tag => tag.toLowerCase().includes(queryLower))) score += 15;
-
-            // Exact tag match: +25 points (extra boost for exact matches)
-            if (data.tags && data.tags.some(tag => tag.toLowerCase() === queryLower)) score += 25;
-
-            // Category match: +8 points
-            if (data.category && data.category.toLowerCase().includes(queryLower)) score += 8;
-
-            // Engagement metrics (logarithmic scale)
-            score += Math.log10((data.views || 0) + 1);
-            score += Math.log10((data.likes || 0) + 1) * 2;
-
-            return { ...data, score };
+        // Build query parameters
+        const params = new URLSearchParams({
+            q: query || '',
+            sortBy,
+            limit: limit.toString(),
         });
 
-        // Trier selon l'option choisie
-        switch (sortBy) {
-            case 'date':
-                results.sort((a, b) => (b.publishedAt?.seconds || 0) - (a.publishedAt?.seconds || 0));
-                break;
-            case 'views':
-                results.sort((a, b) => (b.views || 0) - (a.views || 0));
-                break;
-            case 'likes':
-                results.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                break;
-            default: // relevance
-                results.sort((a, b) => b.score - a.score);
+        if (category) params.append('category', category);
+        if (type) params.append('type', type);
+
+        // Call server-side search function
+        const response = await fetch(
+            `${FUNCTIONS_URL}/searchPublications?${params.toString()}`,
+        );
+
+        if (!response.ok) {
+            throw new Error(`Search failed: ${response.statusText}`);
         }
 
-        return results.slice(0, limit);
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || 'Search failed');
+        }
+
+        return data.results || [];
     } catch (error) {
         console.error('Erreur searchPublications:', error);
         return [];
