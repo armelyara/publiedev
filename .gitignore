@@ -43,6 +43,7 @@ public/js/config.js
 functions/index.js
 DEPLOYMENT_SECURITY.md
 SEARCH_ARCHITECTURE.md
+SECURITY.md
 
 # PWA
 dev-dist
