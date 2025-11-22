@@ -109,9 +109,18 @@ function createPublicationCard(publication) {
             ` : ''}
             <div class="publication-card-content">
                 <div class="publication-card-header">
-                    <span class="publication-type ${escapeAttr(publication.type)}">
-                        ${escapeHtml(typeLabels[publication.type] || publication.type)}
-                    </span>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="publication-type ${escapeAttr(publication.type)}">
+                            ${escapeHtml(typeLabels[publication.type] || publication.type)}
+                        </span>
+                        ${publication.certificate?.pdid ? `
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: var(--bluesky-600); font-weight: 600;" title="Certificat disponible">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                            </svg>
+                        </span>
+                        ` : ''}
+                    </div>
                     <span class="publication-date">${escapeHtml(date)}</span>
                 </div>
                 <a href="/pages/publication.html?slug=${safeSlug}">

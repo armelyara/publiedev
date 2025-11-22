@@ -36,6 +36,7 @@ const {
 const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin");
 const {algoliasearch} = require("algoliasearch");
+const crypto = require("crypto");
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -199,6 +200,135 @@ exports.searchPublications = onRequest(
         success: false,
         error: "Search error",
       });
+    }
+  },
+);
+
+// ============================================================================
+// CERTIFICATE GENERATION - PDID & SHA-256 PROOF OF EXISTENCE
+// ============================================================================
+
+/**
+ * Generate a unique PDID (PublieDev ID)
+ * Format: PDID-YYYY-XXXXXX (6 characters for collision resistance)
+ * Excludes confusing characters: 0/O, 1/I/L
+ *
+ * @return {string} Unique PDID
+ */
+function generatePDID() {
+  const year = new Date().getFullYear();
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // 29 chars (29^6 = 594M combos)
+  let suffix = "";
+  for (let i = 0; i < 6; i++) {
+    suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `PDID-${year}-${suffix}`;
+}
+
+/**
+ * Generate SHA-256 hash of publication immutable data
+ * This creates cryptographic proof of the publication's existence at approval time
+ *
+ * @param {Object} publicationData - The publication data
+ * @param {string} pdid - The generated PDID
+ * @return {string} SHA-256 hash (hex)
+ */
+function generateCertificateHash(publicationData, pdid) {
+  const hashInput = JSON.stringify({
+    pdid: pdid,
+    title: publicationData.title || "",
+    authorId: publicationData.authorId || "",
+    authorName: publicationData.authorName || "",
+    type: publicationData.type || "",
+    category: publicationData.category || "",
+    publishedAt: publicationData.publishedAt ||
+      admin.firestore.Timestamp.now(),
+    description: (publicationData.description || "").substring(0, 500),
+  });
+
+  return crypto.createHash("sha256").update(hashInput).digest("hex");
+}
+
+/**
+ * Firebase Function: Generate certificate when publication is approved
+ * Triggers when a publication's status changes from pending to approved
+ * Adds certificate object with PDID, hash, and timestamp
+ */
+exports.generateCertificateOnApproval = onDocumentUpdated(
+  "publications/{publicationId}",
+  async (event) => {
+    try {
+      const beforeData = event.data?.before.data();
+      const afterData = event.data?.after.data();
+      const publicationId = event.params.publicationId;
+
+      if (!beforeData || !afterData) {
+        logger.error("No data in certificate generation trigger");
+        return;
+      }
+
+      // Only generate certificate if status changed to approved
+      // and certificate doesn't already exist
+      if (afterData.status === "approved" &&
+          beforeData.status !== "approved" &&
+          !afterData.certificate) {
+        logger.info(
+          `Generating certificate for publication: ${publicationId}`,
+        );
+
+        // Generate unique PDID (check for collisions)
+        let pdid = generatePDID();
+        let attempts = 0;
+        const maxAttempts = 5;
+
+        // Check for PDID collision (very rare with 6 chars)
+        while (attempts < maxAttempts) {
+          const existingPub = await admin.firestore()
+            .collection("publications")
+            .where("certificate.pdid", "==", pdid)
+            .limit(1)
+            .get();
+
+          if (existingPub.empty) {
+            break; // No collision, use this PDID
+          }
+
+          logger.warn(`PDID collision detected: ${pdid}, regenerating...`);
+          pdid = generatePDID();
+          attempts++;
+        }
+
+        if (attempts >= maxAttempts) {
+          logger.error("Failed to generate unique PDID after max attempts");
+          return;
+        }
+
+        // Generate SHA-256 hash
+        const hash = generateCertificateHash(afterData, pdid);
+
+        // Certificate data
+        const certificate = {
+          pdid: pdid,
+          hash: hash,
+          generated_at: admin.firestore.Timestamp.now(),
+          certificate_url:
+            `https://publiedev.com/pages/certificate.html?pdid=${pdid}`,
+        };
+
+        // Update publication with certificate
+        await admin.firestore()
+          .collection("publications")
+          .doc(publicationId)
+          .update({
+            certificate: certificate,
+          });
+
+        logger.info(
+          `Certificate generated successfully: ${pdid} for ${publicationId}`,
+        );
+      }
+    } catch (error) {
+      logger.error("Error generating certificate:", error);
     }
   },
 );
