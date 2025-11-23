@@ -341,7 +341,7 @@ exports.generateCertificateOnApproval = onDocumentUpdated(
           hash: hash,
           generated_at: admin.firestore.Timestamp.now(),
           certificate_url:
-            `https://publiedev.com/pages/certificate.html?pdid=${pdid}`,
+            `https://pubdev-71378.web.app/pages/certificate.html?pdid=${pdid}`,
         };
 
         // Update publication with certificate
