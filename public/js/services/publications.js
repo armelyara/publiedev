@@ -91,13 +91,12 @@ async function getTrendingPublications(limit = 4) {
             .get();
 
         // Calculer le score de pertinence pour chaque publication
-        // Score = (views * 1.0) + (likes * 2.0) + (bookmarks * 3.0) + (citations * 5.0)
+        // Score = (views * 1.0) + (bookmarks * 3.0) + (citations * 5.0)
         const publications = snapshot.docs.map(doc => {
             const data = doc.data();
             const relevanceScore =
                 (data.views || 0) * 1.0 +           // Primary: Views
-                (data.likes || 0) * 2.0 +           // Secondary: Likes
-                (data.bookmarks || 0) * 3.0 +       // Tertiary: Bookmarks
+                (data.bookmarks || 0) * 3.0 +       // Secondary: Bookmarks
                 (data.citations || 0) * 5.0;        // High value: Citations
 
             return {
