@@ -79,15 +79,42 @@ async function getRecentPublications(limit = 6) {
 }
 
 // Obtenir les publications tendances
+// Basé sur la pertinence du contenu (engagement) et les vues
+// Pas de facteur temps - même les anciennes publications restent si elles sont pertinentes
 async function getTrendingPublications(limit = 4) {
     try {
+        // Récupérer plus de publications pour calculer le score de pertinence
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
             .where('status', '==', 'approved')
             .orderBy('views', 'desc')
-            .limit(limit)
+            .limit(limit * 3) // Fetch 3x to ensure good selection
             .get();
 
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Calculer le score de pertinence pour chaque publication
+        // Score = (views * 1.0) + (likes * 2.0) + (bookmarks * 3.0) + (citations * 5.0)
+        const publications = snapshot.docs.map(doc => {
+            const data = doc.data();
+            const relevanceScore =
+                (data.views || 0) * 1.0 +           // Primary: Views
+                (data.likes || 0) * 2.0 +           // Secondary: Likes
+                (data.bookmarks || 0) * 3.0 +       // Tertiary: Bookmarks
+                (data.citations || 0) * 5.0;        // High value: Citations
+
+            return {
+                id: doc.id,
+                ...data,
+                _relevanceScore: relevanceScore
+            };
+        });
+
+        // Trier par score de pertinence (le plus haut en premier)
+        publications.sort((a, b) => b._relevanceScore - a._relevanceScore);
+
+        // Retourner les top N, sans le score interne
+        return publications.slice(0, limit).map(pub => {
+            const { _relevanceScore, ...publicData } = pub;
+            return publicData;
+        });
     } catch (error) {
         console.error('Erreur getTrendingPublications:', error);
         return [];

@@ -477,68 +477,16 @@ exports.onPublicationUpdated = onDocumentUpdated(
         logger.error(`Error indexing publication: ${objectID}`, error);
       }
 
-      // Send approval email to author
-      if (afterData.authorEmail) {
-        const publicationUrl =
-          `https://publiedev.com/pages/publication.html?slug=` +
-          `${afterData.slug || objectID}`;
-        const emailHtml = `
-          <h2>Votre publication a été approuvée ! 🎉</h2>
-          <p>Bonjour ${afterData.authorName || ""},</p>
-          <p>Nous avons le plaisir de vous informer que votre ` +
-          `publication <strong>"${afterData.title}"</strong> ` +
-          `a été approuvée par notre comité de lecture.</p>
-          <p>Votre publication est maintenant visible sur PublieDev.</p>
-          <p><a href="${publicationUrl}" ` +
-          `style="background: #0ea5e9; color: white; ` +
-          `padding: 12px 24px; text-decoration: none; ` +
-          `border-radius: 6px; display: inline-block; ` +
-          `margin-top: 12px;">Voir ma publication</a></p>
-          <p>Merci de contribuer à la communauté des développeurs !</p>
-          <p>L'équipe PublieDev</p>
-        `;
-        try {
-          await sendEmail(
-            afterData.authorEmail,
-            "Votre publication a été approuvée - PublieDev",
-            emailHtml,
-          );
-        } catch (emailError) {
-          logger.error("Error sending approval email:", emailError);
-        }
-      }
+      // NOTE: Email notifications are sent manually with personalized content
+      // for each publication, so automatic emails have been disabled.
+      logger.info(`Publication approved: ${objectID} - Manual email required`);
     } else if (
       afterData.status === "rejected" &&
       beforeData?.status !== "rejected"
     ) {
-      // Send rejection email to author
-      if (afterData.authorEmail) {
-        const rejectionReason =
-          afterData.rejectionReason || "Non spécifiée";
-        const emailHtml = `
-          <h2>Mise à jour sur votre publication</h2>
-          <p>Bonjour ${afterData.authorName || ""},</p>
-          <p>Malheureusement, votre publication ` +
-          `<strong>"${afterData.title}"</strong> n'a pas été ` +
-          `approuvée par notre comité de lecture.</p>
-          <p><strong>Raison:</strong> ${rejectionReason}</p>
-          <p>Vous pouvez modifier et soumettre à nouveau votre ` +
-          `publication après avoir apporté les modifications ` +
-          `nécessaires.</p>
-          <p>Si vous avez des questions, n'hésitez pas à ` +
-          `nous contacter.</p>
-          <p>L'équipe PublieDev</p>
-        `;
-        try {
-          await sendEmail(
-            afterData.authorEmail,
-            "Mise à jour sur votre publication - PublieDev",
-            emailHtml,
-          );
-        } catch (emailError) {
-          logger.error("Error sending rejection email:", emailError);
-        }
-      }
+      // NOTE: Email notifications are sent manually with personalized content
+      // for each publication, so automatic emails have been disabled.
+      logger.info(`Publication rejected: ${objectID} - Manual email required`);
     } else if (
       afterData.status !== "approved" &&
       beforeData?.status === "approved"
