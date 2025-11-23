@@ -51,34 +51,6 @@ const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY);
 // Set global options for cost control
 setGlobalOptions({maxInstances: 10});
 
-// ============================================================================
-// EMAIL FUNCTIONALITY
-// ============================================================================
-
-/**
- * Send email using Firebase mail extension or custom SMTP
- * This function adds email tasks to Firestore for processing
- *
- * @param {string} to - Recipient email address
- * @param {string} subject - Email subject
- * @param {string} html - Email HTML content
- */
-async function sendEmail(to, subject, html) {
-  try {
-    const db = admin.firestore();
-    await db.collection("mail").add({
-      to: to,
-      message: {
-        subject: subject,
-        html: html,
-      },
-    });
-    logger.info(`Email queued for ${to}: ${subject}`);
-  } catch (error) {
-    logger.error("Error queueing email:", error);
-    throw error;
-  }
-}
 
 // ============================================================================
 // CUSTOM SEARCH FUNCTION - SERVER-SIDE (SECRET SAUCE 🔒)
