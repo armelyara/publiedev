@@ -109,5 +109,16 @@ service cloud.firestore {
       allow update: if isOwner(resource.data.authorId) || isAdmin();
       allow delete: if isOwner(resource.data.authorId) || isAdmin();
     }
+
+    // Collection mail (pour Firebase Mail Extension)
+    match /mail/{mailId} {
+      // Seuls les admins peuvent créer des emails
+      allow create: if isAdmin();
+      // Lecture et mise à jour par le système (Firebase Extensions)
+      // et par les admins pour vérifier l'état d'envoi
+      allow read, update: if isAdmin();
+      // Suppression par admin uniquement
+      allow delete: if isAdmin();
+    }
   }
 }
