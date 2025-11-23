@@ -92,7 +92,7 @@ function sanitizeUrl(url) {
 // Créer une carte de publication HTML
 function createPublicationCard(publication) {
     const typeLabels = APP_CONFIG.typeLabels;
-    const date = formatRelativeDate(publication.publishedAt);
+    const date = formatRelativeDate(publication.publishedAt || publication.createdAt);
 
     // Construire l'URL de la publication (utiliser slug si disponible, sinon id)
     const safeSlug = escapeAttr(publication.slug || '').replace(/[^a-z0-9-]/g, '');

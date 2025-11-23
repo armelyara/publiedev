@@ -67,7 +67,7 @@ async function getRecentPublications(limit = 6) {
     try {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
             .where('status', '==', 'approved')
-            .orderBy('publishedAt', 'desc')
+            .orderBy('createdAt', 'desc')
             .limit(limit)
             .get();
 
@@ -100,7 +100,7 @@ async function getPublicationsByType(type, limit = 20) {
         const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
             .where('status', '==', 'approved')
             .where('type', '==', type)
-            .orderBy('publishedAt', 'desc')
+            .orderBy('createdAt', 'desc')
             .limit(limit)
             .get();
 

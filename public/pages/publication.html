@@ -197,6 +197,14 @@
             color: var(--gray-600);
             margin-bottom: 1.5rem;
         }
+        .pub-cover-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--gray-200);
+        }
     </style>
 </head>
 <body>
@@ -257,10 +265,13 @@
                     </div>
                 </div>
 
+                <!-- Cover Image -->
+                <img id="pubCoverImage" class="pub-cover-image" style="display: none;" alt="">
+
                 <div class="pub-content">
                     <div class="pub-main">
-                        <!-- Description -->
-                        <div id="pubDescription" style="margin-bottom: 2rem; line-height: 1.7; color: var(--gray-700);"></div>
+                        <!-- Description (only for apps/APIs, not articles) -->
+                        <div id="pubDescription" style="margin-bottom: 2rem; line-height: 1.7; color: var(--gray-700); display: none;"></div>
 
                         <!-- Abstract (for articles) -->
                         <div id="pubAbstract" style="display: none;"></div>
@@ -428,9 +439,6 @@
             document.getElementById('pubDate').textContent = formatDate(pub.createdAt);
             document.getElementById('pubViews').textContent = formatNumber((pub.views || 0) + 1) + ' vues';
 
-            // Description
-            document.getElementById('pubDescription').textContent = pub.description || '';
-
             // Author
             const authorAvatar = document.getElementById('authorAvatar');
             if (pub.authorPhoto) {
@@ -440,6 +448,14 @@
             }
             document.getElementById('authorName').textContent = pub.authorName || 'Anonyme';
             document.getElementById('authorDate').textContent = formatRelativeDate(pub.createdAt);
+
+            // Cover Image
+            if (pub.coverImage) {
+                const coverImg = document.getElementById('pubCoverImage');
+                coverImg.src = escapeAttr(pub.coverImage);
+                coverImg.alt = escapeAttr(pub.title);
+                coverImg.style.display = 'block';
+            }
 
             // Type-specific content
             if (pub.type === 'article') {
@@ -480,6 +496,12 @@
                         .join('');
                 }
             } else {
+                // Description for apps/APIs
+                if (pub.description) {
+                    document.getElementById('pubDescription').style.display = 'block';
+                    document.getElementById('pubDescription').textContent = pub.description;
+                }
+
                 // Content for apps/APIs
                 if (pub.content) {
                     document.getElementById('pubContent').style.display = 'block';

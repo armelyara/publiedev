@@ -311,6 +311,7 @@
 
                 // Afficher les champs communs
                 document.getElementById('commonFields').style.display = 'block';
+                document.getElementById('categorySection').style.display = 'block';
                 document.getElementById('tagsSection').style.display = 'block';
                 document.getElementById('actionsSection').style.display = 'block';
 
@@ -366,7 +367,8 @@
                     .split(',').map(t => t.trim().toLowerCase()).filter(t => t);
 
                 // Validation
-                if (!category) {
+                // Catégorie obligatoire sauf pour les articles
+                if (type !== 'article' && !category) {
                     throw new Error('Veuillez sélectionner une catégorie principale');
                 }
                 if (tags.length < 3 || tags.length > 8) {
@@ -453,6 +455,7 @@
                 // Cacher tous les champs sauf les boutons de type
                 document.getElementById('commonFields').style.display = 'none';
                 document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
+                document.getElementById('categorySection').style.display = 'none';
                 document.getElementById('tagsSection').style.display = 'none';
                 document.getElementById('actionsSection').style.display = 'none';
 
