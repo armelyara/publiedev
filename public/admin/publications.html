@@ -730,6 +730,8 @@ L'équipe PublieDev`;
                 const bcc = document.getElementById('emailBcc').value;
                 const subject = document.getElementById('emailSubject').value;
                 const body = document.getElementById('emailBody').value;
+                const pubId = document.getElementById('emailModal').dataset.publicationId;
+                const pub = allPublications.find(p => p.id === pubId);
 
                 // Prepare email data
                 const emailData = {
@@ -758,6 +760,26 @@ L'équipe PublieDev`;
 
                 // Add to Firestore mail collection (Firebase mail extension will process it)
                 await db.collection('mail').add(emailData);
+
+                // Also save a copy to messages collection for admin dashboard
+                await db.collection('messages').add({
+                    type: 'email',
+                    fromId: auth.currentUser.uid,
+                    fromName: 'Admin PublieDev',
+                    toId: pub.authorId,
+                    toEmail: to,
+                    toName: pub.authorName,
+                    subject: subject,
+                    body: body,
+                    cc: cc.trim() ? cc.split(',').map(e => e.trim()).filter(e => e) : null,
+                    bcc: bcc.trim() ? bcc.split(',').map(e => e.trim()).filter(e => e) : null,
+                    publicationId: document.getElementById('emailModal').dataset.publicationId,
+                    publicationTitle: pub.title,
+                    status: 'sent',
+                    read: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    sentVia: 'admin_dashboard'
+                });
 
                 sendBtn.innerHTML = `
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
