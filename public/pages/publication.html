@@ -197,6 +197,14 @@
             color: var(--gray-600);
             margin-bottom: 1.5rem;
         }
+        .pub-cover-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--gray-200);
+        }
     </style>
 </head>
 <body>
@@ -256,6 +264,9 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Cover Image -->
+                <img id="pubCoverImage" class="pub-cover-image" style="display: none;" alt="">
 
                 <div class="pub-content">
                     <div class="pub-main">
@@ -437,6 +448,14 @@
             }
             document.getElementById('authorName').textContent = pub.authorName || 'Anonyme';
             document.getElementById('authorDate').textContent = formatRelativeDate(pub.createdAt);
+
+            // Cover Image
+            if (pub.coverImage) {
+                const coverImg = document.getElementById('pubCoverImage');
+                coverImg.src = escapeAttr(pub.coverImage);
+                coverImg.alt = escapeAttr(pub.title);
+                coverImg.style.display = 'block';
+            }
 
             // Type-specific content
             if (pub.type === 'article') {
