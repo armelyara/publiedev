@@ -407,7 +407,13 @@
                 successAlert.textContent = 'Votre publication a été soumise pour validation. Elle sera visible après approbation.';
                 successAlert.style.display = 'block';
                 form.reset();
+
+                // Réinitialiser l'interface - montrer les boutons de type et sélectionner "article" par défaut
                 document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.type-btn[data-type="article"]').classList.add('active');
+                document.getElementById('type').value = 'article';
+
+                // Cacher tous les champs sauf les boutons de type
                 document.getElementById('commonFields').style.display = 'none';
                 document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
                 document.getElementById('tagsSection').style.display = 'none';
@@ -415,6 +421,9 @@
 
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Soumettre';
+
+                // Scroll vers le haut pour voir le message de succès
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (error) {
                 console.error('Erreur:', error);

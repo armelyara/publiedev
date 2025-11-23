@@ -1,6 +1,7 @@
 /**
  * Firebase Cloud Functions for PublieDev
  * Algolia sync for publications search
+ * Email notifications for publication status changes
  */
 
 const {setGlobalOptions} = require("firebase-functions");
@@ -16,6 +17,36 @@ const {algoliasearch} = require("algoliasearch");
 
 // Initialize Firebase Admin
 admin.initializeApp();
+
+// Email helper function using admin SDK
+// Note: Configure your email service (SendGrid, Mailgun, etc.) here
+async function sendEmail(to, subject, htmlBody) {
+  try {
+    // This is a placeholder for email sending
+    // You need to configure an email service like SendGrid, Mailgun, or use
+    // Firebase Extensions: https://extensions.dev/extensions/firebase/firestore-send-email
+    logger.info(`Email would be sent to: ${to}, Subject: ${subject}`);
+
+    // Example with SendGrid (uncomment and configure):
+    // const sgMail = require('@sendgrid/mail');
+    // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    // await sgMail.send({ to, from: 'noreply@publiedev.com', subject, html: htmlBody });
+
+    // For now, we'll store notifications in Firestore
+    await admin.firestore().collection("email_queue").add({
+      to,
+      subject,
+      html: htmlBody,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      sent: false,
+    });
+
+    return true;
+  } catch (error) {
+    logger.error("Error queuing email:", error);
+    return false;
+  }
+}
 
 // Algolia configuration
 const ALGOLIA_APP_ID = "1JSU865M6S";
@@ -97,7 +128,7 @@ exports.onPublicationUpdated = onDocumentUpdated(
       return;
     }
 
-    // If status changed to approved, add to Algolia
+    // If status changed to approved, add to Algolia and send email
     if (afterData.status === "approved" && beforeData?.status !== "approved") {
       const algoliaRecord = {
         objectID,
@@ -132,6 +163,43 @@ exports.onPublicationUpdated = onDocumentUpdated(
         );
       } catch (error) {
         logger.error(`Error indexing publication: ${objectID}`, error);
+      }
+
+      // Send approval email to author
+      if (afterData.authorEmail) {
+        const emailHtml = `
+          <h2>Votre publication a été approuvée ! 🎉</h2>
+          <p>Bonjour ${afterData.authorName || ""},</p>
+          <p>Nous avons le plaisir de vous informer que votre publication <strong>"${afterData.title}"</strong> a été approuvée par notre comité de lecture.</p>
+          <p>Votre publication est maintenant visible sur PublieDev.</p>
+          <p><a href="https://publiedev.com/pages/publication.html?slug=${afterData.slug || objectID}" style="background: #0ea5e9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin-top: 12px;">Voir ma publication</a></p>
+          <p>Merci de contribuer à la communauté des développeurs !</p>
+          <p>L'équipe PublieDev</p>
+        `;
+        await sendEmail(
+          afterData.authorEmail,
+          "Votre publication a été approuvée - PublieDev",
+          emailHtml,
+        );
+      }
+    } else if (afterData.status === "rejected" && beforeData?.status !== "rejected") {
+      // Send rejection email to author
+      if (afterData.authorEmail) {
+        const rejectionReason = afterData.rejectionReason || "Non spécifiée";
+        const emailHtml = `
+          <h2>Mise à jour sur votre publication</h2>
+          <p>Bonjour ${afterData.authorName || ""},</p>
+          <p>Malheureusement, votre publication <strong>"${afterData.title}"</strong> n'a pas été approuvée par notre comité de lecture.</p>
+          <p><strong>Raison:</strong> ${rejectionReason}</p>
+          <p>Vous pouvez modifier et soumettre à nouveau votre publication après avoir apporté les modifications nécessaires.</p>
+          <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+          <p>L'équipe PublieDev</p>
+        `;
+        await sendEmail(
+          afterData.authorEmail,
+          "Mise à jour sur votre publication - PublieDev",
+          emailHtml,
+        );
       }
     } else if (
       afterData.status !== "approved" &&
