@@ -39,6 +39,15 @@ ui-debug.log
 # Firebase config with API keys
 public/js/config.js
 
+# Search Algorithm
+functions/index.js
+DEPLOYMENT_SECURITY.md
+SEARCH_ARCHITECTURE.md
+SECURITY.md
+
+#logo svg
+logo.svg
+
 # PWA
 dev-dist
 

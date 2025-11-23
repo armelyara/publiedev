@@ -1,63 +1,60 @@
 // Service de recherche et RAG
+//
+// ============================================================================
+// SECURE SERVER-SIDE SEARCH (SECRET SAUCE PROTECTED 🔒)
+// ============================================================================
+//
+// La logique de scoring TF-IDF est maintenant côté serveur (Firebase Functions)
+// pour protéger l'algorithme propriétaire.
+//
+// WORKFLOW:
+// 1. Client envoie query + filters → Firebase Function
+// 2. Server calcule les scores (SECRET SAUCE 🔒)
+// 3. Server retourne les résultats triés (sans exposer les scores)
+//
+// AVANTAGES:
+// - Algorithme secret (pas visible sur GitHub)
+// - Pas de reverse engineering possible
+// - Contrôle total côté serveur
+// - Peut être modifié sans redéployer le frontend
+//
+// ============================================================================
 
-// Recherche de publications
+// Get Firebase Functions URL from config
+const FUNCTIONS_URL = window.FIREBASE_CONFIG?.functionsUrl ||
+    'https://us-central1-pubdev-71378.cloudfunctions.net';
+
+// Recherche de publications (via Firebase Function)
 async function searchPublications(query, options = {}) {
     try {
-        const { type, sortBy = 'relevance', limit = 20 } = options;
+        const {type, category, sortBy = 'relevance', limit = 20} = options;
 
-        const keywords = query.toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .split(/\s+/)
-            .filter(k => k.length > 2);
-
-        if (keywords.length === 0) {
-            return [];
-        }
-
-        let queryRef = db.collection(COLLECTIONS.PUBLICATIONS)
-            .where('status', '==', 'approved')
-            .where('searchKeywords', 'array-contains-any', keywords);
-
-        if (type) {
-            queryRef = queryRef.where('type', '==', type);
-        }
-
-        const snapshot = await queryRef.limit(limit).get();
-
-        let results = snapshot.docs.map(doc => {
-            const data = { id: doc.id, ...doc.data() };
-
-            // Calculer le score de pertinence
-            let score = 0;
-            const queryLower = query.toLowerCase();
-
-            if (data.title && data.title.toLowerCase().includes(queryLower)) score += 10;
-            if (data.description && data.description.toLowerCase().includes(queryLower)) score += 5;
-            if (data.tags && data.tags.some(tag => tag.toLowerCase().includes(queryLower))) score += 3;
-
-            score += Math.log10((data.views || 0) + 1);
-            score += Math.log10((data.likes || 0) + 1) * 2;
-
-            return { ...data, score };
+        // Build query parameters
+        const params = new URLSearchParams({
+            q: query || '',
+            sortBy,
+            limit: limit.toString(),
         });
 
-        // Trier selon l'option choisie
-        switch (sortBy) {
-            case 'date':
-                results.sort((a, b) => (b.publishedAt?.seconds || 0) - (a.publishedAt?.seconds || 0));
-                break;
-            case 'views':
-                results.sort((a, b) => (b.views || 0) - (a.views || 0));
-                break;
-            case 'likes':
-                results.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                break;
-            default: // relevance
-                results.sort((a, b) => b.score - a.score);
+        if (category) params.append('category', category);
+        if (type) params.append('type', type);
+
+        // Call server-side search function
+        const response = await fetch(
+            `${FUNCTIONS_URL}/searchPublications?${params.toString()}`,
+        );
+
+        if (!response.ok) {
+            throw new Error(`Search failed: ${response.statusText}`);
         }
 
-        return results;
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || 'Search failed');
+        }
+
+        return data.results || [];
     } catch (error) {
         console.error('Erreur searchPublications:', error);
         return [];

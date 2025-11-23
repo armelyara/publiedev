@@ -50,14 +50,29 @@
         <div class="container">
             <div class="filters">
                 <div class="filter-group">
+                    <label>Catégorie</label>
+                    <select id="categoryFilter">
+                        <option value="">Toutes les catégories</option>
+                        <option value="fintech">Fintech & Mobile Money</option>
+                        <option value="agritech">AgriTech</option>
+                        <option value="healthtech">Santé & E-Santé</option>
+                        <option value="edtech">Éducation & Formation</option>
+                        <option value="ecommerce">E-commerce & Logistique</option>
+                        <option value="transport">Transport & Smart City</option>
+                        <option value="govtech">Services Publics & Citoyenneté</option>
+                        <option value="ai-data">Intelligence Artificielle & Data</option>
+                        <option value="devtools">Outils Développeurs</option>
+                        <option value="entertainment">Divertissement & Culture</option>
+                    </select>
+                </div>
+                <div class="filter-group">
                     <label>Type</label>
                     <select id="typeFilter">
                         <option value="">Tous</option>
-                        <option value="app">Applications</option>
-                        <option value="api">APIs</option>
-                        <option value="program">Programmes</option>
-                        <option value="tutorial">Tutoriels</option>
-                        <option value="article">Articles</option>
+                        <option value="app-mobile">App Mobile</option>
+                        <option value="app-web">App Web</option>
+                        <option value="api">API</option>
+                        <option value="article">Article</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -135,8 +150,9 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 PublieDev. Le mot PublieDev ainsi que le logo sont des marques déposées de The Day Info. L'utilisation non autorisée de ces marques est strictement interdite.</p>
-                <p><a href="https://thedayinfo.com/">By The Day Info</a></p>
+                <p>&copy; 2025 PublieDev. Le mot PublieDev ainsi que le logo "balise de code en blanc sur un fond bleu"
+                    sont des marques commerciales de <a href="https://thedayinfo.com/">The Day Info</a>. L'utilisation
+                    non-autorisée de ces marques est strictement interdite.</p>
             </div>
         </div>
     </footer>
@@ -159,6 +175,7 @@
         const container = document.getElementById('searchResults');
         const pageTitle = document.getElementById('pageTitle');
         const resultsCount = document.getElementById('resultsCount');
+        const categoryFilter = document.getElementById('categoryFilter');
         const typeFilter = document.getElementById('typeFilter');
         const sortFilter = document.getElementById('sortFilter');
         const searchInput = document.getElementById('searchInput');
@@ -179,13 +196,14 @@
         async function loadResults() {
             container.innerHTML = '<div class="loading">Chargement...</div>';
 
+            const category = categoryFilter.value;
             const type = typeFilter.value;
             const sortBy = sortFilter.value;
 
             try {
                 let results;
                 if (query) {
-                    results = await searchPublications(query, { type, sortBy });
+                    results = await searchPublications(query, { category, type, sortBy });
                 } else {
                     results = await getRecentPublications(20);
                 }
@@ -210,6 +228,7 @@
         }
 
         // Événements filtres
+        categoryFilter.addEventListener('change', loadResults);
         typeFilter.addEventListener('change', loadResults);
         sortFilter.addEventListener('change', loadResults);
 

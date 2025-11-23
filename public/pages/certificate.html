@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Certificat de Publication - PublieDev</title>
+    <style>
+        /* Certificate Page Styles */
+        .certificate-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bluesky-50) 0%, var(--gray-50) 100%);
+            padding: 2rem 1rem;
+        }
+
+        .certificate-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Certificate Card - A4-like proportions */
+        .certificate {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Watermark background */
+        .certificate::before {
+            content: 'PublieDev';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--bluesky-50);
+            opacity: 0.3;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .certificate-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header with seal */
+        .certificate-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid var(--bluesky-500);
+        }
+
+        .certificate-seal {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--bluesky-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .certificate-seal::after {
+            content: '✓';
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .certificate-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .certificate-subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+        }
+
+        /* PDID Display */
+        .pdid-display {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--bluesky-50);
+            border-radius: 0.5rem;
+            border: 2px solid var(--bluesky-200);
+        }
+
+        .pdid-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .pdid-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--bluesky-600);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.1em;
+        }
+
+        /* Publication Details */
+        .certificate-section {
+            margin: 2rem 0;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .detail-value {
+            color: var(--gray-900);
+            word-break: break-word;
+        }
+
+        /* Hash Display */
+        .hash-container {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--bluesky-500);
+        }
+
+        .hash-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .hash-value {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: var(--gray-900);
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        /* Verification Badge */
+        .verification-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .verification-badge.invalid {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .badge-icon {
+            font-size: 1.5rem;
+        }
+
+        .badge-text {
+            font-weight: 600;
+            color: #155724;
+        }
+
+        .verification-badge.invalid .badge-text {
+            color: #721c24;
+        }
+
+        /* Footer/Disclaimer */
+        .certificate-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Action Buttons */
+        .certificate-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn-primary {
+            background: var(--bluesky-500);
+            color: white;
+        }
+
+        .action-btn-primary:hover {
+            background: var(--bluesky-600);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+        }
+
+        .action-btn-secondary {
+            background: white;
+            color: var(--bluesky-600);
+            border: 2px solid var(--bluesky-200);
+        }
+
+        .action-btn-secondary:hover {
+            background: var(--bluesky-50);
+            border-color: var(--bluesky-500);
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--gray-200);
+            border-top-color: var(--bluesky-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error State */
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message {
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        /* Print Styles */
+        @media print {
+            .certificate-page {
+                background: white;
+                padding: 0;
+            }
+
+            .certificate {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+
+            .certificate-actions {
+                display: none;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .certificate {
+                padding: 1.5rem;
+            }
+
+            .certificate-title {
+                font-size: 1.5rem;
+            }
+
+            .pdid-value {
+                font-size: 1.5rem;
+            }
+
+            .detail-row {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+
+            .certificate::before {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="certificate-page">
+        <div class="certificate-container">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="spinner"></div>
+                <p style="color: var(--gray-600);">Chargement du certificat...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <div class="error-icon">⚠️</div>
+                <h2 class="error-title">Certificat introuvable</h2>
+                <p class="error-message">Le certificat demandé n'existe pas ou n'a pas encore été généré.</p>
+                <a href="/" class="action-btn action-btn-primary">Retour à l'accueil</a>
+            </div>
+
+            <!-- Certificate Content -->
+            <div id="certificateContent" class="certificate" style="display: none;">
+                <div class="certificate-content">
+                    <!-- Header -->
+                    <div class="certificate-header">
+                        <div class="certificate-seal"></div>
+                        <h1 class="certificate-title">Certificat de Publication</h1>
+                        <p class="certificate-subtitle">Preuve d'antériorité horodatée</p>
+                    </div>
+
+                    <!-- PDID -->
+                    <div class="pdid-display">
+                        <div class="pdid-label">Identifiant Unique</div>
+                        <div class="pdid-value" id="pdidValue">-</div>
+                    </div>
+
+                    <!-- Verification Badge -->
+                    <div class="verification-badge" id="verificationBadge">
+                        <span class="badge-icon">✓</span>
+                        <span class="badge-text">Certificat vérifié et authentique</span>
+                    </div>
+
+                    <!-- Publication Details -->
+                    <div class="certificate-section">
+                        <h2 class="section-title">Détails de la publication</h2>
+                        <div class="detail-row">
+                            <div class="detail-label">Titre</div>
+                            <div class="detail-value" id="pubTitle">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Auteur(s)</div>
+                            <div class="detail-value" id="pubAuthor">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Type</div>
+                            <div class="detail-value" id="pubType">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Catégorie</div>
+                            <div class="detail-value" id="pubCategory">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Date de publication</div>
+                            <div class="detail-value" id="pubDate">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Cryptographic Proof -->
+                    <div class="hash-container">
+                        <div class="hash-label">Empreinte cryptographique (SHA-256)</div>
+                        <div class="hash-value" id="hashValue">-</div>
+                    </div>
+
+                    <!-- Certificate Generation Info -->
+                    <div class="certificate-section">
+                        <h2 class="section-title">Informations du certificat</h2>
+                        <div class="detail-row">
+                            <div class="detail-label">Date de génération</div>
+                            <div class="detail-value" id="certDate">-</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">URL de vérification</div>
+                            <div class="detail-value" id="certUrl">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Footer/Disclaimer -->
+                    <div class="certificate-footer">
+                        <p class="disclaimer">
+                            Ce certificat atteste de la publication d'une solution technologique sur PublieDev à la
+                            date indiquée. Il constitue une preuve d'antériorité horodatée et vérifiable. L'empreinte
+                            cryptographique SHA-256 garantit l'intégrité des données certifiées. Ce certificat ne
+                            constitue pas une preuve de propriété intellectuelle ou de droits d'auteur, mais uniquement
+                            une preuve d'existence publique à une date donnée.
+                        </p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="certificate-actions">
+                        <button onclick="window.print()" class="action-btn action-btn-primary">
+                            🖨️ Imprimer / Sauvegarder en PDF
+                        </button>
+                        <a id="viewPublicationBtn" href="#" class="action-btn action-btn-secondary">
+                            📄 Voir la publication
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+
+    <script>
+        // Get PDID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const pdid = urlParams.get('pdid');
+
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const certificateContent = document.getElementById('certificateContent');
+
+        // Type mapping
+        const typeLabels = {
+            'app-mobile': 'Application Mobile',
+            'app-web': 'Application Web',
+            'api': 'API',
+            'article': 'Article technique'
+        };
+
+        // Category mapping
+        const categoryLabels = {
+            'fintech': 'Fintech & Mobile Money',
+            'agritech': 'AgriTech',
+            'healthtech': 'Santé & E-Santé',
+            'edtech': 'Éducation & Formation',
+            'ecommerce': 'E-commerce & Logistique',
+            'transport': 'Transport & Smart City',
+            'govtech': 'Services Publics & Citoyenneté',
+            'ai-data': 'Intelligence Artificielle & Data',
+            'devtools': 'Outils Développeurs',
+            'entertainment': 'Divertissement & Culture'
+        };
+
+        // Format date
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('fr-FR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Load certificate
+        async function loadCertificate() {
+            if (!pdid) {
+                showError('Aucun PDID spécifié dans l\'URL');
+                return;
+            }
+
+            try {
+                // Query Firestore for publication with this PDID
+                const snapshot = await db.collection(COLLECTIONS.PUBLICATIONS)
+                    .where('certificate.pdid', '==', pdid)
+                    .where('status', '==', 'approved')
+                    .limit(1)
+                    .get();
+
+                if (snapshot.empty) {
+                    showError('Certificat introuvable');
+                    return;
+                }
+
+                const doc = snapshot.docs[0];
+                const publication = doc.data();
+                const certificate = publication.certificate;
+
+                // Populate certificate data
+                document.getElementById('pdidValue').textContent = certificate.pdid;
+                document.getElementById('pubTitle').textContent = publication.title || '-';
+                document.getElementById('pubAuthor').textContent = publication.authorName || 'Anonyme';
+                document.getElementById('pubType').textContent = typeLabels[publication.type] || publication.type || '-';
+                document.getElementById('pubCategory').textContent = categoryLabels[publication.category] || publication.category || '-';
+                document.getElementById('pubDate').textContent = formatDate(publication.publishedAt);
+                document.getElementById('hashValue').textContent = certificate.hash;
+                document.getElementById('certDate').textContent = formatDate(certificate.generated_at);
+                document.getElementById('certUrl').textContent = window.location.href;
+
+                // Set publication link
+                const publicationUrl = `/pages/article.html?id=${doc.id}`;
+                document.getElementById('viewPublicationBtn').href = publicationUrl;
+
+                // Update page title
+                document.title = `Certificat ${certificate.pdid} - PublieDev`;
+
+                // Show certificate
+                loadingState.style.display = 'none';
+                certificateContent.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading certificate:', error);
+                showError('Erreur lors du chargement du certificat');
+            }
+        }
+
+        function showError(message) {
+            loadingState.style.display = 'none';
+            errorState.style.display = 'block';
+            errorState.querySelector('.error-message').textContent = message;
+        }
+
+        // Load on page ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadCertificate);
+        } else {
+            loadCertificate();
+        }
+    </script>
+</body>
+
+</html>
