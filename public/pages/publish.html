@@ -294,6 +294,8 @@
             if (user) {
                 form.style.display = 'block';
                 authRequired.style.display = 'none';
+                // Masquer la catégorie par défaut car "article" est sélectionné
+                document.getElementById('categorySection').style.display = 'none';
             } else {
                 form.style.display = 'none';
                 authRequired.style.display = 'block';
@@ -316,6 +318,14 @@
 
                 // Masquer tous les champs spécifiques
                 document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
+
+                // Afficher/masquer la section catégorie selon le type
+                // Pour les articles, la catégorie n'est pas nécessaire
+                if (type === 'article') {
+                    document.getElementById('categorySection').style.display = 'none';
+                } else {
+                    document.getElementById('categorySection').style.display = 'block';
+                }
 
                 // Afficher les champs du type sélectionné
                 const fieldsMap = {
@@ -366,7 +376,8 @@
                     .split(',').map(t => t.trim().toLowerCase()).filter(t => t);
 
                 // Validation
-                if (!category) {
+                // Catégorie obligatoire sauf pour les articles
+                if (type !== 'article' && !category) {
                     throw new Error('Veuillez sélectionner une catégorie principale');
                 }
                 if (tags.length < 3 || tags.length > 8) {
