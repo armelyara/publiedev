@@ -94,8 +94,12 @@ function createPublicationCard(publication) {
     const typeLabels = APP_CONFIG.typeLabels;
     const date = formatRelativeDate(publication.publishedAt);
 
-    // Sécuriser le slug
+    // Construire l'URL de la publication (utiliser slug si disponible, sinon id)
     const safeSlug = escapeAttr(publication.slug || '').replace(/[^a-z0-9-]/g, '');
+    const publicationUrl = safeSlug
+        ? `/pages/publication.html?slug=${safeSlug}`
+        : `/pages/publication.html?id=${escapeAttr(publication.id || '')}`;
+
     // Sécuriser les URLs
     const safeCoverImage = sanitizeUrl(publication.coverImage);
     const safeAuthorPhoto = sanitizeUrl(publication.authorPhoto);
@@ -103,7 +107,7 @@ function createPublicationCard(publication) {
     return `
         <article class="publication-card">
             ${safeCoverImage ? `
-                <a href="/pages/publication.html?slug=${safeSlug}">
+                <a href="${publicationUrl}">
                     <img src="${escapeAttr(safeCoverImage)}" alt="${escapeAttr(publication.title)}" loading="lazy">
                 </a>
             ` : ''}
@@ -123,7 +127,7 @@ function createPublicationCard(publication) {
                     </div>
                     <span class="publication-date">${escapeHtml(date)}</span>
                 </div>
-                <a href="/pages/publication.html?slug=${safeSlug}">
+                <a href="${publicationUrl}">
                     <h3>${escapeHtml(publication.title)}</h3>
                 </a>
                 <p>${escapeHtml(truncate(publication.description, 120))}</p>
