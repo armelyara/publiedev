@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Messages - Admin PublieDev</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <div class="admin-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <span>PublieDev</span>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="/admin/" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="/admin/publications.html" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Publications
+                </a>
+                <a href="/admin/users.html" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                    </svg>
+                    Utilisateurs
+                </a>
+                <a href="/admin/messages.html" class="admin-nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Messages
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <a href="/" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                    Voir le site
+                </a>
+                <button onclick="handleLogout()" class="admin-nav-item admin-logout-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>Historique des emails</h1>
+                <p style="color: var(--gray-600); margin-top: 0.5rem;">Tous les emails envoyés depuis le dashboard admin</p>
+            </header>
+
+            <div class="admin-content">
+                <!-- Filters -->
+                <div class="admin-filters">
+                    <div class="admin-filter-group admin-search-filter">
+                        <label>Recherche</label>
+                        <input type="text" id="searchInput" placeholder="Destinataire, sujet, publication...">
+                    </div>
+                </div>
+
+                <!-- Messages List -->
+                <div class="admin-section">
+                    <div id="messagesList" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="admin-loading">Chargement...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal pour voir le détail d'un email -->
+    <div class="admin-modal" id="emailModal">
+        <div class="admin-modal-content" style="max-width: 700px;">
+            <div class="admin-modal-header">
+                <h2>📧 Détails de l'email</h2>
+                <button onclick="closeModal()" class="admin-modal-close">&times;</button>
+            </div>
+            <div class="admin-modal-body" id="modalBody">
+                <!-- Contenu chargé dynamiquement -->
+            </div>
+            <div class="admin-modal-footer">
+                <button onclick="closeModal()" class="admin-btn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+
+    <script>
+        let allMessages = [];
+
+        // Vérifier l'authentification
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            const isAdmin = await checkAdminStatus(user.uid);
+            if (!isAdmin) {
+                await auth.signOut();
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            loadMessages();
+        });
+
+        async function checkAdminStatus(uid) {
+            try {
+                const doc = await db.collection('admins').doc(uid).get();
+                return doc.exists && doc.data().active === true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function handleLogout() {
+            await auth.signOut();
+            window.location.href = '/admin/login.html';
+        }
+
+        // Search filter
+        document.getElementById('searchInput').addEventListener('input', filterMessages);
+
+        async function loadMessages() {
+            const container = document.getElementById('messagesList');
+            try {
+                const snapshot = await db.collection('messages')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                allMessages = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                filterMessages();
+            } catch (error) {
+                console.error('Erreur chargement:', error);
+                container.innerHTML = '<div class="admin-error">Erreur de chargement</div>';
+            }
+        }
+
+        function filterMessages() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = allMessages;
+
+            if (search) {
+                filtered = filtered.filter(m =>
+                    (m.toEmail && m.toEmail.toLowerCase().includes(search)) ||
+                    (m.toName && m.toName.toLowerCase().includes(search)) ||
+                    (m.subject && m.subject.toLowerCase().includes(search)) ||
+                    (m.publicationTitle && m.publicationTitle.toLowerCase().includes(search))
+                );
+            }
+
+            renderMessages(filtered);
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('messagesList');
+
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="admin-empty">Aucun message trouvé</div>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => {
+                const date = msg.createdAt ? formatDate(msg.createdAt) : '-';
+                const timeAgo = msg.createdAt ? formatRelativeDate(msg.createdAt) : '-';
+
+                return `
+                    <div class="admin-card" onclick="viewMessage('${msg.id}')" style="cursor: pointer; transition: all 0.2s;">
+                        <div style="display: flex; gap: 1rem; align-items: start;">
+                            <div style="flex-shrink: 0; width: 40px; height: 40px; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                                    <div>
+                                        <h3 style="font-size: 1rem; font-weight: 600; margin: 0 0 0.25rem 0; color: var(--gray-900);">
+                                            ${escapeHtml(msg.toName || msg.toEmail || 'Destinataire inconnu')}
+                                        </h3>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">
+                                            ${escapeHtml(msg.toEmail || '')}
+                                        </p>
+                                    </div>
+                                    <div style="text-align: right; flex-shrink: 0; margin-left: 1rem;">
+                                        <p style="font-size: 0.875rem; color: var(--gray-600); margin: 0;">
+                                            ${timeAgo}
+                                        </p>
+                                        <p style="font-size: 0.75rem; color: var(--gray-500); margin: 0;">
+                                            ${date}
+                                        </p>
+                                    </div>
+                                </div>
+                                <p style="font-size: 0.875rem; font-weight: 500; margin: 0 0 0.5rem 0; color: var(--gray-700);">
+                                    ${escapeHtml(msg.subject || 'Sans objet')}
+                                </p>
+                                ${msg.publicationTitle ? `
+                                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.75rem; background: var(--bluesky-50); border-radius: 9999px; font-size: 0.75rem; color: var(--bluesky-700);">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                        </svg>
+                                        ${escapeHtml(msg.publicationTitle)}
+                                    </div>
+                                ` : ''}
+                                ${msg.cc && msg.cc.length > 0 ? `
+                                    <p style="font-size: 0.75rem; color: var(--gray-500); margin: 0.5rem 0 0 0;">
+                                        CC: ${msg.cc.join(', ')}
+                                    </p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add hover effect
+            const cards = container.querySelectorAll('.admin-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-2px)';
+                    card.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                    card.style.boxShadow = '';
+                });
+            });
+        }
+
+        function viewMessage(id) {
+            const msg = allMessages.find(m => m.id === id);
+            if (!msg) return;
+
+            const modal = document.getElementById('emailModal');
+            const modalBody = document.getElementById('modalBody');
+
+            modalBody.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                            Destinataire
+                        </label>
+                        <p style="margin: 0; color: var(--gray-900);">
+                            ${escapeHtml(msg.toName || '')} &lt;${escapeHtml(msg.toEmail || '')}&gt;
+                        </p>
+                    </div>
+
+                    ${msg.cc && msg.cc.length > 0 ? `
+                        <div>
+                            <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                                CC
+                            </label>
+                            <p style="margin: 0; color: var(--gray-900);">
+                                ${msg.cc.join(', ')}
+                            </p>
+                        </div>
+                    ` : ''}
+
+                    ${msg.bcc && msg.bcc.length > 0 ? `
+                        <div>
+                            <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                                CCI
+                            </label>
+                            <p style="margin: 0; color: var(--gray-900);">
+                                ${msg.bcc.join(', ')}
+                            </p>
+                        </div>
+                    ` : ''}
+
+                    <div>
+                        <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                            Objet
+                        </label>
+                        <p style="margin: 0; color: var(--gray-900);">
+                            ${escapeHtml(msg.subject || 'Sans objet')}
+                        </p>
+                    </div>
+
+                    ${msg.publicationTitle ? `
+                        <div>
+                            <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                                Publication concernée
+                            </label>
+                            <p style="margin: 0;">
+                                <a href="/admin/publications.html" style="color: var(--bluesky-600); text-decoration: none;">
+                                    ${escapeHtml(msg.publicationTitle)}
+                                </a>
+                            </p>
+                        </div>
+                    ` : ''}
+
+                    <div>
+                        <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                            Message
+                        </label>
+                        <div style="background: var(--gray-50); padding: 1rem; border-radius: 0.5rem; white-space: pre-wrap; color: var(--gray-900); border: 1px solid var(--gray-200);">
+${escapeHtml(msg.body || '')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="font-weight: 600; color: var(--gray-700); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: block;">
+                            Date d'envoi
+                        </label>
+                        <p style="margin: 0; color: var(--gray-900);">
+                            ${formatDate(msg.createdAt)} (${formatRelativeDate(msg.createdAt)})
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('emailModal').classList.remove('active');
+        }
+
+        // Utilitaires
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[m]);
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatRelativeDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (days > 0) return `il y a ${days} jour${days > 1 ? 's' : ''}`;
+            if (hours > 0) return `il y a ${hours} heure${hours > 1 ? 's' : ''}`;
+            if (minutes > 0) return `il y a ${minutes} minute${minutes > 1 ? 's' : ''}`;
+            return 'À l\'instant';
+        }
+
+        // Fermer modal en cliquant dehors
+        document.getElementById('emailModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('admin-modal')) closeModal();
+        });
+    </script>
+</body>
+</html>
