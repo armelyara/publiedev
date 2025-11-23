@@ -322,7 +322,8 @@
             const modalBody = document.getElementById('modalBody');
             const modalFooter = document.getElementById('modalFooter');
 
-            modalBody.innerHTML = `
+            // Générer le contenu du modal basé sur le type
+            let detailsHtml = `
                 <div class="admin-pub-detail">
                     <div class="admin-pub-detail-row">
                         <label>Titre</label>
@@ -339,25 +340,91 @@
                     <div class="admin-pub-detail-row">
                         <label>Auteur</label>
                         <p>${escapeHtml(pub.authorName || 'Anonyme')} (${escapeHtml(pub.authorEmail || '-')})</p>
-                    </div>
+                    </div>`;
+
+            // Champs spécifiques aux articles
+            if (pub.type === 'article') {
+                if (pub.abstract) {
+                    detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>Résumé (Abstract)</label>
+                        <p style="white-space: pre-wrap;">${escapeHtml(pub.abstract)}</p>
+                    </div>`;
+                }
+                if (pub.authors && pub.authors.length > 0) {
+                    detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>Auteurs</label>
+                        <p>${pub.authors.map(a => escapeHtml(a)).join(', ')}</p>
+                    </div>`;
+                }
+                if (pub.pdfUrl) {
+                    detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>Document PDF</label>
+                        <p>
+                            <a href="${escapeHtml(pub.pdfUrl)}" target="_blank" class="admin-btn admin-btn-secondary" style="display: inline-block; margin-right: 0.5rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                </svg>
+                                Voir le PDF
+                            </a>
+                        </p>
+                        <iframe src="${escapeHtml(pub.pdfUrl)}" style="width: 100%; height: 500px; border: 1px solid #e5e7eb; border-radius: 0.375rem; margin-top: 0.5rem;"></iframe>
+                    </div>`;
+                }
+                if (pub.doi) {
+                    detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>DOI</label>
+                        <p>${escapeHtml(pub.doi)}</p>
+                    </div>`;
+                }
+                if (pub.articleKeywords && pub.articleKeywords.length > 0) {
+                    detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>Mots-clés</label>
+                        <p>${pub.articleKeywords.map(k => `<span class="admin-tag">${escapeHtml(k)}</span>`).join(' ')}</p>
+                    </div>`;
+                }
+            } else {
+                // Champs pour apps, APIs, etc.
+                detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>Liens</label>
+                        <p>
+                            ${pub.demoUrl ? `<a href="${escapeHtml(pub.demoUrl)}" target="_blank">Demo</a> ` : ''}
+                            ${pub.githubUrl ? `<a href="${escapeHtml(pub.githubUrl)}" target="_blank">GitHub</a> ` : ''}
+                            ${pub.docsUrl ? `<a href="${escapeHtml(pub.docsUrl)}" target="_blank">Documentation</a> ` : ''}
+                            ${pub.playStoreUrl ? `<a href="${escapeHtml(pub.playStoreUrl)}" target="_blank">Play Store</a> ` : ''}
+                            ${pub.appStoreUrl ? `<a href="${escapeHtml(pub.appStoreUrl)}" target="_blank">App Store</a> ` : ''}
+                            ${pub.baseUrl ? `<a href="${escapeHtml(pub.baseUrl)}" target="_blank">API Base URL</a> ` : ''}
+                            ${!pub.demoUrl && !pub.githubUrl && !pub.docsUrl && !pub.playStoreUrl && !pub.appStoreUrl && !pub.baseUrl ? '-' : ''}
+                        </p>
+                    </div>`;
+                if (pub.technologies && pub.technologies.length > 0) {
+                    detailsHtml += `
+                    <div class="admin-pub-detail-row">
+                        <label>Technologies</label>
+                        <p>${pub.technologies.map(t => `<span class="admin-tag">${escapeHtml(t)}</span>`).join(' ')}</p>
+                    </div>`;
+                }
+            }
+
+            detailsHtml += `
                     <div class="admin-pub-detail-row">
                         <label>Tags</label>
                         <p>${(pub.tags || []).map(t => `<span class="admin-tag">${escapeHtml(t)}</span>`).join(' ') || '-'}</p>
                     </div>
                     <div class="admin-pub-detail-row">
-                        <label>Liens</label>
-                        <p>
-                            ${pub.demoUrl ? `<a href="${escapeHtml(pub.demoUrl)}" target="_blank">Demo</a> ` : ''}
-                            ${pub.githubUrl ? `<a href="${escapeHtml(pub.githubUrl)}" target="_blank">GitHub</a>` : ''}
-                            ${!pub.demoUrl && !pub.githubUrl ? '-' : ''}
-                        </p>
-                    </div>
-                    <div class="admin-pub-detail-row">
                         <label>Statistiques</label>
-                        <p>${pub.views || 0} vues | ${pub.likes || 0} likes</p>
+                        <p>${pub.views || 0} vues</p>
                     </div>
                 </div>
             `;
+
+            modalBody.innerHTML = detailsHtml;
 
             modalFooter.innerHTML = `
                 ${pub.status === 'pending' ? `
@@ -415,8 +482,17 @@
             }
         }
 
-        function contactAuthor(authorId, pubId) {
-            window.location.href = `/admin/messages.html?to=${authorId}&pub=${pubId}`;
+        async function contactAuthor(authorId, pubId) {
+            const pub = allPublications.find(p => p.id === pubId);
+            if (!pub || !pub.authorEmail) {
+                alert('Email de l\'auteur non disponible');
+                return;
+            }
+
+            const subject = encodeURIComponent(`PublieDev - Concernant votre publication: ${pub.title}`);
+            const body = encodeURIComponent(`Bonjour ${pub.authorName || 'Cher auteur'},\n\nNous vous contactons concernant votre publication "${pub.title}".\n\n`);
+
+            window.location.href = `mailto:${pub.authorEmail}?subject=${subject}&body=${body}`;
         }
 
         // Utilitaires

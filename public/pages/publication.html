@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Publication - PublieDev</title>
+    <style>
+        .pub-detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .pub-header {
+            margin-bottom: 2rem;
+        }
+        .pub-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+        .pub-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .pub-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .pub-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--bluesky-100);
+            color: var(--bluesky-600);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .pub-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 768px) {
+            .pub-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        .pub-main {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            border: 1px solid var(--gray-200);
+        }
+        .pub-sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+        .pub-sidebar-section {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 1rem;
+        }
+        .pub-sidebar-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .pub-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .pub-author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 9999px;
+            background: var(--bluesky-100);
+            color: var(--bluesky-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        .pub-author-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 9999px;
+            object-fit: cover;
+        }
+        .pub-author-info h4 {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.125rem;
+        }
+        .pub-author-info p {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+        .pub-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .pub-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+        .pub-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .pub-tag {
+            padding: 0.375rem 0.75rem;
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+        .pub-links a {
+            display: block;
+            padding: 0.75rem 1rem;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.375rem;
+            color: var(--bluesky-600);
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+        .pub-links a:hover {
+            background: var(--bluesky-50);
+            border-color: var(--bluesky-200);
+        }
+        .pdf-viewer {
+            width: 100%;
+            height: 800px;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .abstract-box {
+            background: var(--gray-50);
+            border-left: 4px solid var(--bluesky-500);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .abstract-box h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .abstract-box p {
+            line-height: 1.7;
+            color: var(--gray-700);
+        }
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-500);
+        }
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .error-state h2 {
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+        }
+        .error-state p {
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                </div>
+                <span>PublieDev</span>
+            </a>
+            <nav class="nav desktop-only">
+                <a href="/pages/explore.html">Explorer</a>
+                <div id="authNav">
+                    <a href="/pages/login.html" class="btn btn-primary">Connexion</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state">
+            <p>Chargement...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <h2>Publication introuvable</h2>
+            <p>Cette publication n'existe pas ou n'a pas encore été approuvée.</p>
+            <a href="/pages/explore.html" class="btn btn-primary">Retour à l'exploration</a>
+        </div>
+
+        <!-- Publication Content -->
+        <div id="publicationContent" style="display: none;">
+            <div class="pub-detail-container">
+                <div class="pub-header">
+                    <h1 id="pubTitle"></h1>
+                    <div class="pub-meta">
+                        <span id="pubType" class="pub-type-badge"></span>
+                        <div class="pub-meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span id="pubDate"></span>
+                        </div>
+                        <div class="pub-stats">
+                            <div class="pub-stat">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span id="pubViews"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pub-content">
+                    <div class="pub-main">
+                        <!-- Description -->
+                        <div id="pubDescription" style="margin-bottom: 2rem; line-height: 1.7; color: var(--gray-700);"></div>
+
+                        <!-- Abstract (for articles) -->
+                        <div id="pubAbstract" style="display: none;"></div>
+
+                        <!-- Content (for apps/APIs) -->
+                        <div id="pubContent" style="display: none; line-height: 1.7; color: var(--gray-700); white-space: pre-wrap;"></div>
+
+                        <!-- PDF Viewer (for articles) -->
+                        <div id="pdfContainer" style="display: none;">
+                            <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Document PDF</h3>
+                            <iframe id="pdfViewer" class="pdf-viewer"></iframe>
+                        </div>
+
+                        <!-- Authors (for articles) -->
+                        <div id="pubAuthors" style="display: none; margin-top: 2rem;">
+                            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem;">Auteurs</h3>
+                            <p id="authorsList" style="color: var(--gray-700);"></p>
+                        </div>
+
+                        <!-- DOI (for articles) -->
+                        <div id="pubDoi" style="display: none; margin-top: 1rem;">
+                            <p style="font-size: 0.875rem; color: var(--gray-600);">
+                                <strong>DOI:</strong> <span id="doiValue"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pub-sidebar">
+                        <!-- Author Info -->
+                        <div class="pub-sidebar-section">
+                            <h3>Auteur</h3>
+                            <div class="pub-author">
+                                <div class="pub-author-avatar" id="authorAvatar"></div>
+                                <div class="pub-author-info">
+                                    <h4 id="authorName"></h4>
+                                    <p id="authorDate"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technologies -->
+                        <div id="techSection" class="pub-sidebar-section" style="display: none;">
+                            <h3>Technologies</h3>
+                            <div class="pub-tags" id="techTags"></div>
+                        </div>
+
+                        <!-- Keywords (for articles) -->
+                        <div id="keywordsSection" class="pub-sidebar-section" style="display: none;">
+                            <h3>Mots-clés</h3>
+                            <div class="pub-tags" id="keywordTags"></div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div id="tagsSection" class="pub-sidebar-section" style="display: none;">
+                            <h3>Tags</h3>
+                            <div class="pub-tags" id="pubTags"></div>
+                        </div>
+
+                        <!-- Links -->
+                        <div id="linksSection" class="pub-sidebar-section" style="display: none;">
+                            <h3>Liens</h3>
+                            <div class="pub-links" id="pubLinks"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <img src="/assets/icons/logo.png" alt="PublieDev" width="20" height="20">
+                        </div>
+                        <span>PublieDev</span>
+                    </a>
+                    <p>PublieDev, la revue technologique des développeurs</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Explorer</h4>
+                    <ul>
+                        <li><a href="/pages/mobileapp.html">Application Mobile</a></li>
+                        <li><a href="/pages/apis.html">APIs</a></li>
+                        <li><a href="/pages/webapp.html">Application Web</a></li>
+                        <li><a href="/pages/articles.html">Articles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Ressources</h4>
+                    <ul>
+                        <li><a href="/pages/about.html">À propos</a></li>
+                        <li><a href="/pages/guidelines.html">Directives</a></li>
+                        <li><a href="/pages/privacy.html">Confidentialité</a></li>
+                        <li><a href="/pages/terms.html">Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 PublieDev. Le mot PublieDev ainsi que le logo sont des marques déposées de The Day Info.</p>
+                <p><a href="https://thedayinfo.com/">By The Day Info</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+    <script src="/js/services/auth.js"></script>
+    <script src="/js/services/publications.js"></script>
+    <script src="/js/utils/helpers.js"></script>
+
+    <script>
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const publicationContent = document.getElementById('publicationContent');
+
+        async function loadPublication() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            const id = urlParams.get('id');
+
+            if (!slug && !id) {
+                showError();
+                return;
+            }
+
+            try {
+                let publication;
+                if (slug) {
+                    publication = await getPublicationBySlug(slug);
+                } else {
+                    publication = await getPublication(id);
+                }
+
+                if (!publication || publication.status !== 'approved') {
+                    showError();
+                    return;
+                }
+
+                // Increment views
+                await incrementViews(publication.id);
+
+                displayPublication(publication);
+            } catch (error) {
+                console.error('Error loading publication:', error);
+                showError();
+            }
+        }
+
+        function displayPublication(pub) {
+            loadingState.style.display = 'none';
+            publicationContent.style.display = 'block';
+
+            // Title and meta
+            document.getElementById('pubTitle').textContent = pub.title;
+            document.getElementById('pubType').textContent = pub.type;
+            document.getElementById('pubDate').textContent = formatDate(pub.createdAt);
+            document.getElementById('pubViews').textContent = formatNumber((pub.views || 0) + 1) + ' vues';
+
+            // Description
+            document.getElementById('pubDescription').textContent = pub.description || '';
+
+            // Author
+            const authorAvatar = document.getElementById('authorAvatar');
+            if (pub.authorPhoto) {
+                authorAvatar.innerHTML = `<img src="${escapeAttr(pub.authorPhoto)}" alt="">`;
+            } else {
+                authorAvatar.textContent = (pub.authorName || 'A').charAt(0).toUpperCase();
+            }
+            document.getElementById('authorName').textContent = pub.authorName || 'Anonyme';
+            document.getElementById('authorDate').textContent = formatRelativeDate(pub.createdAt);
+
+            // Type-specific content
+            if (pub.type === 'article') {
+                // Abstract
+                if (pub.abstract) {
+                    document.getElementById('pubAbstract').style.display = 'block';
+                    document.getElementById('pubAbstract').innerHTML = `
+                        <div class="abstract-box">
+                            <h3>Résumé (Abstract)</h3>
+                            <p>${escapeHtml(pub.abstract)}</p>
+                        </div>
+                    `;
+                }
+
+                // PDF
+                if (pub.pdfUrl) {
+                    document.getElementById('pdfContainer').style.display = 'block';
+                    document.getElementById('pdfViewer').src = pub.pdfUrl;
+                }
+
+                // Authors
+                if (pub.authors && pub.authors.length > 0) {
+                    document.getElementById('pubAuthors').style.display = 'block';
+                    document.getElementById('authorsList').textContent = pub.authors.join(', ');
+                }
+
+                // DOI
+                if (pub.doi) {
+                    document.getElementById('pubDoi').style.display = 'block';
+                    document.getElementById('doiValue').textContent = pub.doi;
+                }
+
+                // Article keywords
+                if (pub.articleKeywords && pub.articleKeywords.length > 0) {
+                    document.getElementById('keywordsSection').style.display = 'block';
+                    document.getElementById('keywordTags').innerHTML = pub.articleKeywords
+                        .map(k => `<span class="pub-tag">${escapeHtml(k)}</span>`)
+                        .join('');
+                }
+            } else {
+                // Content for apps/APIs
+                if (pub.content) {
+                    document.getElementById('pubContent').style.display = 'block';
+                    document.getElementById('pubContent').textContent = pub.content;
+                }
+
+                // Technologies
+                if (pub.technologies && pub.technologies.length > 0) {
+                    document.getElementById('techSection').style.display = 'block';
+                    document.getElementById('techTags').innerHTML = pub.technologies
+                        .map(t => `<span class="pub-tag">${escapeHtml(t)}</span>`)
+                        .join('');
+                }
+
+                // Links
+                const links = [];
+                if (pub.demoUrl) links.push({ label: 'Démo en ligne', url: pub.demoUrl });
+                if (pub.githubUrl) links.push({ label: 'Code source (GitHub)', url: pub.githubUrl });
+                if (pub.docsUrl) links.push({ label: 'Documentation', url: pub.docsUrl });
+                if (pub.playStoreUrl) links.push({ label: 'Google Play Store', url: pub.playStoreUrl });
+                if (pub.appStoreUrl) links.push({ label: 'Apple App Store', url: pub.appStoreUrl });
+                if (pub.baseUrl) links.push({ label: 'URL de base API', url: pub.baseUrl });
+
+                if (links.length > 0) {
+                    document.getElementById('linksSection').style.display = 'block';
+                    document.getElementById('pubLinks').innerHTML = links
+                        .map(l => `<a href="${escapeAttr(l.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(l.label)}</a>`)
+                        .join('');
+                }
+            }
+
+            // Tags
+            if (pub.tags && pub.tags.length > 0) {
+                document.getElementById('tagsSection').style.display = 'block';
+                document.getElementById('pubTags').innerHTML = pub.tags
+                    .map(t => `<span class="pub-tag">${escapeHtml(t)}</span>`)
+                    .join('');
+            }
+
+            // Update page title
+            document.title = `${pub.title} - PublieDev`;
+        }
+
+        function showError() {
+            loadingState.style.display = 'none';
+            errorState.style.display = 'block';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        function escapeAttr(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/'/g, '&#39;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // Load publication on page load
+        loadPublication();
+    </script>
+</body>
+</html>
