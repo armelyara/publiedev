@@ -294,8 +294,6 @@
             if (user) {
                 form.style.display = 'block';
                 authRequired.style.display = 'none';
-                // Masquer la catégorie par défaut car "article" est sélectionné
-                document.getElementById('categorySection').style.display = 'none';
             } else {
                 form.style.display = 'none';
                 authRequired.style.display = 'block';
@@ -313,19 +311,12 @@
 
                 // Afficher les champs communs
                 document.getElementById('commonFields').style.display = 'block';
+                document.getElementById('categorySection').style.display = 'block';
                 document.getElementById('tagsSection').style.display = 'block';
                 document.getElementById('actionsSection').style.display = 'block';
 
                 // Masquer tous les champs spécifiques
                 document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
-
-                // Afficher/masquer la section catégorie selon le type
-                // Pour les articles, la catégorie n'est pas nécessaire
-                if (type === 'article') {
-                    document.getElementById('categorySection').style.display = 'none';
-                } else {
-                    document.getElementById('categorySection').style.display = 'block';
-                }
 
                 // Afficher les champs du type sélectionné
                 const fieldsMap = {
