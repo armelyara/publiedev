@@ -154,6 +154,88 @@
         </div>
     </div>
 
+    <!-- Modal pour envoyer un email -->
+    <div class="admin-modal" id="emailModal">
+        <div class="admin-modal-content" style="max-width: 700px;">
+            <div class="admin-modal-header">
+                <h2>📧 Envoyer un email</h2>
+                <button onclick="closeEmailModal()" class="admin-modal-close">&times;</button>
+            </div>
+            <div class="admin-modal-body">
+                <form id="emailForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="admin-form-group">
+                        <label for="emailTo" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                            À (Destinataire) *
+                        </label>
+                        <input type="email"
+                               id="emailTo"
+                               required
+                               readonly
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; background: #f9fafb;">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="emailCc" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                            CC (Copie)
+                        </label>
+                        <input type="text"
+                               id="emailCc"
+                               placeholder="email1@example.com, email2@example.com"
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Séparer plusieurs emails par des virgules</small>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="emailBcc" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                            CCI (Copie cachée)
+                        </label>
+                        <input type="text"
+                               id="emailBcc"
+                               placeholder="email1@example.com, email2@example.com"
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                        <small style="color: #6b7280; font-size: 0.875rem;">Séparer plusieurs emails par des virgules</small>
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="emailSubject" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                            Objet *
+                        </label>
+                        <input type="text"
+                               id="emailSubject"
+                               required
+                               style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;">
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="emailBody" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                            Message *
+                        </label>
+                        <textarea id="emailBody"
+                                  required
+                                  rows="12"
+                                  style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+
+                    <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 0.375rem; padding: 1rem; margin-top: 0.5rem;">
+                        <p style="margin: 0; color: #1e40af; font-size: 0.875rem;">
+                            <strong>💡 Conseil:</strong> L'email sera envoyé via Firebase. Vous pouvez personnaliser le message ci-dessus avant l'envoi.
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="admin-modal-footer">
+                <button onclick="sendEmail()" class="admin-btn admin-btn-primary" id="sendEmailBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    Envoyer l'email
+                </button>
+                <button onclick="closeEmailModal()" class="admin-btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
@@ -544,10 +626,160 @@
                 return;
             }
 
-            const subject = encodeURIComponent(`PublieDev - Concernant votre publication: ${pub.title}`);
-            const body = encodeURIComponent(`Bonjour ${pub.authorName || 'Cher auteur'},\n\nNous vous contactons concernant votre publication "${pub.title}".\n\n`);
+            // Open email modal with pre-filled data
+            openEmailModal(pub);
+        }
 
-            window.location.href = `mailto:${pub.authorEmail}?subject=${subject}&body=${body}`;
+        function openEmailModal(pub) {
+            const modal = document.getElementById('emailModal');
+
+            // Pre-fill recipient
+            document.getElementById('emailTo').value = pub.authorEmail;
+
+            // Pre-fill subject based on status
+            let subject = '';
+            let body = '';
+
+            if (pub.status === 'approved') {
+                subject = `🎉 Votre publication a été approuvée - PublieDev`;
+                body = `Bonjour ${pub.authorName || 'Cher auteur'},
+
+Nous avons le plaisir de vous informer que votre publication "${pub.title}" a été approuvée par notre comité de lecture.
+
+Votre publication est maintenant visible sur PublieDev.`;
+
+                // Add certificate link if available
+                if (pub.certificate && pub.certificate.certificate_url) {
+                    body += `\n\n📜 CERTIFICAT DE PUBLICATION
+Votre certificat de publication est disponible à l'adresse suivante :
+${pub.certificate.certificate_url}
+
+PDID : ${pub.certificate.pdid}
+
+Ce certificat constitue une preuve d'antériorité horodatée de votre travail. Vous pouvez le télécharger, l'imprimer ou le partager.`;
+                }
+
+                body += `\n\nVoir votre publication : https://pubdev-71378.web.app/pages/publication.html?id=${pub.id}
+
+Merci de contribuer à la communauté des développeurs !
+
+Cordialement,
+L'équipe PublieDev`;
+            } else if (pub.status === 'rejected') {
+                subject = `Mise à jour sur votre publication - PublieDev`;
+                body = `Bonjour ${pub.authorName || 'Cher auteur'},
+
+Nous vous contactons concernant votre publication "${pub.title}".
+
+Raison : ${pub.rejectionReason || 'Non spécifiée'}
+
+Vous pouvez modifier et soumettre à nouveau votre publication après avoir apporté les modifications nécessaires.
+
+Si vous avez des questions, n'hésitez pas à nous contacter.
+
+Cordialement,
+L'équipe PublieDev`;
+            } else {
+                subject = `PublieDev - Concernant votre publication: ${pub.title}`;
+                body = `Bonjour ${pub.authorName || 'Cher auteur'},
+
+Nous vous contactons concernant votre publication "${pub.title}".
+
+[Votre message ici]
+
+Cordialement,
+L'équipe PublieDev`;
+            }
+
+            document.getElementById('emailSubject').value = subject;
+            document.getElementById('emailBody').value = body;
+            document.getElementById('emailCc').value = '';
+            document.getElementById('emailBcc').value = '';
+
+            // Store publication ID for sending
+            modal.dataset.publicationId = pub.id;
+
+            modal.classList.add('active');
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.remove('active');
+        }
+
+        async function sendEmail() {
+            const form = document.getElementById('emailForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const sendBtn = document.getElementById('sendEmailBtn');
+            const originalHtml = sendBtn.innerHTML;
+
+            try {
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem; animation: spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    Envoi en cours...
+                `;
+
+                const to = document.getElementById('emailTo').value;
+                const cc = document.getElementById('emailCc').value;
+                const bcc = document.getElementById('emailBcc').value;
+                const subject = document.getElementById('emailSubject').value;
+                const body = document.getElementById('emailBody').value;
+
+                // Prepare email data
+                const emailData = {
+                    to: to,
+                    message: {
+                        subject: subject,
+                        text: body,
+                        html: body.replace(/\n/g, '<br>')
+                    }
+                };
+
+                // Add CC if provided
+                if (cc.trim()) {
+                    emailData.cc = cc.split(',').map(e => e.trim()).filter(e => e);
+                }
+
+                // Add BCC if provided
+                if (bcc.trim()) {
+                    emailData.bcc = bcc.split(',').map(e => e.trim()).filter(e => e);
+                }
+
+                // Add metadata
+                emailData.sentBy = auth.currentUser.uid;
+                emailData.sentAt = firebase.firestore.FieldValue.serverTimestamp();
+                emailData.publicationId = document.getElementById('emailModal').dataset.publicationId;
+
+                // Add to Firestore mail collection (Firebase mail extension will process it)
+                await db.collection('mail').add(emailData);
+
+                sendBtn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Email envoyé !
+                `;
+                sendBtn.style.background = '#10b981';
+
+                setTimeout(() => {
+                    closeEmailModal();
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = originalHtml;
+                    sendBtn.style.background = '';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Erreur envoi email:', error);
+                alert('Erreur lors de l\'envoi de l\'email: ' + error.message);
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = originalHtml;
+            }
         }
 
         // Utilitaires
@@ -587,10 +819,18 @@
             }
         }
 
-        // Fermer modal en cliquant dehors
+        // Fermer modals en cliquant dehors
         document.getElementById('publicationModal').addEventListener('click', (e) => {
             if (e.target.classList.contains('admin-modal')) closeModal();
         });
+        document.getElementById('emailModal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('admin-modal')) closeEmailModal();
+        });
     </script>
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </body>
 </html>
