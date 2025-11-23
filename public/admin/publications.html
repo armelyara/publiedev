@@ -120,6 +120,7 @@
                                     <th>Auteur</th>
                                     <th>Type</th>
                                     <th>Statut</th>
+                                    <th>Certificat</th>
                                     <th>Vues</th>
                                     <th>Date</th>
                                     <th>Actions</th>
@@ -127,7 +128,7 @@
                             </thead>
                             <tbody id="publicationsTable">
                                 <tr>
-                                    <td colspan="7" class="admin-loading">Chargement...</td>
+                                    <td colspan="8" class="admin-loading">Chargement...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -252,7 +253,7 @@
             const tbody = document.getElementById('publicationsTable');
 
             if (publications.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="admin-empty">Aucune publication trouvée</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="admin-empty">Aucune publication trouvée</td></tr>';
                 return;
             }
 
@@ -261,6 +262,23 @@
                                    pub.status === 'pending' ? 'warning' : 'danger';
                 const statusLabel = pub.status === 'approved' ? 'Approuvé' :
                                    pub.status === 'pending' ? 'En attente' : 'Rejeté';
+
+                // Certificate display
+                let certificateHtml = '-';
+                if (pub.certificate && pub.certificate.certificate_url) {
+                    certificateHtml = `
+                        <button onclick="copyCertificateUrl('${pub.certificate.certificate_url}')"
+                                class="admin-btn-icon"
+                                title="Copier le lien du certificat"
+                                style="background: #10b981; color: white;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+                    `;
+                }
+
                 return `
                     <tr>
                         <td>
@@ -272,6 +290,7 @@
                         <td>${escapeHtml(pub.authorName || 'Anonyme')}</td>
                         <td><span class="admin-badge admin-badge-${pub.type}">${pub.type}</span></td>
                         <td><span class="admin-status admin-status-${statusClass}">${statusLabel}</span></td>
+                        <td style="text-align: center;">${certificateHtml}</td>
                         <td>${pub.views || 0}</td>
                         <td>${formatDate(pub.createdAt)}</td>
                         <td>
@@ -420,7 +439,43 @@
                     <div class="admin-pub-detail-row">
                         <label>Statistiques</label>
                         <p>${pub.views || 0} vues</p>
-                    </div>
+                    </div>`;
+
+            // Certificate section
+            if (pub.certificate && pub.certificate.certificate_url) {
+                detailsHtml += `
+                    <div class="admin-pub-detail-row" style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 0.5rem; padding: 1rem; margin-top: 1rem;">
+                        <label style="color: #047857; font-weight: 600;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.5rem;">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            Certificat de Publication (PDID: ${escapeHtml(pub.certificate.pdid)})
+                        </label>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Lien du certificat à envoyer à l'auteur :</strong><br>
+                            <input type="text"
+                                   id="certUrl_${id}"
+                                   value="${escapeHtml(pub.certificate.certificate_url)}"
+                                   readonly
+                                   onclick="this.select()"
+                                   style="width: 100%; padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #10b981; border-radius: 0.375rem; font-family: monospace; font-size: 0.875rem; background: white;">
+                            <button onclick="copyCertificateUrl('${pub.certificate.certificate_url}')"
+                                    class="admin-btn admin-btn-success"
+                                    style="margin-top: 0.5rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Copier le lien
+                            </button>
+                        </p>
+                    </div>`;
+            }
+
+            detailsHtml += `
                 </div>
             `;
 
@@ -507,6 +562,29 @@
             if (!timestamp) return '-';
             const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
             return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        // Copier l'URL du certificat
+        async function copyCertificateUrl(url) {
+            try {
+                await navigator.clipboard.writeText(url);
+                // Visual feedback
+                const btn = event.target.closest('button');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.25rem;">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Copié !
+                `;
+                btn.style.background = '#059669';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = '#10b981';
+                }, 2000);
+            } catch (error) {
+                alert('Erreur lors de la copie : ' + error.message);
+            }
         }
 
         // Fermer modal en cliquant dehors
