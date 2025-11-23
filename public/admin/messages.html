@@ -164,19 +164,36 @@
         async function loadMessages() {
             const container = document.getElementById('messagesList');
             try {
+                console.log('Loading messages...');
                 const snapshot = await db.collection('messages')
                     .orderBy('createdAt', 'desc')
                     .get();
+
+                console.log(`Found ${snapshot.docs.length} messages`);
 
                 allMessages = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
 
+                console.log('Messages:', allMessages);
+
                 filterMessages();
             } catch (error) {
                 console.error('Erreur chargement:', error);
-                container.innerHTML = '<div class="admin-error">Erreur de chargement</div>';
+                console.error('Error details:', error.code, error.message);
+
+                // Show detailed error message
+                container.innerHTML = `
+                    <div class="admin-error">
+                        <h3>Erreur de chargement</h3>
+                        <p>${error.message}</p>
+                        ${error.code === 'permission-denied' ?
+                            '<p>Problème de permissions Firestore. Vérifiez les règles de sécurité.</p>' : ''}
+                        ${error.code === 'failed-precondition' ?
+                            '<p>Index Firestore manquant. Créez un index pour la collection "messages" avec le champ "createdAt".</p>' : ''}
+                    </div>
+                `;
             }
         }
 
@@ -200,7 +217,20 @@
             const container = document.getElementById('messagesList');
 
             if (messages.length === 0) {
-                container.innerHTML = '<div class="admin-empty">Aucun message trouvé</div>';
+                container.innerHTML = `
+                    <div class="admin-empty" style="text-align: center; padding: 3rem;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 1rem; color: var(--gray-400);">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Aucun email envoyé</h3>
+                        <p style="color: var(--gray-600); margin-bottom: 1.5rem;">
+                            Les emails que vous envoyez depuis la page Publications apparaîtront ici.
+                        </p>
+                        <a href="/admin/publications.html" class="admin-btn admin-btn-primary">
+                            Aller aux Publications
+                        </a>
+                    </div>
+                `;
                 return;
             }
 
