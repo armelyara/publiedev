@@ -259,8 +259,8 @@
 
                 <div class="pub-content">
                     <div class="pub-main">
-                        <!-- Description -->
-                        <div id="pubDescription" style="margin-bottom: 2rem; line-height: 1.7; color: var(--gray-700);"></div>
+                        <!-- Description (only for apps/APIs, not articles) -->
+                        <div id="pubDescription" style="margin-bottom: 2rem; line-height: 1.7; color: var(--gray-700); display: none;"></div>
 
                         <!-- Abstract (for articles) -->
                         <div id="pubAbstract" style="display: none;"></div>
@@ -428,9 +428,6 @@
             document.getElementById('pubDate').textContent = formatDate(pub.createdAt);
             document.getElementById('pubViews').textContent = formatNumber((pub.views || 0) + 1) + ' vues';
 
-            // Description
-            document.getElementById('pubDescription').textContent = pub.description || '';
-
             // Author
             const authorAvatar = document.getElementById('authorAvatar');
             if (pub.authorPhoto) {
@@ -480,6 +477,12 @@
                         .join('');
                 }
             } else {
+                // Description for apps/APIs
+                if (pub.description) {
+                    document.getElementById('pubDescription').style.display = 'block';
+                    document.getElementById('pubDescription').textContent = pub.description;
+                }
+
                 // Content for apps/APIs
                 if (pub.content) {
                     document.getElementById('pubContent').style.display = 'block';
