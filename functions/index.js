@@ -52,6 +52,34 @@ const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY);
 setGlobalOptions({maxInstances: 10});
 
 // ============================================================================
+// EMAIL HELPER FUNCTION
+// ============================================================================
+
+/**
+ * Send email by queuing it in Firestore
+ * @param {string} to - Recipient email address
+ * @param {string} subject - Email subject
+ * @param {string} htmlBody - Email HTML content
+ * @return {Promise<boolean>} Success status
+ */
+async function sendEmail(to, subject, htmlBody) {
+  try {
+    logger.info(`Email would be sent to: ${to}, Subject: ${subject}`);
+    await admin.firestore().collection("email_queue").add({
+      to,
+      subject,
+      html: htmlBody,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      sent: false,
+    });
+    return true;
+  } catch (error) {
+    logger.error("Error queuing email:", error);
+    return false;
+  }
+}
+
+// ============================================================================
 // CUSTOM SEARCH FUNCTION - SERVER-SIDE (SECRET SAUCE 🔒)
 // ============================================================================
 
