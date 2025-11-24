@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css">
+    <title>Utilisateurs - Admin PublieDev</title>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <a href="/admin/dashboard.html">
+                    <div class="logo-icon">
+                        <img src="/assets/icons/logo.png" alt="PublieDev" width="24" height="24">
+                    </div>
+                    <span>PublieDev Admin</span>
+                </a>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="/admin/dashboard.html" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Tableau de bord
+                </a>
+                <a href="/admin/publications.html" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Publications
+                </a>
+                <a href="/admin/users.html" class="admin-nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Utilisateurs
+                </a>
+                <a href="/admin/messages.html" class="admin-nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Messages
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <button onclick="logout()" class="admin-logout-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <header class="admin-header">
+                <div>
+                    <h1>Gestion des utilisateurs</h1>
+                    <p>Vue d'ensemble de tous les utilisateurs inscrits</p>
+                </div>
+                <div class="admin-stats-row">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-label">Total utilisateurs</div>
+                        <div class="admin-stat-value" id="totalUsers">-</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-label">Nouveaux (7j)</div>
+                        <div class="admin-stat-value" id="newUsers">-</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <!-- Filters -->
+                <div class="admin-filters">
+                    <input type="text" id="searchInput" placeholder="Rechercher par nom ou email...">
+                    <select id="sortFilter">
+                        <option value="recent">Plus récents</option>
+                        <option value="oldest">Plus anciens</option>
+                        <option value="publications">Plus de publications</option>
+                        <option value="name">Nom (A-Z)</option>
+                    </select>
+                </div>
+
+                <!-- Users List -->
+                <div id="usersList">
+                    <div class="admin-loading">Chargement des utilisateurs...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="admin-modal" id="userModal">
+        <div class="admin-modal-content" style="max-width: 800px;">
+            <div class="admin-modal-header">
+                <h2>Détails de l'utilisateur</h2>
+                <button onclick="closeUserModal()" class="admin-modal-close">&times;</button>
+            </div>
+            <div class="admin-modal-body" id="userModalBody">
+                <!-- User details will be inserted here -->
+            </div>
+            <div class="admin-modal-footer">
+                <button onclick="closeUserModal()" class="admin-btn">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/services/firebase.js"></script>
+
+    <script>
+        let allUsers = [];
+        let userPublications = {}; // Cache for user publication counts
+
+        // Check admin status
+        async function checkAdminStatus(uid) {
+            try {
+                const doc = await db.collection('admins').doc(uid).get();
+                return doc.exists && doc.data().active === true;
+            } catch (error) {
+                console.error('Erreur vérification admin:', error);
+                return false;
+            }
+        }
+
+        // Authentication check
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            const isAdmin = await checkAdminStatus(user.uid);
+            if (!isAdmin) {
+                await auth.signOut();
+                window.location.href = '/admin/login.html';
+                return;
+            }
+
+            loadUsers();
+        });
+
+        // Load all users
+        async function loadUsers() {
+            const container = document.getElementById('usersList');
+
+            try {
+                console.log('Chargement des utilisateurs...');
+
+                // Get all users
+                const usersSnapshot = await db.collection('users')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                console.log(`Trouvé ${usersSnapshot.docs.length} utilisateurs`);
+
+                allUsers = await Promise.all(usersSnapshot.docs.map(async (doc) => {
+                    const userData = doc.data();
+
+                    // Get publication count for each user
+                    const pubSnapshot = await db.collection('publications')
+                        .where('authorId', '==', doc.id)
+                        .get();
+
+                    userPublications[doc.id] = pubSnapshot.size;
+
+                    return {
+                        id: doc.id,
+                        ...userData,
+                        publicationsCount: pubSnapshot.size
+                    };
+                }));
+
+                console.log('Utilisateurs chargés:', allUsers);
+
+                // Update stats
+                updateStats();
+
+                // Display users
+                filterUsers();
+
+            } catch (error) {
+                console.error('Erreur chargement utilisateurs:', error);
+                container.innerHTML = `
+                    <div class="admin-error">
+                        <h3>❌ Erreur de chargement</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = allUsers.length;
+            document.getElementById('totalUsers').textContent = total;
+
+            // Count users created in last 7 days
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+            const newUsersCount = allUsers.filter(u => {
+                if (!u.createdAt) return false;
+                const createdDate = u.createdAt.toDate ? u.createdAt.toDate() : new Date(u.createdAt);
+                return createdDate >= sevenDaysAgo;
+            }).length;
+
+            document.getElementById('newUsers').textContent = newUsersCount;
+        }
+
+        // Filter and sort users
+        function filterUsers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortFilter').value;
+
+            let filtered = [...allUsers];
+
+            // Search filter
+            if (search) {
+                filtered = filtered.filter(u =>
+                    (u.displayName && u.displayName.toLowerCase().includes(search)) ||
+                    (u.email && u.email.toLowerCase().includes(search))
+                );
+            }
+
+            // Sort
+            switch(sortBy) {
+                case 'recent':
+                    filtered.sort((a, b) => {
+                        const dateA = a.createdAt?.toDate?.() || new Date(a.createdAt || 0);
+                        const dateB = b.createdAt?.toDate?.() || new Date(b.createdAt || 0);
+                        return dateB - dateA;
+                    });
+                    break;
+                case 'oldest':
+                    filtered.sort((a, b) => {
+                        const dateA = a.createdAt?.toDate?.() || new Date(a.createdAt || 0);
+                        const dateB = b.createdAt?.toDate?.() || new Date(b.createdAt || 0);
+                        return dateA - dateB;
+                    });
+                    break;
+                case 'publications':
+                    filtered.sort((a, b) => (b.publicationsCount || 0) - (a.publicationsCount || 0));
+                    break;
+                case 'name':
+                    filtered.sort((a, b) => {
+                        const nameA = (a.displayName || '').toLowerCase();
+                        const nameB = (b.displayName || '').toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+                    break;
+            }
+
+            renderUsers(filtered);
+        }
+
+        // Render users list
+        function renderUsers(users) {
+            const container = document.getElementById('usersList');
+
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="admin-empty" style="text-align: center; padding: 3rem;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <h3>Aucun utilisateur trouvé</h3>
+                        <p>Aucun utilisateur ne correspond à votre recherche.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = users.map(user => {
+                const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
+                const timeAgo = user.createdAt ? formatRelativeDate(user.createdAt) : '-';
+                const photoUrl = user.photoURL || '/assets/icons/default-avatar.png';
+
+                return `
+                    <div class="admin-card" onclick="viewUser('${user.id}')" style="cursor: pointer;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <!-- User Photo -->
+                            <div style="flex-shrink: 0;">
+                                <img src="${escapeHtml(photoUrl)}"
+                                     alt="${escapeHtml(user.displayName || 'User')}"
+                                     style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gray-200);"
+                                     onerror="this.src='/assets/icons/default-avatar.png'">
+                            </div>
+
+                            <!-- User Info -->
+                            <div style="flex: 1; min-width: 0;">
+                                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.125rem;">
+                                    ${escapeHtml(user.displayName || 'Sans nom')}
+                                </h3>
+                                <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">
+                                    ${escapeHtml(user.email || 'Pas d\'email')}
+                                </p>
+                                <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.875rem;">
+                                    <span style="color: var(--gray-600);">
+                                        📄 ${user.publicationsCount || 0} publication${(user.publicationsCount || 0) !== 1 ? 's' : ''}
+                                    </span>
+                                    ${user.bio ? `
+                                        <span style="color: var(--gray-600); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px;">
+                                            💬 ${escapeHtml(user.bio)}
+                                        </span>
+                                    ` : ''}
+                                </div>
+                            </div>
+
+                            <!-- Join Date -->
+                            <div style="text-align: right; flex-shrink: 0;">
+                                <p style="margin: 0; color: var(--gray-500); font-size: 0.875rem;">
+                                    ${timeAgo}
+                                </p>
+                                <p style="margin: 0.25rem 0 0 0; color: var(--gray-400); font-size: 0.75rem;">
+                                    ${joinDate}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // View user details
+        async function viewUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+
+            const modal = document.getElementById('userModal');
+            const modalBody = document.getElementById('userModalBody');
+
+            // Show loading state
+            modalBody.innerHTML = '<div class="admin-loading">Chargement...</div>';
+            modal.classList.add('active');
+
+            try {
+                // Get user's publications
+                const pubSnapshot = await db.collection('publications')
+                    .where('authorId', '==', userId)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                const publications = pubSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                const photoUrl = user.photoURL || '/assets/icons/default-avatar.png';
+                const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
+
+                modalBody.innerHTML = `
+                    <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
+                        <!-- User Photo -->
+                        <div style="flex-shrink: 0;">
+                            <img src="${escapeHtml(photoUrl)}"
+                                 alt="${escapeHtml(user.displayName || 'User')}"
+                                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);"
+                                 onerror="this.src='/assets/icons/default-avatar.png'">
+                        </div>
+
+                        <!-- User Details -->
+                        <div style="flex: 1;">
+                            <h2 style="margin: 0 0 0.5rem 0;">${escapeHtml(user.displayName || 'Sans nom')}</h2>
+                            <p style="margin: 0 0 1rem 0; color: var(--gray-600);">${escapeHtml(user.email || '')}</p>
+
+                            ${user.bio ? `
+                                <div style="margin-bottom: 1rem;">
+                                    <strong>Bio:</strong>
+                                    <p style="margin: 0.25rem 0 0 0; color: var(--gray-700);">${escapeHtml(user.bio)}</p>
+                                </div>
+                            ` : ''}
+
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+                                <div>
+                                    <label style="font-weight: 600; color: var(--gray-600); font-size: 0.875rem;">ID Utilisateur</label>
+                                    <p style="margin: 0.25rem 0 0 0; font-family: monospace; font-size: 0.875rem; word-break: break-all;">${escapeHtml(user.id)}</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: 600; color: var(--gray-600); font-size: 0.875rem;">Date d'inscription</label>
+                                    <p style="margin: 0.25rem 0 0 0;">${joinDate}</p>
+                                </div>
+                                <div>
+                                    <label style="font-weight: 600; color: var(--gray-600); font-size: 0.875rem;">Publications</label>
+                                    <p style="margin: 0.25rem 0 0 0;">${publications.length} publication${publications.length !== 1 ? 's' : ''}</p>
+                                </div>
+                                ${user.website ? `
+                                    <div>
+                                        <label style="font-weight: 600; color: var(--gray-600); font-size: 0.875rem;">Site web</label>
+                                        <p style="margin: 0.25rem 0 0 0;">
+                                            <a href="${escapeHtml(user.website)}" target="_blank" rel="noopener noreferrer">${escapeHtml(user.website)}</a>
+                                        </p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publications List -->
+                    ${publications.length > 0 ? `
+                        <div style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1.5rem;">
+                            <h3 style="margin: 0 0 1rem 0;">Publications de l'utilisateur</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                ${publications.map(pub => `
+                                    <div style="padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                        <div style="flex: 1;">
+                                            <a href="/admin/publications.html" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                                                ${escapeHtml(pub.title)}
+                                            </a>
+                                            <div style="display: flex; gap: 1rem; margin-top: 0.25rem; font-size: 0.875rem; color: var(--gray-600);">
+                                                <span>${getTypeLabel(pub.type)}</span>
+                                                <span>${getStatusBadge(pub.status)}</span>
+                                                <span>${formatDate(pub.createdAt)}</span>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right; color: var(--gray-600); font-size: 0.875rem;">
+                                            <div>👁️ ${pub.views || 0} vues</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="margin-top: 2rem; border-top: 2px solid var(--gray-200); padding-top: 1.5rem; text-align: center; color: var(--gray-500);">
+                            <p>Aucune publication pour cet utilisateur.</p>
+                        </div>
+                    `}
+                `;
+
+            } catch (error) {
+                console.error('Erreur chargement détails utilisateur:', error);
+                modalBody.innerHTML = `
+                    <div class="admin-error">
+                        <h3>❌ Erreur</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Close user modal
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        // Get type label
+        function getTypeLabel(type) {
+            const labels = {
+                'article': '📄 Article',
+                'app-mobile': '📱 App Mobile',
+                'app-web': '🌐 App Web',
+                'api': '🔌 API'
+            };
+            return labels[type] || type;
+        }
+
+        // Get status badge HTML
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span style="background: #fbbf24; color: #78350f; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">⏳ En attente</span>',
+                'approved': '<span style="background: #10b981; color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">✅ Approuvé</span>',
+                'rejected': '<span style="background: #ef4444; color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">❌ Rejeté</span>'
+            };
+            return badges[status] || status;
+        }
+
+        // Utility: Escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Utility: Format date
+        function formatDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        // Utility: Format relative date
+        function formatRelativeDate(timestamp) {
+            if (!timestamp) return '-';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365);
+
+            if (years > 0) return `il y a ${years} an${years > 1 ? 's' : ''}`;
+            if (months > 0) return `il y a ${months} mois`;
+            if (days > 0) return `il y a ${days} jour${days > 1 ? 's' : ''}`;
+            if (hours > 0) return `il y a ${hours} heure${hours > 1 ? 's' : ''}`;
+            if (minutes > 0) return `il y a ${minutes} minute${minutes > 1 ? 's' : ''}`;
+            return 'À l\'instant';
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await auth.signOut();
+                window.location.href = '/admin/login.html';
+            } catch (error) {
+                console.error('Erreur déconnexion:', error);
+                alert('Erreur lors de la déconnexion');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterUsers);
+        document.getElementById('sortFilter').addEventListener('change', filterUsers);
+
+        // Close modal on outside click
+        document.getElementById('userModal').addEventListener('click', (e) => {
+            if (e.target.id === 'userModal') {
+                closeUserModal();
+            }
+        });
+    </script>
+</body>
+</html>
