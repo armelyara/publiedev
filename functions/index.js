@@ -51,11 +51,6 @@ const client = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY);
 // Set global options for cost control
 setGlobalOptions({maxInstances: 10});
 
-// ============================================================================
-// EMAIL FUNCTIONALITY - REMOVED (Emails are now sent manually)
-// ============================================================================
-// NOTE: Automatic email notifications have been disabled.
-// Emails are now sent manually with personalized content for each publication.
 
 // ============================================================================
 // CUSTOM SEARCH FUNCTION - SERVER-SIDE (SECRET SAUCE 🔒)

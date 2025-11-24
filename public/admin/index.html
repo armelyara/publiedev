@@ -42,7 +42,7 @@
                     </svg>
                     Publications
                 </a>
-                <a href="/admin/users.html" class="admin-nav-item">
+                <a href="users.html" class="admin-nav-item">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                         <circle cx="9" cy="7" r="4"></circle>
@@ -51,7 +51,7 @@
                     </svg>
                     Utilisateurs
                 </a>
-                <a href="/admin/messages.html" class="admin-nav-item">
+                <a class="admin-nav-item">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
@@ -397,7 +397,7 @@
 
         async function contactAuthor(authorId, pubId) {
             // Rediriger vers la page de message
-            window.location.href = `/admin/messages.html?to=${authorId}&pub=${pubId}`;
+            window.location.href = `messages.html?to=${authorId}&pub=${pubId}`;
         }
 
         // Utilitaires
