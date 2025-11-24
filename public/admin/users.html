@@ -17,16 +17,33 @@
 
         #usersList {
             opacity: 1;
-            transition: opacity 0.2s ease-in-out;
-        }
-
-        #usersList.loading {
-            opacity: 0.7;
         }
 
         /* Ensure images don't cause layout shift */
         img {
             display: block;
+        }
+
+        /* User avatar with fixed dimensions to prevent layout shift */
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            min-height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gray-200);
+            background-color: var(--gray-200);
+        }
+
+        /* Prevent content jumping */
+        .admin-card {
+            contain: layout;
+        }
+
+        /* Smooth rendering */
+        .admin-main {
+            contain: layout style paint;
         }
     </style>
 </head>
@@ -35,7 +52,7 @@
         <!-- Sidebar -->
         <aside class="admin-sidebar">
             <div class="admin-brand">
-                <a href="/admin/dashboard.html">
+                <a href="/admin/">
                     <div class="logo-icon">
                         <img src="/assets/icons/logo.png" alt="PublieDev" width="24" height="24">
                     </div>
@@ -44,6 +61,7 @@
             </div>
 
             <nav class="admin-nav">
+                <a href="/admin/" class="admin-nav-item">
                 <a href="dashboard.html" class="admin-nav-item">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"></rect>
@@ -303,22 +321,24 @@
             const container = document.getElementById('usersList');
 
             if (users.length === 0) {
-                container.innerHTML = `
-                    <div class="admin-empty" style="text-align: center; padding: 3rem;">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <h3>Aucun utilisateur trouvé</h3>
-                        <p>Aucun utilisateur ne correspond à votre recherche.</p>
-                    </div>
-                `;
+                requestAnimationFrame(() => {
+                    container.innerHTML = `
+                        <div class="admin-empty" style="text-align: center; padding: 3rem;">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <h3>Aucun utilisateur trouvé</h3>
+                            <p>Aucun utilisateur ne correspond à votre recherche.</p>
+                        </div>
+                    `;
+                });
                 return;
             }
 
-            container.innerHTML = users.map(user => {
+            const html = users.map(user => {
                 const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
                 const timeAgo = user.createdAt ? formatRelativeDate(user.createdAt) : '-';
                 const photoUrl = user.photoURL || '/assets/icons/default-avatar.png';
@@ -327,10 +347,13 @@
                     <div class="admin-card" onclick="viewUser('${user.id}')" style="cursor: pointer;">
                         <div style="display: flex; gap: 1rem; align-items: center;">
                             <!-- User Photo -->
-                            <div style="flex-shrink: 0;">
+                            <div style="flex-shrink: 0; width: 60px; height: 60px;">
                                 <img src="${escapeHtml(photoUrl)}"
                                      alt="${escapeHtml(user.displayName || 'User')}"
-                                     style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gray-200);"
+                                     class="user-avatar"
+                                     loading="eager"
+                                     width="60"
+                                     height="60"
                                      onerror="this.src='/assets/icons/default-avatar.png'">
                             </div>
 
@@ -367,6 +390,11 @@
                     </div>
                 `;
             }).join('');
+
+            // Use requestAnimationFrame to prevent mid-frame rendering
+            requestAnimationFrame(() => {
+                container.innerHTML = html;
+            });
         }
 
         // View user details
