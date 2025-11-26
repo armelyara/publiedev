@@ -31,8 +31,8 @@
     <main>
         <div class="container" style="padding: 2rem 1rem;">
             <div style="max-width: 48rem; margin: 0 auto;">
-                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Nouvelle soumission</h1>
-                <p style="color: var(--gray-600); margin-bottom: 2rem;">Soumettez votre solution au comité d'évaluation</p>
+                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Tracer une nouvelle DevRoute</h1>
+                <p style="color: var(--gray-600); margin-bottom: 2rem;">Partagez votre parcours de développement avec la communauté</p>
 
                 <!-- État de chargement -->
                 <div id="loadingState" style="text-align: center; padding: 4rem 2rem;">
@@ -104,101 +104,300 @@
 
                     <!-- Champs spécifiques App Mobile -->
                     <div id="appMobileFields" class="type-fields" style="display: none;">
-                        <!-- Contenu -->
-                        <div class="form-group"
-                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="mobileContent">Contenu détaillé *</label>
-                            <textarea id="mobileContent" rows="10" placeholder="Détaillez votre projet..."></textarea>
-                        </div>
-                        <!-- Technologies -->
-                        <div class="form-group"
-                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="mobileTechnologies">Technologies (séparées par des virgules)</label>
-                            <input type="text" id="mobileTechnologies" placeholder="React, Node.js, Firebase...">
-                        </div>
+                        <!-- MÉTADONNÉES -->
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
+                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
+
                             <div class="form-group">
-                                <label for="playStoreUrl">URL Play Store</label>
-                                <input type="url" id="playStoreUrl" placeholder="https://play.google.com/store/apps/details?id=...">
+                                <label for="mobileCategory">Catégorie *</label>
+                                <select id="mobileCategory" required>
+                                    <option value="">Sélectionnez une catégorie</option>
+                                    <option value="fintech">FinTech</option>
+                                    <option value="agritech">AgriTech</option>
+                                    <option value="healthtech">HealthTech</option>
+                                    <option value="edtech">EdTech</option>
+                                    <option value="ecommerce">E-Commerce</option>
+                                    <option value="logistics">Logistique</option>
+                                    <option value="communication">Communication</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="productivity">Productivité</option>
+                                    <option value="other">Autre</option>
+                                </select>
                             </div>
+
                             <div class="form-group">
-                                <label for="appStoreUrl">URL App Store</label>
-                                <input type="url" id="appStoreUrl" placeholder="https://apps.apple.com/app/...">
+                                <label for="mobileSynopsis">Synopsis Technique (Max 280 caractères) *</label>
+                                <textarea id="mobileSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="mobileSynopsisCount">0</span>/280 caractères</small>
                             </div>
+
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="mobileGithubUrl">URL GitHub</label>
-                                <input type="url" id="mobileGithubUrl" placeholder="https://github.com/...">
+                                <label for="mobileTags">Stack Technique (Tags séparés par des virgules) *</label>
+                                <input type="text" id="mobileTags" placeholder="Ex: Flutter, Firebase, Google Maps API, Docker" required>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Entrez les technologies utilisées, séparées par des virgules</small>
                             </div>
+                        </div>
+
+                        <!-- ÉTAPE 1: LE POINT DE DÉPART -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🎯 ÉTAPE 1 : LE POINT DE DÉPART (Le Pourquoi)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Le contexte métier</p>
+
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="mobileCoverImage">Image de couverture</label>
-                                <input type="url" id="mobileCoverImage" placeholder="https://...">
+                                <label for="mobileDeparture">Le Problème / Besoin *</label>
+                                <textarea id="mobileDeparture" rows="6" placeholder="Quel problème précis avez-vous identifié ? Quel était le contexte avant votre solution ?" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 2: LE VÉHICULE & LA CARTE -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🚗 ÉTAPE 2 : LE VÉHICULE & LA CARTE (Le Comment)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Le cœur technique "Boîte Noire"</p>
+
+                            <div class="form-group">
+                                <label for="mobileRoadmap">Architecture & Logique *</label>
+                                <textarea id="mobileRoadmap" rows="8" placeholder="⚠️ Ne collez pas de code. Expliquez comment les technologies interagissent. (Ex: 'Le front envoie X au back qui traite Y...')" required></textarea>
+                                <small style="color: var(--orange-600); display: block; margin-top: 0.25rem;">⚠️ Pas de code source - expliquez l'architecture en langage naturel</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="mobileArchitectureDiagram">Schéma d'Architecture (Image)</label>
+                                <input type="file" id="mobileArchitectureDiagram" accept="image/*">
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Téléchargez votre diagramme (UML, dessin, schéma). Très recommandé.</small>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 3: LES OBSTACLES -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">⚠️ ÉTAPE 3 : LES OBSTACLES (Le Processus)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Ce qui fait de ceci un vrai retour d'expérience</p>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="mobileObstacles">Défis & Solutions *</label>
+                                <textarea id="mobileObstacles" rows="6" placeholder="Sur quoi avez-vous bloqué ? (Bug tenace, limitation API, performance). Comment avez-vous résolu le problème ?" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 4: LA DESTINATION -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🏁 ÉTAPE 4 : LA DESTINATION (Preuves & Impact)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">La validation finale</p>
+
+                            <div class="form-group">
+                                <label for="mobileDestination">Résultats & Impact *</label>
+                                <textarea id="mobileDestination" rows="4" placeholder="Qu'est-ce que la solution permet de faire aujourd'hui ? Donnez des chiffres si possible (Vitesse, Utilisateurs...)." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mobileDemoLink">Lien de Démo (Live)</label>
+                                <input type="url" id="mobileDemoLink" placeholder="Lien vers le Play Store, App Store ou vidéo YouTube">
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Play Store, App Store, ou lien de démonstration</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="mobileGallery">Galerie (Screenshots)</label>
+                                <input type="file" id="mobileGallery" accept="image/*" multiple>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Ajoutez 3 à 5 captures d'écran de l'interface. Floutez les données sensibles.</small>
                             </div>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques App Web -->
                     <div id="appWebFields" class="type-fields" style="display: none;">
-                        <!-- Contenu -->
-                        <div class="form-group"
-                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="webContent">Contenu détaillé *</label>
-                            <textarea id="webContent" rows="10" placeholder="Détaillez votre projet..."></textarea>
-                        </div>
-                        <!-- Technologies -->
-                        <div class="form-group"
-                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="webTechnologies">Technologies (séparées par des virgules)</label>
-                            <input type="text" id="webTechnologies" placeholder="React, Node.js, Firebase...">
-                        </div>
+                        <!-- MÉTADONNÉES -->
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
+                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
+
                             <div class="form-group">
-                                <label for="webDemoUrl">URL de démo</label>
-                                <input type="url" id="webDemoUrl" placeholder="https://...">
+                                <label for="webCategory">Catégorie *</label>
+                                <select id="webCategory" required>
+                                    <option value="">Sélectionnez une catégorie</option>
+                                    <option value="fintech">FinTech</option>
+                                    <option value="agritech">AgriTech</option>
+                                    <option value="healthtech">HealthTech</option>
+                                    <option value="edtech">EdTech</option>
+                                    <option value="ecommerce">E-Commerce</option>
+                                    <option value="logistics">Logistique</option>
+                                    <option value="communication">Communication</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="productivity">Productivité</option>
+                                    <option value="other">Autre</option>
+                                </select>
                             </div>
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <label for="webGithubUrl">URL GitHub</label>
-                                <input type="url" id="webGithubUrl" placeholder="https://github.com/...">
+
+                            <div class="form-group">
+                                <label for="webSynopsis">Synopsis Technique (Max 280 caractères) *</label>
+                                <textarea id="webSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="webSynopsisCount">0</span>/280 caractères</small>
                             </div>
+
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="webCoverImage">Image de couverture (URL)</label>
-                                <input type="url" id="webCoverImage" placeholder="https://...">
+                                <label for="webTags">Stack Technique (Tags séparés par des virgules) *</label>
+                                <input type="text" id="webTags" placeholder="Ex: React, Node.js, MongoDB, AWS" required>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Entrez les technologies utilisées, séparées par des virgules</small>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 1: LE POINT DE DÉPART -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🎯 ÉTAPE 1 : LE POINT DE DÉPART (Le Pourquoi)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Le contexte métier</p>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="webDeparture">Le Problème / Besoin *</label>
+                                <textarea id="webDeparture" rows="6" placeholder="Quel problème précis avez-vous identifié ? Quel était le contexte avant votre solution ?" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 2: LE VÉHICULE & LA CARTE -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🚗 ÉTAPE 2 : LE VÉHICULE & LA CARTE (Le Comment)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Le cœur technique "Boîte Noire"</p>
+
+                            <div class="form-group">
+                                <label for="webRoadmap">Architecture & Logique *</label>
+                                <textarea id="webRoadmap" rows="8" placeholder="⚠️ Ne collez pas de code. Expliquez comment les technologies interagissent. (Ex: 'Le front envoie X au back qui traite Y...')" required></textarea>
+                                <small style="color: var(--orange-600); display: block; margin-top: 0.25rem;">⚠️ Pas de code source - expliquez l'architecture en langage naturel</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="webArchitectureDiagram">Schéma d'Architecture (Image)</label>
+                                <input type="file" id="webArchitectureDiagram" accept="image/*">
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Téléchargez votre diagramme (UML, dessin, schéma). Très recommandé.</small>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 3: LES OBSTACLES -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">⚠️ ÉTAPE 3 : LES OBSTACLES (Le Processus)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Ce qui fait de ceci un vrai retour d'expérience</p>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="webObstacles">Défis & Solutions *</label>
+                                <textarea id="webObstacles" rows="6" placeholder="Sur quoi avez-vous bloqué ? (Bug tenace, limitation API, performance). Comment avez-vous résolu le problème ?" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 4: LA DESTINATION -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🏁 ÉTAPE 4 : LA DESTINATION (Preuves & Impact)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">La validation finale</p>
+
+                            <div class="form-group">
+                                <label for="webDestination">Résultats & Impact *</label>
+                                <textarea id="webDestination" rows="4" placeholder="Qu'est-ce que la solution permet de faire aujourd'hui ? Donnez des chiffres si possible (Vitesse, Utilisateurs...)." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="webDemoLink">Lien de Démo (Live)</label>
+                                <input type="url" id="webDemoLink" placeholder="Lien vers le site web ou vidéo YouTube">
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">URL du site web en production ou vidéo de démonstration</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="webGallery">Galerie (Screenshots)</label>
+                                <input type="file" id="webGallery" accept="image/*" multiple>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Ajoutez 3 à 5 captures d'écran de l'interface. Floutez les données sensibles.</small>
                             </div>
                         </div>
                     </div>
 
                     <!-- Champs spécifiques API -->
                     <div id="apiFields" class="type-fields" style="display: none;">
-                        <!-- Contenu -->
-                        <div class="form-group"
-                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="apiContent">Contenu détaillé *</label>
-                            <textarea id="apiContent" rows="10" placeholder="Détaillez votre projet..."></textarea>
-                        </div>
-                        <!-- Technologies -->
-                        <div class="form-group"
-                            style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100);">
-                            <label for="apiTechnologies">Technologies (séparées par des virgules)</label>
-                            <input type="text" id="apiTechnologies" placeholder="React, Node.js, Firebase...">
-                        </div>
+                        <!-- MÉTADONNÉES -->
                         <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
-                            <h3 style="font-weight: 500; margin-bottom: 1rem;">Liens</h3>
+                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
+
                             <div class="form-group">
-                                <label for="apiDocsUrl">URL Documentation</label>
-                                <input type="url" id="apiDocsUrl" placeholder="https://docs.example.com/...">
+                                <label for="apiCategory">Catégorie *</label>
+                                <select id="apiCategory" required>
+                                    <option value="">Sélectionnez une catégorie</option>
+                                    <option value="fintech">FinTech</option>
+                                    <option value="agritech">AgriTech</option>
+                                    <option value="healthtech">HealthTech</option>
+                                    <option value="edtech">EdTech</option>
+                                    <option value="ecommerce">E-Commerce</option>
+                                    <option value="logistics">Logistique</option>
+                                    <option value="communication">Communication</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="productivity">Productivité</option>
+                                    <option value="other">Autre</option>
+                                </select>
                             </div>
+
                             <div class="form-group">
-                                <label for="apiBaseUrl">URL de base de l'API</label>
-                                <input type="url" id="apiBaseUrl" placeholder="https://api.example.com/v1">
+                                <label for="apiSynopsis">Synopsis Technique (Max 280 caractères) *</label>
+                                <textarea id="apiSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="apiSynopsisCount">0</span>/280 caractères</small>
                             </div>
+
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="apiGithubUrl">URL GitHub</label>
-                                <input type="url" id="apiGithubUrl" placeholder="https://github.com/...">
+                                <label for="apiTags">Stack Technique (Tags séparés par des virgules) *</label>
+                                <input type="text" id="apiTags" placeholder="Ex: Node.js, Express, PostgreSQL, Redis" required>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Entrez les technologies utilisées, séparées par des virgules</small>
                             </div>
+                        </div>
+
+                        <!-- ÉTAPE 1: LE POINT DE DÉPART -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🎯 ÉTAPE 1 : LE POINT DE DÉPART (Le Pourquoi)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Le contexte métier</p>
+
                             <div class="form-group" style="margin-bottom: 0;">
-                                <label for="apiCoverImage">Image de couverture (URL)</label>
-                                <input type="url" id="apiCoverImage" placeholder="https://...">
+                                <label for="apiDeparture">Le Problème / Besoin *</label>
+                                <textarea id="apiDeparture" rows="6" placeholder="Quel problème précis avez-vous identifié ? Quel était le contexte avant votre solution ?" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 2: LE VÉHICULE & LA CARTE -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🚗 ÉTAPE 2 : LE VÉHICULE & LA CARTE (Le Comment)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Le cœur technique "Boîte Noire"</p>
+
+                            <div class="form-group">
+                                <label for="apiRoadmap">Architecture & Logique *</label>
+                                <textarea id="apiRoadmap" rows="8" placeholder="⚠️ Ne collez pas de code. Expliquez comment les technologies interagissent. (Ex: 'Le front envoie X au back qui traite Y...')" required></textarea>
+                                <small style="color: var(--orange-600); display: block; margin-top: 0.25rem;">⚠️ Pas de code source - expliquez l'architecture en langage naturel</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="apiArchitectureDiagram">Schéma d'Architecture (Image)</label>
+                                <input type="file" id="apiArchitectureDiagram" accept="image/*">
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Téléchargez votre diagramme (UML, dessin, schéma). Très recommandé.</small>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 3: LES OBSTACLES -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">⚠️ ÉTAPE 3 : LES OBSTACLES (Le Processus)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Ce qui fait de ceci un vrai retour d'expérience</p>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="apiObstacles">Défis & Solutions *</label>
+                                <textarea id="apiObstacles" rows="6" placeholder="Sur quoi avez-vous bloqué ? (Bug tenace, limitation API, performance). Comment avez-vous résolu le problème ?" required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ÉTAPE 4: LA DESTINATION -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 0.5rem;">🏁 ÉTAPE 4 : LA DESTINATION (Preuves & Impact)</h3>
+                            <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">La validation finale</p>
+
+                            <div class="form-group">
+                                <label for="apiDestination">Résultats & Impact *</label>
+                                <textarea id="apiDestination" rows="4" placeholder="Qu'est-ce que la solution permet de faire aujourd'hui ? Donnez des chiffres si possible (Vitesse, Utilisateurs...)." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="apiDemoLink">Lien de Démo (Live)</label>
+                                <input type="url" id="apiDemoLink" placeholder="Lien vers la documentation API ou vidéo YouTube">
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">URL de la documentation, playground API, ou vidéo de démonstration</small>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="apiGallery">Galerie (Screenshots)</label>
+                                <input type="file" id="apiGallery" accept="image/*" multiple>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;">Ajoutez 3 à 5 captures d'écran (docs, postman, réponses). Floutez les données sensibles.</small>
                             </div>
                         </div>
                     </div>
