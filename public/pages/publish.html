@@ -571,6 +571,13 @@
                 .filter(word => word.length > 2);
         }
 
+        // Fonction pour uploader un fichier
+        async function uploadFile(file, path) {
+            const storageRef = storage.ref(path);
+            await storageRef.put(file);
+            return await storageRef.getDownloadURL();
+        }
+
         // Publier
         async function publish() {
             errorAlert.style.display = 'none';
@@ -582,135 +589,148 @@
                 const user = getCurrentUser();
                 if (!user) throw new Error('Authentification requise.');
 
+                // Récupérer le type sélectionné
+                const type = document.getElementById('type').value;
+
+                // Champs communs
                 const title = document.getElementById('title').value.trim();
                 const description = document.getElementById('description').value.trim();
-                const category = document.getElementById('category').value;
-                const tagsRaw = document.getElementById('tags').value;
-                const synopsis = document.getElementById('synopsis').value.trim();
+                const mainCategory = document.getElementById('category').value;
+                const mainTagsRaw = document.getElementById('tags').value;
+                const mainTags = mainTagsRaw.split(',').map(t => t.trim()).filter(t => t);
 
-                const step1 = document.getElementById('step1_departure').value.trim();
-                const step2 = document.getElementById('step2_roadmap').value.trim();
-                const step3 = document.getElementById('step3_obstacles').value.trim();
-                const step4 = document.getElementById('step4_destination').value.trim();
-                const demoLink = document.getElementById('demo_link').value.trim();
+                // Validation basique
+                if (!title || !description) throw new Error('Titre et description sont requis.');
+                if (mainTags.length < 3) throw new Error('Veuillez ajouter au moins 3 tags techniques.');
 
-                // 2. Validation basique
-                const tags = tagsRaw.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
-                if (tags.length < 3) throw new Error('Veuillez mettre au moins 3 tags techniques.');
-                if (synopsis.length > 280) throw new Error('Le synopsis est trop long (max 280 caractères).');
-
-                // 3. Uploads des Fichiers (Séquentiel pour éviter la surcharge)
-                submitBtn.textContent = 'Téléchargement des images...';
-
-                let architectureDiagramUrl = null;
-                const diagramFile = document.getElementById('architecture_diagram').files[0];
-                if (diagramFile) {
-                    architectureDiagramUrl = await uploadFile(diagramFile, `devroutes/${user.uid}/${Date.now()}_arch_${diagramFile.name}`);
-                }
-
-                let galleryUrls = [];
-                const galleryFiles = document.getElementById('gallery').files;
-                if (galleryFiles.length > 0) {
-                    for (let i = 0; i < galleryFiles.length; i++) {
-                        const url = await uploadFile(galleryFiles[i], `devroutes/${user.uid}/${Date.now()}_gallery_${i}`);
-                        galleryUrls.push(url);
-                    }
-                }
-
-                // 4. Construction de l'objet JSON (Structure DevRoute Validée)
+                // Générer le slug
                 const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-                const devRouteData = {
-                    // MÉTADONNÉES RECHERCHE
-                    meta_search: {
-                        title: title,
-                        slug: slug,
-                        category: category,
-                        tags: tags,
-                        synopsis: synopsis,
-                        keywords: generateKeywords(title + ' ' + category + ' ' + tags.join(' '))
-                    },
-
-                    // LE CONTENU DEVROUTE
-                    content: {
-                        step_1_departure: step1,
-                        step_2_roadmap: step2,
-                        step_3_obstacles: step3,
-                        step_4_destination: step4,
-                        media: {
-                            architecture_diagram: architectureDiagramUrl,
-                            demo_link: demoLink,
-                            gallery: galleryUrls
-                        }
-                    },
-
-                    // INFOS SYSTÈME
+                // Construction de l'objet de base
+                const data = {
+                    type: type,
+                    title: title,
+                    description: description,
+                    slug: slug,
+                    category: mainCategory,
+                    tags: mainTags,
+                    keywords: generateKeywords(title + ' ' + description + ' ' + mainTags.join(' ')),
                     author: {
                         uid: user.uid,
                         name: user.displayName || 'Utilisateur',
                         email: user.email
                     },
-                    status: 'pending', // En attente de validation
+                    status: 'pending',
                     stats: { views: 0, likes: 0 },
-                    certification: { status: 'none' }, // Pas encore certifié
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
-                // Champs spécifiques selon le type
+                // Traitement selon le type
                 if (type === 'article') {
+                    // Article spécifique
+                    const authorsRaw = document.getElementById('articleAuthors').value;
+                    const abstract = document.getElementById('articleAbstract').value.trim();
+                    const doi = document.getElementById('articleDoi').value.trim();
                     const pdfInput = document.getElementById('articlePdf');
-                    if (pdfInput.files.length > 0) {
-                        const file = pdfInput.files[0];
-                        if (file.size > 10 * 1024 * 1024) {
-                            throw new Error('Le fichier PDF ne doit pas dépasser 10MB');
-                        }
-                        submitBtn.textContent = 'Upload du PDF...';
-                        const storageRef = storage.ref(`publications/${currentUser.uid}/${Date.now()}_${file.name}`);
-                        await storageRef.put(file);
-                        data.pdfUrl = await storageRef.getDownloadURL();
+
+                    if (!abstract) throw new Error('Le résumé (abstract) est requis pour un article.');
+                    if (!pdfInput.files.length) throw new Error('Le document PDF est requis pour un article.');
+
+                    const pdfFile = pdfInput.files[0];
+                    if (pdfFile.size > 10 * 1024 * 1024) throw new Error('Le fichier PDF ne doit pas dépasser 10MB.');
+
+                    submitBtn.textContent = 'Upload du PDF...';
+                    const pdfUrl = await uploadFile(pdfFile, `articles/${user.uid}/${Date.now()}_${pdfFile.name}`);
+
+                    data.authors = authorsRaw ? authorsRaw.split(',').map(a => a.trim()).filter(a => a) : [];
+                    data.abstract = abstract;
+                    data.doi = doi;
+                    data.pdfUrl = pdfUrl;
+
+                } else if (type === 'app-mobile' || type === 'app-web' || type === 'api') {
+                    // DevRoute commun pour les 3 types
+                    const prefix = type === 'app-mobile' ? 'mobile' : (type === 'app-web' ? 'web' : 'api');
+
+                    const devCategory = document.getElementById(`${prefix}Category`).value;
+                    const synopsis = document.getElementById(`${prefix}Synopsis`).value.trim();
+                    const techTagsRaw = document.getElementById(`${prefix}Tags`).value;
+                    const departure = document.getElementById(`${prefix}Departure`).value.trim();
+                    const roadmap = document.getElementById(`${prefix}Roadmap`).value.trim();
+                    const obstacles = document.getElementById(`${prefix}Obstacles`).value.trim();
+                    const destination = document.getElementById(`${prefix}Destination`).value.trim();
+                    const demoLink = document.getElementById(`${prefix}DemoLink`).value.trim();
+                    const diagramInput = document.getElementById(`${prefix}ArchitectureDiagram`);
+                    const galleryInput = document.getElementById(`${prefix}Gallery`);
+
+                    // Validation
+                    if (!devCategory || !synopsis || !techTagsRaw) {
+                        throw new Error('Catégorie, synopsis et tags techniques sont requis.');
                     }
-                    data.authors = document.getElementById('articleAuthors').value.split(',').map(a => a.trim()).filter(a => a);
-                    data.abstract = document.getElementById('articleAbstract').value.trim();
-                    data.doi = document.getElementById('articleDoi').value.trim();
+                    if (!departure || !roadmap || !obstacles || !destination) {
+                        throw new Error('Les 4 étapes de la DevRoute sont requises.');
+                    }
+                    if (synopsis.length > 280) {
+                        throw new Error('Le synopsis ne doit pas dépasser 280 caractères.');
+                    }
 
-                } else if (type === 'app-mobile') {
-                    data.content = document.getElementById('mobileContent').value.trim();
-                    data.technologies = document.getElementById('mobileTechnologies').value.split(',').map(t => t.trim()).filter(t => t);
-                    data.playStoreUrl = document.getElementById('playStoreUrl').value.trim();
-                    data.appStoreUrl = document.getElementById('appStoreUrl').value.trim();
-                    data.githubUrl = document.getElementById('mobileGithubUrl').value.trim();
-                    data.coverImage = document.getElementById('mobileCoverImage').value.trim();
+                    const techTags = techTagsRaw.split(',').map(t => t.trim()).filter(t => t);
 
-                } else if (type === 'app-web') {
-                    data.content = document.getElementById('webContent').value.trim();
-                    data.technologies = document.getElementById('webTechnologies').value.split(',').map(t => t.trim()).filter(t => t);
-                    data.demoUrl = document.getElementById('webDemoUrl').value.trim();
-                    data.githubUrl = document.getElementById('webGithubUrl').value.trim();
-                    data.coverImage = document.getElementById('webCoverImage').value.trim();
+                    // Upload du diagramme d'architecture
+                    submitBtn.textContent = 'Upload des fichiers...';
+                    let architectureDiagramUrl = null;
+                    if (diagramInput.files.length > 0) {
+                        architectureDiagramUrl = await uploadFile(
+                            diagramInput.files[0],
+                            `devroutes/${type}/${user.uid}/${Date.now()}_diagram`
+                        );
+                    }
 
-                } else if (type === 'api') {
-                    data.content = document.getElementById('apiContent').value.trim();
-                    data.technologies = document.getElementById('apiTechnologies').value.split(',').map(t => t.trim()).filter(t => t);
-                    data.docsUrl = document.getElementById('apiDocsUrl').value.trim();
-                    data.baseUrl = document.getElementById('apiBaseUrl').value.trim();
-                    data.githubUrl = document.getElementById('apiGithubUrl').value.trim();
-                    data.coverImage = document.getElementById('apiCoverImage').value.trim();
+                    // Upload de la galerie
+                    const galleryUrls = [];
+                    if (galleryInput.files.length > 0) {
+                        for (let i = 0; i < Math.min(galleryInput.files.length, 5); i++) {
+                            const url = await uploadFile(
+                                galleryInput.files[i],
+                                `devroutes/${type}/${user.uid}/${Date.now()}_gallery_${i}`
+                            );
+                            galleryUrls.push(url);
+                        }
+                    }
+
+                    // Structure DevRoute
+                    data.devRoute = {
+                        category: devCategory,
+                        synopsis: synopsis,
+                        techStack: techTags,
+                        steps: {
+                            departure: departure,
+                            roadmap: roadmap,
+                            obstacles: obstacles,
+                            destination: destination
+                        },
+                        media: {
+                            architectureDiagram: architectureDiagramUrl,
+                            demoLink: demoLink,
+                            gallery: galleryUrls
+                        }
+                    };
                 }
 
+                // Enregistrer dans Firestore
                 submitBtn.textContent = 'Création...';
                 await db.collection('publications').add(data);
 
+                // Succès
                 successAlert.textContent = 'Votre publication a été soumise pour validation. Elle sera visible après approbation.';
                 successAlert.style.display = 'block';
                 form.reset();
 
-                // Réinitialiser l'interface - montrer les boutons de type et sélectionner "article" par défaut
+                // Réinitialiser l'interface
                 document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
                 document.querySelector('.type-btn[data-type="article"]').classList.add('active');
                 document.getElementById('type').value = 'article';
 
-                // Cacher tous les champs sauf les boutons de type
                 document.getElementById('commonFields').style.display = 'none';
                 document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
                 document.getElementById('categorySection').style.display = 'none';
@@ -720,7 +740,7 @@
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Soumettre';
 
-                // Scroll vers le haut pour voir le message de succès
+                // Scroll vers le haut
                 window.scrollTo({ top: 0, behavior: 'smooth' });
 
             } catch (error) {
