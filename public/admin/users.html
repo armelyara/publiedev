@@ -519,23 +519,27 @@
                     ...doc.data()
                 }));
 
-                const photoUrl = user.photoURL || '/assets/icons/default-avatar.png';
+                const photoUrl = (user.photoURL && user.photoURL.trim()) ? user.photoURL : '/assets/icons/default-avatar.png';
                 const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
 
                 modalBody.innerHTML = `
                     <div style="display: flex; gap: 2rem; margin-bottom: 2rem;">
                         <!-- User Photo -->
-                        <div style="flex-shrink: 0;">
+                        <div style="flex-shrink: 0; width: 120px; height: 120px; position: relative; border-radius: 50%; overflow: hidden; background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%); background-size: 200% 100%; contain: strict;">
                             <img src="${escapeHtml(photoUrl)}"
                                  alt="${escapeHtml(user.displayName || 'User')}"
-                                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);"
-                                 onerror="this.src='/assets/icons/default-avatar.png'">
+                                 width="120"
+                                 height="120"
+                                 loading="eager"
+                                 decoding="async"
+                                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); display: block; position: absolute; top: 0; left: 0; transform: translateZ(0); backface-visibility: hidden; contain: strict;"
+                                 onerror="this.onerror=null; this.src='/assets/icons/default-avatar.png';">
                         </div>
 
                         <!-- User Details -->
-                        <div style="flex: 1;">
-                            <h2 style="margin: 0 0 0.5rem 0;">${escapeHtml(user.displayName || 'Sans nom')}</h2>
-                            <p style="margin: 0 0 1rem 0; color: var(--gray-600);">${escapeHtml(user.email || '')}</p>
+                        <div style="flex: 1; min-width: 0;">
+                            <h2 style="margin: 0 0 0.5rem 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(user.displayName || 'Sans nom')}</h2>
+                            <p style="margin: 0 0 1rem 0; color: var(--gray-600); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(user.email || '')}</p>
 
                             ${user.bio ? `
                                 <div style="margin-bottom: 1rem;">
