@@ -377,19 +377,23 @@
     <script src="/js/services/auth.js"></script>
 
     <script>
-        const form = document.getElementById('publishForm');
-        const authRequired = document.getElementById('authRequired');
-        const loadingState = document.getElementById('loadingState');
-        const errorAlert = document.getElementById('errorAlert');
-        const successAlert = document.getElementById('successAlert');
-        const submitBtn = document.getElementById('submitBtn');
-        const synopsisInput = document.getElementById('synopsis');
-        const synopsisCount = document.getElementById('synopsisCount');
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('publishForm');
+            const authRequired = document.getElementById('authRequired');
+            const loadingState = document.getElementById('loadingState');
+            const errorAlert = document.getElementById('errorAlert');
+            const successAlert = document.getElementById('successAlert');
+            const submitBtn = document.getElementById('submitBtn');
+            const synopsisInput = document.getElementById('synopsis');
+            const synopsisCount = document.getElementById('synopsisCount');
 
-        // Gestion du compteur de caractères
-        synopsisInput.addEventListener('input', () => {
-            synopsisCount.textContent = synopsisInput.value.length;
-        });
+            // Gestion du compteur de caractères
+            if (synopsisInput && synopsisCount) {
+                synopsisInput.addEventListener('input', () => {
+                    synopsisCount.textContent = synopsisInput.value.length;
+                });
+            }
 
         // Vérifier l'authentification (utilise currentUser de auth.js)
         auth.onAuthStateChanged((user) => {
@@ -525,6 +529,7 @@
                 submitBtn.textContent = 'Soumettre ma DevRoute';
             }
         });
+        }); // End DOMContentLoaded
     </script>
 
     <footer class="footer">
