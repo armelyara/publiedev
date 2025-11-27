@@ -444,10 +444,16 @@
         const errorAlert = document.getElementById('errorAlert');
         const successAlert = document.getElementById('successAlert');
         const submitBtn = document.getElementById('submitBtn');
+        const synopsisInput = document.getElementById('synopsis');
+        const synopsisCount = document.getElementById('synopsisCount');
 
-        // Vérifier l'authentification
+        // Gestion du compteur de caractères
+        synopsisInput.addEventListener('input', () => {
+            synopsisCount.textContent = synopsisInput.value.length;
+        });
+
+        // Vérifier l'authentification (utilise currentUser de auth.js)
         auth.onAuthStateChanged((user) => {
-            currentUser = user;
             loadingState.style.display = 'none';
             if (user) {
                 form.style.display = 'block';
@@ -509,50 +515,80 @@
             submitBtn.textContent = 'Envoi en cours...';
 
             try {
-                if (!currentUser) {
-                    throw new Error('Vous devez être connecté pour soumettre.');
-                }
-
-                const type = document.getElementById('type').value;
-                if (!type) {
-                    throw new Error('Veuillez sélectionner un type de publication');
-                }
+                const user = getCurrentUser();
+                if (!user) throw new Error('Authentification requise.');
 
                 const title = document.getElementById('title').value.trim();
                 const description = document.getElementById('description').value.trim();
                 const category = document.getElementById('category').value;
-                const tags = document.getElementById('tags').value
-                    .split(',').map(t => t.trim().toLowerCase()).filter(t => t);
+                const tagsRaw = document.getElementById('tags').value;
+                const synopsis = document.getElementById('synopsis').value.trim();
 
-                // Validation
-                // Catégorie obligatoire sauf pour les articles
-                if (type !== 'article' && !category) {
-                    throw new Error('Veuillez sélectionner une catégorie principale');
+                const step1 = document.getElementById('step1_departure').value.trim();
+                const step2 = document.getElementById('step2_roadmap').value.trim();
+                const step3 = document.getElementById('step3_obstacles').value.trim();
+                const step4 = document.getElementById('step4_destination').value.trim();
+                const demoLink = document.getElementById('demo_link').value.trim();
+
+                // 2. Validation basique
+                const tags = tagsRaw.split(',').map(t => t.trim().toLowerCase()).filter(t => t);
+                if (tags.length < 3) throw new Error('Veuillez mettre au moins 3 tags techniques.');
+                if (synopsis.length > 280) throw new Error('Le synopsis est trop long (max 280 caractères).');
+
+                // 3. Uploads des Fichiers (Séquentiel pour éviter la surcharge)
+                submitBtn.textContent = 'Téléchargement des images...';
+
+                let architectureDiagramUrl = null;
+                const diagramFile = document.getElementById('architecture_diagram').files[0];
+                if (diagramFile) {
+                    architectureDiagramUrl = await uploadFile(diagramFile, `devroutes/${user.uid}/${Date.now()}_arch_${diagramFile.name}`);
                 }
-                if (tags.length < 3 || tags.length > 8) {
-                    throw new Error('Veuillez ajouter entre 3 et 8 tags techniques');
+
+                let galleryUrls = [];
+                const galleryFiles = document.getElementById('gallery').files;
+                if (galleryFiles.length > 0) {
+                    for (let i = 0; i < galleryFiles.length; i++) {
+                        const url = await uploadFile(galleryFiles[i], `devroutes/${user.uid}/${Date.now()}_gallery_${i}`);
+                        galleryUrls.push(url);
+                    }
                 }
 
-                const slug = title.toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
+                // 4. Construction de l'objet JSON (Structure DevRoute Validée)
+                const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-                const data = {
-                    title,
-                    slug,
-                    description,
-                    type,
-                    category,
-                    tags,
-                    keywords: generateKeywords(title + ' ' + description + ' ' + tags.join(' ')),
-                    searchKeywords: generateKeywords(title + ' ' + description + ' ' + category + ' ' + tags.join(' ')),
-                    authorId: currentUser.uid,
-                    authorName: currentUser.displayName || '',
-                    authorEmail: currentUser.email || '',
-                    status: 'pending',
-                    views: 0,
-                    likes: 0,
+                const devRouteData = {
+                    // MÉTADONNÉES RECHERCHE
+                    meta_search: {
+                        title: title,
+                        slug: slug,
+                        category: category,
+                        tags: tags,
+                        synopsis: synopsis,
+                        keywords: generateKeywords(title + ' ' + category + ' ' + tags.join(' '))
+                    },
+
+                    // LE CONTENU DEVROUTE
+                    content: {
+                        step_1_departure: step1,
+                        step_2_roadmap: step2,
+                        step_3_obstacles: step3,
+                        step_4_destination: step4,
+                        media: {
+                            architecture_diagram: architectureDiagramUrl,
+                            demo_link: demoLink,
+                            gallery: galleryUrls
+                        }
+                    },
+
+                    // INFOS SYSTÈME
+                    author: {
+                        uid: user.uid,
+                        name: user.displayName || 'Utilisateur',
+                        email: user.email
+                    },
+                    status: 'pending', // En attente de validation
+                    stats: { views: 0, likes: 0 },
+                    certification: { status: 'none' }, // Pas encore certifié
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
