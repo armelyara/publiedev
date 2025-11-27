@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <title>Soumettre - PublieDev</title>
+    <title>Tracer une DevRoute - PublieDev</title>
 </head>
 <body>
     <!-- Header -->
@@ -30,9 +30,12 @@
 
     <main>
         <div class="container" style="padding: 2rem 1rem;">
-            <div style="max-width: 48rem; margin: 0 auto;">
-                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Tracer une nouvelle DevRoute</h1>
-                <p style="color: var(--gray-600); margin-bottom: 2rem;">Partagez votre parcours de développement avec la communauté</p>
+            <div style="max-width: 54rem; margin: 0 auto;">
+                <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Tracer une nouvelle DevRoute</h1>
+                <p style="color: var(--gray-600); margin-bottom: 2rem; font-size: 1.1rem;">
+                    Documentez votre itinéraire technique : du problème initial à la solution déployée.
+                    <br><small>⚠️ Rappel : Méthode "Boîte Noire". Décrivez la logique, ne soumettez jamais votre code source.</small>
+                </p>
 
                 <!-- État de chargement -->
                 <div id="loadingState" style="text-align: center; padding: 4rem 2rem;">
@@ -109,19 +112,19 @@
                             <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
 
                             <div class="form-group">
-                                <label for="mobileCategory">Catégorie *</label>
-                                <select id="mobileCategory" required>
-                                    <option value="">Sélectionnez une catégorie</option>
-                                    <option value="fintech">FinTech</option>
+                                <label for="mobileCategory" style="font-weight: 600;">Catégorie Principale *</label>
+                                <select id="mobileCategory" required style="padding: 0.75rem;">
+                                    <option value="">Choisir un secteur...</option>
+                                    <option value="fintech">Fintech & Mobile Money</option>
                                     <option value="agritech">AgriTech</option>
-                                    <option value="healthtech">HealthTech</option>
-                                    <option value="edtech">EdTech</option>
-                                    <option value="ecommerce">E-Commerce</option>
-                                    <option value="logistics">Logistique</option>
-                                    <option value="communication">Communication</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="productivity">Productivité</option>
-                                    <option value="other">Autre</option>
+                                    <option value="healthtech">Santé & E-Santé</option>
+                                    <option value="edtech">Éducation & Formation</option>
+                                    <option value="ecommerce">E-commerce & Logistique</option>
+                                    <option value="transport">Transport & Smart City</option>
+                                    <option value="govtech">Services Publics (GovTech)</option>
+                                    <option value="ai-data">IA & Data Science</option>
+                                    <option value="devtools">Outils Développeurs (Libs/SDK)</option>
+                                    <option value="entertainment">Divertissement & Culture</option>
                                 </select>
                             </div>
 
@@ -209,19 +212,19 @@
                             <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
 
                             <div class="form-group">
-                                <label for="webCategory">Catégorie *</label>
-                                <select id="webCategory" required>
-                                    <option value="">Sélectionnez une catégorie</option>
-                                    <option value="fintech">FinTech</option>
+                                <label for="webCategory" style="font-weight: 600;">Catégorie Principale *</label>
+                                <select id="webCategory" required style="padding: 0.75rem;">
+                                    <option value="">Choisir un secteur...</option>
+                                    <option value="fintech">Fintech & Mobile Money</option>
                                     <option value="agritech">AgriTech</option>
-                                    <option value="healthtech">HealthTech</option>
-                                    <option value="edtech">EdTech</option>
-                                    <option value="ecommerce">E-Commerce</option>
-                                    <option value="logistics">Logistique</option>
-                                    <option value="communication">Communication</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="productivity">Productivité</option>
-                                    <option value="other">Autre</option>
+                                    <option value="healthtech">Santé & E-Santé</option>
+                                    <option value="edtech">Éducation & Formation</option>
+                                    <option value="ecommerce">E-commerce & Logistique</option>
+                                    <option value="transport">Transport & Smart City</option>
+                                    <option value="govtech">Services Publics (GovTech)</option>
+                                    <option value="ai-data">IA & Data Science</option>
+                                    <option value="devtools">Outils Développeurs (Libs/SDK)</option>
+                                    <option value="entertainment">Divertissement & Culture</option>
                                 </select>
                             </div>
 
@@ -309,19 +312,19 @@
                             <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
 
                             <div class="form-group">
-                                <label for="apiCategory">Catégorie *</label>
-                                <select id="apiCategory" required>
-                                    <option value="">Sélectionnez une catégorie</option>
-                                    <option value="fintech">FinTech</option>
+                                <label for="apiCategory" style="font-weight: 600;">Catégorie Principale *</label>
+                                <select id="apiCategory" required style="padding: 0.75rem;">
+                                    <option value="">Choisir un secteur...</option>
+                                    <option value="fintech">Fintech & Mobile Money</option>
                                     <option value="agritech">AgriTech</option>
-                                    <option value="healthtech">HealthTech</option>
-                                    <option value="edtech">EdTech</option>
-                                    <option value="ecommerce">E-Commerce</option>
-                                    <option value="logistics">Logistique</option>
-                                    <option value="communication">Communication</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="productivity">Productivité</option>
-                                    <option value="other">Autre</option>
+                                    <option value="healthtech">Santé & E-Santé</option>
+                                    <option value="edtech">Éducation & Formation</option>
+                                    <option value="ecommerce">E-commerce & Logistique</option>
+                                    <option value="transport">Transport & Smart City</option>
+                                    <option value="govtech">Services Publics (GovTech)</option>
+                                    <option value="ai-data">IA & Data Science</option>
+                                    <option value="devtools">Outils Développeurs (Libs/SDK)</option>
+                                    <option value="entertainment">Divertissement & Culture</option>
                                 </select>
                             </div>
 
