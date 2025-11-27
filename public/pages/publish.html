@@ -438,19 +438,23 @@
     <script src="/js/services/auth.js"></script>
 
     <script>
-        const form = document.getElementById('publishForm');
-        const authRequired = document.getElementById('authRequired');
-        const loadingState = document.getElementById('loadingState');
-        const errorAlert = document.getElementById('errorAlert');
-        const successAlert = document.getElementById('successAlert');
-        const submitBtn = document.getElementById('submitBtn');
-        const synopsisInput = document.getElementById('synopsis');
-        const synopsisCount = document.getElementById('synopsisCount');
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('publishForm');
+            const authRequired = document.getElementById('authRequired');
+            const loadingState = document.getElementById('loadingState');
+            const errorAlert = document.getElementById('errorAlert');
+            const successAlert = document.getElementById('successAlert');
+            const submitBtn = document.getElementById('submitBtn');
 
-        // Gestion du compteur de caractères
-        synopsisInput.addEventListener('input', () => {
-            synopsisCount.textContent = synopsisInput.value.length;
-        });
+            // Gestion des compteurs de caractères pour chaque type
+            const mobileSynopsisInput = document.getElementById('mobileSynopsis');
+            const mobileSynopsisCount = document.getElementById('mobileSynopsisCount');
+
+            if (mobileSynopsisInput && mobileSynopsisCount) {
+                mobileSynopsisInput.addEventListener('input', () => {
+                    mobileSynopsisCount.textContent = mobileSynopsisInput.value.length;
+                });
+            }
 
         // Vérifier l'authentification (utilise currentUser de auth.js)
         auth.onAuthStateChanged((user) => {
@@ -667,6 +671,7 @@
                 submitBtn.textContent = 'Soumettre';
             }
         }
+        }); // End DOMContentLoaded
     </script>
 
     <!-- Footer -->
