@@ -437,7 +437,7 @@
             }
 
             // Preload default avatar to prevent flashing
-            const defaultAvatar = '/assets/icons/default-avatar.png';
+            const defaultAvatar = '/assets/icons/default-avatar.svg';
 
             const html = users.map(user => {
                 const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
@@ -458,7 +458,7 @@
                                      height="60"
                                      decoding="async"
                                      style="display: block;"
-                                     onerror="this.onerror=null; this.src='/assets/icons/default-avatar.png';">
+                                     onerror="this.onerror=null; this.src='/assets/icons/default-avatar.svg';">
                             </div>
 
                             <!-- User Info -->
@@ -525,7 +525,7 @@
                     ...doc.data()
                 }));
 
-                const photoUrl = (user.photoURL && user.photoURL.trim()) ? user.photoURL : '/assets/icons/default-avatar.png';
+                const photoUrl = (user.photoURL && user.photoURL.trim()) ? user.photoURL : '/assets/icons/default-avatar.svg';
                 const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
 
                 // Calculate avatar size based on name length (min 120px, max 200px)
@@ -548,7 +548,7 @@
                                  loading="eager"
                                  decoding="async"
                                  style="width: ${avatarSize}px; height: ${avatarSize}px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); display: block; position: absolute; top: 0; left: 0; transform: translateZ(0); backface-visibility: hidden; contain: strict;"
-                                 onerror="this.onerror=null; this.src='/assets/icons/default-avatar.png';">
+                                 onerror="this.onerror=null; this.src='/assets/icons/default-avatar.svg';">
                         </div>
 
                         <!-- User Details -->

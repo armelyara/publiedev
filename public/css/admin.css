@@ -585,30 +585,44 @@ button {
 }
 
 /* Direct filter inputs (no wrapper) */
+.admin-filters input[type="text"],
+.admin-filters select,
 .admin-filters > input[type="text"],
-.admin-filters > select {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--admin-gray-300);
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
-    outline: none;
-    transition: all 0.2s;
-    background: white;
+.admin-filters > select,
+#searchInput,
+#sortFilter {
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--admin-gray-300) !important;
+    border-radius: 0.5rem !important;
+    font-size: 0.875rem !important;
+    outline: none !important;
+    transition: all 0.2s !important;
+    background: white !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
-.admin-filters > input[type="text"] {
+.admin-filters input[type="text"],
+.admin-filters > input[type="text"],
+#searchInput {
     flex: 1;
     min-width: 250px;
 }
 
-.admin-filters > select {
+.admin-filters select,
+.admin-filters > select,
+#sortFilter {
     min-width: 180px;
+    cursor: pointer;
 }
 
+.admin-filters input[type="text"]:focus,
+.admin-filters select:focus,
 .admin-filters > input[type="text"]:focus,
-.admin-filters > select:focus {
-    border-color: var(--admin-primary);
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+.admin-filters > select:focus,
+#searchInput:focus,
+#sortFilter:focus {
+    border-color: var(--admin-primary) !important;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
 }
 
 .admin-filter-group {
