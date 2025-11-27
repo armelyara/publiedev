@@ -46,7 +46,15 @@
             background-color: var(--gray-200);
             flex-shrink: 0;
             aspect-ratio: 1 / 1;
-            contain: size layout paint style;
+            /* Critical: Prevent layout shifts during image load */
+            contain: strict;
+            content-visibility: auto;
+            /* Prevent repaints */
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            /* Smooth loading */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
 
         /* Avatar container to prevent shifts */
@@ -58,6 +66,33 @@
             border-radius: 50%;
             overflow: hidden;
             background-color: var(--gray-200);
+            /* Prevent container from causing shifts */
+            contain: layout size paint;
+            will-change: auto;
+            /* Skeleton loading animation */
+            background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s ease-in-out infinite;
+        }
+
+        /* Stop skeleton animation when image loads */
+        .avatar-container img[src] {
+            animation: none;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Hide skeleton when image loads */
+        .avatar-container:has(img[src]:not([src=""])) {
+            animation: none;
+            background: var(--gray-200);
         }
 
         /* Prevent content jumping */
@@ -395,10 +430,14 @@
                 return;
             }
 
+            // Preload default avatar to prevent flashing
+            const defaultAvatar = '/assets/icons/default-avatar.png';
+
             const html = users.map(user => {
                 const joinDate = user.createdAt ? formatDate(user.createdAt) : '-';
                 const timeAgo = user.createdAt ? formatRelativeDate(user.createdAt) : '-';
-                const photoUrl = user.photoURL || '/assets/icons/default-avatar.png';
+                // Always use a valid URL to prevent broken images
+                const photoUrl = (user.photoURL && user.photoURL.trim()) ? user.photoURL : defaultAvatar;
 
                 return `
                     <div class="admin-card" onclick="viewUser('${user.id}')" style="cursor: pointer;">
@@ -408,11 +447,12 @@
                                 <img src="${escapeHtml(photoUrl)}"
                                      alt="${escapeHtml(user.displayName || 'User')}"
                                      class="user-avatar"
-                                     loading="eager"
+                                     loading="lazy"
                                      width="60"
                                      height="60"
-                                     decoding="sync"
-                                     onerror="this.src='/assets/icons/default-avatar.png'">
+                                     decoding="async"
+                                     style="display: block;"
+                                     onerror="this.onerror=null; this.src='/assets/icons/default-avatar.png';">
                             </div>
 
                             <!-- User Info -->
