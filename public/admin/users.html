@@ -13,10 +13,18 @@
         /* Prevent layout shifts */
         .admin-stat-value {
             font-variant-numeric: tabular-nums;
+            min-width: 60px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .admin-stat-card {
+            min-width: 150px;
         }
 
         #usersList {
             opacity: 1;
+            will-change: contents;
         }
 
         /* Ensure images don't cause layout shift */
@@ -34,16 +42,48 @@
             object-fit: cover;
             border: 2px solid var(--gray-200);
             background-color: var(--gray-200);
+            flex-shrink: 0;
         }
 
         /* Prevent content jumping */
         .admin-card {
             contain: layout;
+            min-height: 100px;
+            transition: none;
         }
 
         /* Smooth rendering */
         .admin-main {
-            contain: layout style paint;
+            contain: layout style;
+        }
+
+        /* Prevent text shifts */
+        .admin-card h3 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Fixed layout for user cards */
+        .admin-card > div {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        /* Prevent bio text from causing shifts */
+        .user-bio {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 300px;
+            flex-shrink: 1;
+        }
+
+        /* Stable date column */
+        .user-date-col {
+            min-width: 120px;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -62,7 +102,6 @@
 
             <nav class="admin-nav">
                 <a href="/admin/" class="admin-nav-item">
-                <a href="dashboard.html" class="admin-nav-item">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"></rect>
                         <rect x="14" y="3" width="7" height="7"></rect>
@@ -255,7 +294,6 @@
         // Update statistics
         function updateStats() {
             const total = allUsers.length;
-            document.getElementById('totalUsers').textContent = total;
 
             // Count users created in last 7 days
             const sevenDaysAgo = new Date();
@@ -267,7 +305,11 @@
                 return createdDate >= sevenDaysAgo;
             }).length;
 
-            document.getElementById('newUsers').textContent = newUsersCount;
+            // Batch DOM updates with requestAnimationFrame
+            requestAnimationFrame(() => {
+                document.getElementById('totalUsers').textContent = total;
+                document.getElementById('newUsers').textContent = newUsersCount;
+            });
         }
 
         // Filter and sort users
@@ -345,32 +387,30 @@
 
                 return `
                     <div class="admin-card" onclick="viewUser('${user.id}')" style="cursor: pointer;">
-                        <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div>
                             <!-- User Photo -->
-                            <div style="flex-shrink: 0; width: 60px; height: 60px;">
-                                <img src="${escapeHtml(photoUrl)}"
-                                     alt="${escapeHtml(user.displayName || 'User')}"
-                                     class="user-avatar"
-                                     loading="eager"
-                                     width="60"
-                                     height="60"
-                                     onerror="this.src='/assets/icons/default-avatar.png'">
-                            </div>
+                            <img src="${escapeHtml(photoUrl)}"
+                                 alt="${escapeHtml(user.displayName || 'User')}"
+                                 class="user-avatar"
+                                 loading="eager"
+                                 width="60"
+                                 height="60"
+                                 onerror="this.src='/assets/icons/default-avatar.png'">
 
                             <!-- User Info -->
                             <div style="flex: 1; min-width: 0;">
                                 <h3 style="margin: 0 0 0.25rem 0; font-size: 1.125rem;">
                                     ${escapeHtml(user.displayName || 'Sans nom')}
                                 </h3>
-                                <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">
+                                <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                     ${escapeHtml(user.email || 'Pas d\'email')}
                                 </p>
-                                <div style="margin-top: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.875rem;">
-                                    <span style="color: var(--gray-600);">
-                                        📄 ${user.publicationsCount || 0} publication${(user.publicationsCount || 0) !== 1 ? 's' : ''}
+                                <div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.875rem;">
+                                    <span style="color: var(--gray-600); white-space: nowrap;">
+                                        📄 <span style="display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums;">${user.publicationsCount || 0}</span> pub${(user.publicationsCount || 0) !== 1 ? 's' : ''}
                                     </span>
                                     ${user.bio ? `
-                                        <span style="color: var(--gray-600); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px;">
+                                        <span class="user-bio" style="color: var(--gray-600);">
                                             💬 ${escapeHtml(user.bio)}
                                         </span>
                                     ` : ''}
@@ -378,11 +418,11 @@
                             </div>
 
                             <!-- Join Date -->
-                            <div style="text-align: right; flex-shrink: 0;">
-                                <p style="margin: 0; color: var(--gray-500); font-size: 0.875rem;">
+                            <div class="user-date-col" style="text-align: right;">
+                                <p style="margin: 0; color: var(--gray-500); font-size: 0.875rem; white-space: nowrap;">
                                     ${timeAgo}
                                 </p>
-                                <p style="margin: 0.25rem 0 0 0; color: var(--gray-400); font-size: 0.75rem;">
+                                <p style="margin: 0.25rem 0 0 0; color: var(--gray-400); font-size: 0.75rem; white-space: nowrap;">
                                     ${joinDate}
                                 </p>
                             </div>
