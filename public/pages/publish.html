@@ -386,16 +386,13 @@
         const synopsisInput = document.getElementById('synopsis');
         const synopsisCount = document.getElementById('synopsisCount');
 
-        let currentUser = null;
-
         // Gestion du compteur de caractères
         synopsisInput.addEventListener('input', () => {
             synopsisCount.textContent = synopsisInput.value.length;
         });
 
-        // Vérifier l'authentification
+        // Vérifier l'authentification (utilise currentUser de auth.js)
         auth.onAuthStateChanged((user) => {
-            currentUser = user;
             loadingState.style.display = 'none';
             if (user) {
                 form.style.display = 'block';
@@ -430,7 +427,8 @@
             submitBtn.textContent = 'Envoi des données...';
 
             try {
-                if (!currentUser) throw new Error('Authentification requise.');
+                const user = getCurrentUser();
+                if (!user) throw new Error('Authentification requise.');
 
                 // 1. Récupération des champs
                 const title = document.getElementById('title').value.trim();
@@ -455,14 +453,14 @@
                 let architectureDiagramUrl = null;
                 const diagramFile = document.getElementById('architecture_diagram').files[0];
                 if (diagramFile) {
-                    architectureDiagramUrl = await uploadFile(diagramFile, `devroutes/${currentUser.uid}/${Date.now()}_arch_${diagramFile.name}`);
+                    architectureDiagramUrl = await uploadFile(diagramFile, `devroutes/${user.uid}/${Date.now()}_arch_${diagramFile.name}`);
                 }
 
                 let galleryUrls = [];
                 const galleryFiles = document.getElementById('gallery').files;
                 if (galleryFiles.length > 0) {
                     for (let i = 0; i < galleryFiles.length; i++) {
-                        const url = await uploadFile(galleryFiles[i], `devroutes/${currentUser.uid}/${Date.now()}_gallery_${i}`);
+                        const url = await uploadFile(galleryFiles[i], `devroutes/${user.uid}/${Date.now()}_gallery_${i}`);
                         galleryUrls.push(url);
                     }
                 }
@@ -496,9 +494,9 @@
 
                     // INFOS SYSTÈME
                     author: {
-                        uid: currentUser.uid,
-                        name: currentUser.displayName || 'Utilisateur',
-                        email: currentUser.email
+                        uid: user.uid,
+                        name: user.displayName || 'Utilisateur',
+                        email: user.email
                     },
                     status: 'pending', // En attente de validation
                     stats: { views: 0, likes: 0 },
