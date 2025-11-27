@@ -205,12 +205,34 @@
                         </div>
                     </div>
 
-                    <div
-                        style="background: var(--white); border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--gray-200);">
-                        <h3
-                            style="font-weight: 700; font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--bluesky-600);">
-                            🎯 Étape 1 : Le Point de Départ
-                        </h3>
+                    <!-- Champs spécifiques App Web -->
+                    <div id="appWebFields" class="type-fields" style="display: none;">
+                        <!-- MÉTADONNÉES -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
+
+                            <div class="form-group">
+                                <label for="webCategory">Catégorie *</label>
+                                <select id="webCategory" required>
+                                    <option value="">Sélectionnez une catégorie</option>
+                                    <option value="fintech">Fintech & Mobile Money</option>
+                                    <option value="agritech">AgriTech</option>
+                                    <option value="healthtech">Santé & E-Santé</option>
+                                    <option value="edtech">Éducation & Formation</option>
+                                    <option value="ecommerce">E-commerce & Logistique</option>
+                                    <option value="transport">Transport & Smart City</option>
+                                    <option value="govtech">Services Publics (GovTech)</option>
+                                    <option value="ai-data">IA & Data Science</option>
+                                    <option value="devtools">Outils Développeurs (DevTools)</option>
+                                    <option value="entertainment">Divertissement & Culture</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="webSynopsis">Synopsis Technique (Max 280 caractères) *</label>
+                                <textarea id="webSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="webSynopsisCount">0</span>/280 caractères</small>
+                            </div>
 
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="webTags">Stack Technique (Tags séparés par des virgules) *</label>
@@ -283,12 +305,34 @@
                         </div>
                     </div>
 
-                    <div
-                        style="background: var(--white); border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--gray-200);">
-                        <h3
-                            style="font-weight: 700; font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--orange-600);">
-                            ⚠️ Étape 3 : Les Obstacles
-                        </h3>
+                    <!-- Champs spécifiques API -->
+                    <div id="apiFields" class="type-fields" style="display: none;">
+                        <!-- MÉTADONNÉES -->
+                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
+                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
+
+                            <div class="form-group">
+                                <label for="apiCategory">Catégorie *</label>
+                                <select id="apiCategory" required>
+                                    <option value="">Sélectionnez une catégorie</option>
+                                    <option value="fintech">Fintech & Mobile Money</option>
+                                    <option value="agritech">AgriTech</option>
+                                    <option value="healthtech">Santé & E-Santé</option>
+                                    <option value="edtech">Éducation & Formation</option>
+                                    <option value="ecommerce">E-commerce & Logistique</option>
+                                    <option value="transport">Transport & Smart City</option>
+                                    <option value="govtech">Services Publics (GovTech)</option>
+                                    <option value="ai-data">IA & Data Science</option>
+                                    <option value="devtools">Outils Développeurs (DevTools)</option>
+                                    <option value="entertainment">Divertissement & Culture</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="apiSynopsis">Synopsis Technique (Max 280 caractères) *</label>
+                                <textarea id="apiSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
+                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="apiSynopsisCount">0</span>/280 caractères</small>
+                            </div>
 
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="apiTags">Stack Technique (Tags séparés par des virgules) *</label>
@@ -449,10 +493,26 @@
             // Gestion des compteurs de caractères pour chaque type
             const mobileSynopsisInput = document.getElementById('mobileSynopsis');
             const mobileSynopsisCount = document.getElementById('mobileSynopsisCount');
+            const webSynopsisInput = document.getElementById('webSynopsis');
+            const webSynopsisCount = document.getElementById('webSynopsisCount');
+            const apiSynopsisInput = document.getElementById('apiSynopsis');
+            const apiSynopsisCount = document.getElementById('apiSynopsisCount');
 
             if (mobileSynopsisInput && mobileSynopsisCount) {
                 mobileSynopsisInput.addEventListener('input', () => {
                     mobileSynopsisCount.textContent = mobileSynopsisInput.value.length;
+                });
+            }
+
+            if (webSynopsisInput && webSynopsisCount) {
+                webSynopsisInput.addEventListener('input', () => {
+                    webSynopsisCount.textContent = webSynopsisInput.value.length;
+                });
+            }
+
+            if (apiSynopsisInput && apiSynopsisCount) {
+                apiSynopsisInput.addEventListener('input', () => {
+                    apiSynopsisCount.textContent = apiSynopsisInput.value.length;
                 });
             }
 
