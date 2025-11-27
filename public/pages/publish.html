@@ -30,11 +30,14 @@
 
     <main>
         <div class="container" style="padding: 2rem 1rem;">
-            <div style="max-width: 48rem; margin: 0 auto;">
-                <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;">Tracer une nouvelle DevRoute</h1>
-                <p style="color: var(--gray-600); margin-bottom: 2rem;">Partagez votre parcours de développement avec la communauté</p>
+            <div style="max-width: 54rem; margin: 0 auto;">
+                <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Tracer une nouvelle DevRoute</h1>
+                <p style="color: var(--gray-600); margin-bottom: 2rem; font-size: 1.1rem;">
+                    Documentez votre itinéraire technique : du problème initial à la solution déployée.
+                    <br><small>⚠️ Rappel : Méthode "Boîte Noire". Décrivez la logique, ne soumettez jamais votre code
+                        source.</small>
+                </p>
 
-                <!-- État de chargement -->
                 <div id="loadingState" style="text-align: center; padding: 4rem 2rem;">
                     <p style="color: var(--gray-500);">Chargement...</p>
                 </div>
@@ -202,34 +205,12 @@
                         </div>
                     </div>
 
-                    <!-- Champs spécifiques App Web -->
-                    <div id="appWebFields" class="type-fields" style="display: none;">
-                        <!-- MÉTADONNÉES -->
-                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
-                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 MÉTADONNÉES (Pour le Moteur de Recherche)</h3>
-
-                            <div class="form-group">
-                                <label for="webCategory">Catégorie *</label>
-                                <select id="webCategory" required>
-                                    <option value="">Sélectionnez une catégorie</option>
-                                    <option value="fintech">FinTech</option>
-                                    <option value="agritech">AgriTech</option>
-                                    <option value="healthtech">HealthTech</option>
-                                    <option value="edtech">EdTech</option>
-                                    <option value="ecommerce">E-Commerce</option>
-                                    <option value="logistics">Logistique</option>
-                                    <option value="communication">Communication</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="productivity">Productivité</option>
-                                    <option value="other">Autre</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="webSynopsis">Synopsis Technique (Max 280 caractères) *</label>
-                                <textarea id="webSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
-                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="webSynopsisCount">0</span>/280 caractères</small>
-                            </div>
+                    <div
+                        style="background: var(--white); border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--gray-200);">
+                        <h3
+                            style="font-weight: 700; font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--bluesky-600);">
+                            🎯 Étape 1 : Le Point de Départ
+                        </h3>
 
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="webTags">Stack Technique (Tags séparés par des virgules) *</label>
@@ -302,34 +283,12 @@
                         </div>
                     </div>
 
-                    <!-- Champs spécifiques API -->
-                    <div id="apiFields" class="type-fields" style="display: none;">
-                        <!-- MÉTADONNÉES -->
-                        <div style="background: var(--white); border-radius: 0.75rem; padding: 1.5rem; border: 1px solid var(--gray-100); margin-bottom: 1.5rem;">
-                            <h3 style="font-weight: 600; margin-bottom: 1rem;">📋 Description détaillée</h3>
-
-                            <div class="form-group">
-                                <label for="apiCategory">Catégorie *</label>
-                                <select id="apiCategory" required>
-                                    <option value="">Sélectionnez une catégorie</option>
-                                    <option value="fintech">FinTech</option>
-                                    <option value="agritech">AgriTech</option>
-                                    <option value="healthtech">HealthTech</option>
-                                    <option value="edtech">EdTech</option>
-                                    <option value="ecommerce">E-Commerce</option>
-                                    <option value="logistics">Logistique</option>
-                                    <option value="communication">Communication</option>
-                                    <option value="entertainment">Entertainment</option>
-                                    <option value="productivity">Productivité</option>
-                                    <option value="other">Autre</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="apiSynopsis">Synopsis Technique (Max 280 caractères) *</label>
-                                <textarea id="apiSynopsis" rows="3" maxlength="280" placeholder="Résumez votre solution en une phrase pour les résultats de recherche." required></textarea>
-                                <small style="color: var(--gray-500); display: block; margin-top: 0.25rem;"><span id="apiSynopsisCount">0</span>/280 caractères</small>
-                            </div>
+                    <div
+                        style="background: var(--white); border-radius: 0.75rem; padding: 2rem; margin-bottom: 2rem; border: 1px solid var(--gray-200);">
+                        <h3
+                            style="font-weight: 700; font-size: 1.25rem; margin-bottom: 1.5rem; color: var(--orange-600);">
+                            ⚠️ Étape 3 : Les Obstacles
+                        </h3>
 
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="apiTags">Stack Technique (Tags séparés par des virgules) *</label>
