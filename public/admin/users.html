@@ -34,15 +34,30 @@
 
         /* User avatar with fixed dimensions to prevent layout shift */
         .user-avatar {
-            width: 60px;
-            height: 60px;
+            width: 60px !important;
+            height: 60px !important;
             min-width: 60px;
             min-height: 60px;
+            max-width: 60px;
+            max-height: 60px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--gray-200);
             background-color: var(--gray-200);
             flex-shrink: 0;
+            aspect-ratio: 1 / 1;
+            contain: size layout paint style;
+        }
+
+        /* Avatar container to prevent shifts */
+        .avatar-container {
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: var(--gray-200);
         }
 
         /* Prevent content jumping */
@@ -50,6 +65,12 @@
             contain: layout;
             min-height: 100px;
             transition: none;
+            will-change: auto;
+        }
+
+        /* Optimize card rendering */
+        .admin-card > div {
+            align-items: center;
         }
 
         /* Smooth rendering */
@@ -62,13 +83,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-        }
-
-        /* Fixed layout for user cards */
-        .admin-card > div {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
         }
 
         /* Prevent bio text from causing shifts */
@@ -389,13 +403,16 @@
                     <div class="admin-card" onclick="viewUser('${user.id}')" style="cursor: pointer;">
                         <div>
                             <!-- User Photo -->
-                            <img src="${escapeHtml(photoUrl)}"
-                                 alt="${escapeHtml(user.displayName || 'User')}"
-                                 class="user-avatar"
-                                 loading="eager"
-                                 width="60"
-                                 height="60"
-                                 onerror="this.src='/assets/icons/default-avatar.png'">
+                            <div class="avatar-container">
+                                <img src="${escapeHtml(photoUrl)}"
+                                     alt="${escapeHtml(user.displayName || 'User')}"
+                                     class="user-avatar"
+                                     loading="eager"
+                                     width="60"
+                                     height="60"
+                                     decoding="sync"
+                                     onerror="this.src='/assets/icons/default-avatar.png'">
+                            </div>
 
                             <!-- User Info -->
                             <div style="flex: 1; min-width: 0;">
