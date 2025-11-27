@@ -18,6 +18,19 @@
     --admin-gray-800: #1f2937;
     --admin-gray-900: #111827;
     --admin-sidebar-width: 240px;
+
+    /* Aliases for consistency with inline styles */
+    --primary: #0ea5e9;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
 }
 
 /* Reset */
@@ -228,14 +241,30 @@ button {
     margin-bottom: 2rem;
 }
 
+/* Stats row for inline stats in header */
+.admin-stats-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
 .admin-stat-card {
     background: white;
     border-radius: 0.75rem;
     padding: 1.5rem;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Inline stat cards (in header) */
+.admin-stats-row .admin-stat-card {
+    padding: 0.75rem 1.25rem;
+    background: var(--admin-gray-50);
+    border: 1px solid var(--admin-gray-200);
+    box-shadow: none;
 }
 
 .admin-stat-icon {
@@ -555,6 +584,33 @@ button {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Direct filter inputs (no wrapper) */
+.admin-filters > input[type="text"],
+.admin-filters > select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--admin-gray-300);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+    background: white;
+}
+
+.admin-filters > input[type="text"] {
+    flex: 1;
+    min-width: 250px;
+}
+
+.admin-filters > select {
+    min-width: 180px;
+}
+
+.admin-filters > input[type="text"]:focus,
+.admin-filters > select:focus {
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
 .admin-filter-group {
     display: flex;
     flex-direction: column;
@@ -691,6 +747,27 @@ button {
 .admin-pub-title small {
     color: var(--admin-gray-500);
     font-size: 0.75rem;
+}
+
+/* ===== User Cards ===== */
+.admin-card {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.admin-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.admin-card > div {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
 }
 
 /* ===== Responsive ===== */
