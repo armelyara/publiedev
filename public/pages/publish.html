@@ -528,6 +528,43 @@
             }
         });
 
+        // Fonction pour gérer l'affichage des champs selon le type
+        function switchFormType(type) {
+            document.getElementById('type').value = type;
+
+            // Afficher les champs communs
+            document.getElementById('commonFields').style.display = 'block';
+            document.getElementById('categorySection').style.display = 'block';
+            document.getElementById('tagsSection').style.display = 'block';
+            document.getElementById('actionsSection').style.display = 'block';
+
+            // Masquer tous les champs spécifiques ET désactiver la validation
+            document.querySelectorAll('.type-fields').forEach(field => {
+                field.style.display = 'none';
+                // Désactiver tous les champs required dans les sections masquées
+                field.querySelectorAll('input[required], textarea[required], select[required]').forEach(input => {
+                    input.removeAttribute('required');
+                    input.setAttribute('data-was-required', 'true');
+                });
+            });
+
+            // Afficher les champs du type sélectionné ET réactiver la validation
+            const fieldsMap = {
+                'article': 'articleFields',
+                'app-mobile': 'appMobileFields',
+                'app-web': 'appWebFields',
+                'api': 'apiFields'
+            };
+            const selectedFields = document.getElementById(fieldsMap[type]);
+            if (selectedFields) {
+                selectedFields.style.display = 'block';
+                // Réactiver les champs required dans la section visible
+                selectedFields.querySelectorAll('[data-was-required]').forEach(input => {
+                    input.setAttribute('required', '');
+                });
+            }
+        }
+
         // Gestion des boutons de type
         document.querySelectorAll('.type-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -535,43 +572,41 @@
                 btn.classList.add('active');
 
                 const type = btn.dataset.type;
-                document.getElementById('type').value = type;
-
-                // Afficher les champs communs
-                document.getElementById('commonFields').style.display = 'block';
-                document.getElementById('categorySection').style.display = 'block';
-                document.getElementById('tagsSection').style.display = 'block';
-                document.getElementById('actionsSection').style.display = 'block';
-
-                // Masquer tous les champs spécifiques ET désactiver la validation
-                document.querySelectorAll('.type-fields').forEach(field => {
-                    field.style.display = 'none';
-                    // Désactiver tous les champs required dans les sections masquées
-                    field.querySelectorAll('[required]').forEach(input => {
-                        input.removeAttribute('required');
-                        input.setAttribute('data-was-required', 'true');
-                    });
-                });
-
-                // Afficher les champs du type sélectionné ET réactiver la validation
-                const fieldsMap = {
-                    'article': 'articleFields',
-                    'app-mobile': 'appMobileFields',
-                    'app-web': 'appWebFields',
-                    'api': 'apiFields'
-                };
-                const selectedFields = document.getElementById(fieldsMap[type]);
-                selectedFields.style.display = 'block';
-                // Réactiver les champs required dans la section visible
-                selectedFields.querySelectorAll('[data-was-required]').forEach(input => {
-                    input.setAttribute('required', '');
-                });
+                switchFormType(type);
             });
         });
+
+        // Initialiser le formulaire avec le type "article" par défaut
+        switchFormType('article');
 
         // Soumission du formulaire
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            // Vérifier manuellement les champs visibles avant soumission
+            const visibleRequiredFields = Array.from(form.querySelectorAll('[required]')).filter(field => {
+                return field.offsetParent !== null; // visible
+            });
+
+            let firstInvalid = null;
+            for (const field of visibleRequiredFields) {
+                if (!field.value || (field.type === 'file' && field.files.length === 0 && field.hasAttribute('data-file-required'))) {
+                    if (!firstInvalid) firstInvalid = field;
+                    field.style.borderColor = '#dc2626';
+                } else {
+                    field.style.borderColor = '';
+                }
+            }
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                errorAlert.textContent = 'Veuillez remplir tous les champs obligatoires (*)';
+                errorAlert.style.display = 'block';
+                setTimeout(() => errorAlert.style.display = 'none', 5000);
+                return;
+            }
+
             await publish();
         });
 
