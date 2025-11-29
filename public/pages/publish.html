@@ -543,17 +543,29 @@
                 document.getElementById('tagsSection').style.display = 'block';
                 document.getElementById('actionsSection').style.display = 'block';
 
-                // Masquer tous les champs spécifiques
-                document.querySelectorAll('.type-fields').forEach(f => f.style.display = 'none');
+                // Masquer tous les champs spécifiques ET désactiver la validation
+                document.querySelectorAll('.type-fields').forEach(field => {
+                    field.style.display = 'none';
+                    // Désactiver tous les champs required dans les sections masquées
+                    field.querySelectorAll('[required]').forEach(input => {
+                        input.removeAttribute('required');
+                        input.setAttribute('data-was-required', 'true');
+                    });
+                });
 
-                // Afficher les champs du type sélectionné
+                // Afficher les champs du type sélectionné ET réactiver la validation
                 const fieldsMap = {
                     'article': 'articleFields',
                     'app-mobile': 'appMobileFields',
                     'app-web': 'appWebFields',
                     'api': 'apiFields'
                 };
-                document.getElementById(fieldsMap[type]).style.display = 'block';
+                const selectedFields = document.getElementById(fieldsMap[type]);
+                selectedFields.style.display = 'block';
+                // Réactiver les champs required dans la section visible
+                selectedFields.querySelectorAll('[data-was-required]').forEach(input => {
+                    input.setAttribute('required', '');
+                });
             });
         });
 
